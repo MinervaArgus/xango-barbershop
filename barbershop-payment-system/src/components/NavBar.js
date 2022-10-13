@@ -8,7 +8,7 @@ export default function Navbar() {
                 <a href="/appointments">Book Appointment</a>
             </li>
             <li>
-                <a href="/admin">Admin</a>
+                <a href="/AdminLogin">Admin</a>
             </li>
         </ul>
     </nav >

@@ -3,7 +3,7 @@ import Navbar from './components/NavBar';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import Appointments from './pages/Appointments';
-import Admin from './pages/Admin';
+import AdminLogon from './pages/AdminLogin';
 
 function App() {
   return (
@@ -18,8 +18,8 @@ function App() {
             <Route path="/appointments">
               <Appointments />
             </Route>
-            <Route path="/admin">
-              <Admin />
+            <Route path="/AdminLogin">
+              <AdminLogon/>
             </Route>
 
           </Switch>
