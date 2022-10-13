@@ -3,10 +3,22 @@ import Navbar from './components/NavBar';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import Appointments from './pages/Appointments';
-import AdminLogon from './pages/AdminLogin';
+import {SignIn, authenticated} from './pages/AdminLogin';
 import Admin from './pages/Admin';
 
+
 function App() {
+  function requireAuth(nextState, replace, next) {
+    if (!authenticated) {
+      replace({
+        pathname: "/login",
+        state: {nextPathname: nextState.location.pathname}
+      });
+    }
+    next();
+  }
+
+
   return (
     <div className="App">
       <header className="App-header">
@@ -20,9 +32,9 @@ function App() {
               <Appointments />
             </Route>
             <Route path="/AdminLogin">
-              <AdminLogon/>
+              <SignIn/>
             </Route>
-            <Route path="/Admin">
+            <Route path="/Admin" onEnter={requireAuth}>
               <Admin/>
             </Route>
 

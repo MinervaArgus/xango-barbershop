@@ -16,8 +16,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 const theme = createTheme();
+export const authenticated = false;
 
-function SignIn() {
+export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
@@ -28,6 +29,7 @@ function SignIn() {
       signInWithEmailAndPassword(auth, email, password).catch((error) =>
         console.log(error)
       );
+      authenticated = true;
       history.push("/Admin");
     }
     onRegister();
@@ -93,5 +95,3 @@ function SignIn() {
     </ThemeProvider>
   );
 }
-
-export default SignIn;
