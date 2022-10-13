@@ -1,4 +1,5 @@
 import React from "react";
+import Button from '@mui/material/Button';
 
 export default function Navbar() {
     return (<nav className="nav">
@@ -9,6 +10,16 @@ export default function Navbar() {
             </li>
             <li>
                 <a href="/AdminLogin">Admin</a>
+            </li>
+            <li>
+                <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                >
+                Log Out
+                </Button>
             </li>
         </ul>
     </nav >

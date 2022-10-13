@@ -14,9 +14,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-
 const theme = createTheme();
-export const authenticated = false;
+export var authenticated = false;
 
 export function SignIn() {
   const [email, setEmail] = useState("");
@@ -86,6 +85,7 @@ export function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={authenticated=false}
             >
               Sign In
             </Button>
