@@ -17,7 +17,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme();
 
-export default function SignIn() {
+function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
@@ -28,7 +28,7 @@ export default function SignIn() {
       signInWithEmailAndPassword(auth, email, password).catch((error) =>
         console.log(error)
       );
-      history.push("/admin");
+      history.push("/Admin");
     }
     onRegister();
   };
@@ -93,3 +93,5 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
+
+export default SignIn;

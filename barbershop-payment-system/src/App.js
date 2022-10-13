@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import Appointments from './pages/Appointments';
 import AdminLogon from './pages/AdminLogin';
+import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
             </Route>
             <Route path="/AdminLogin">
               <AdminLogon/>
+            </Route>
+            <Route path="/Admin">
+              <Admin/>
             </Route>
 
           </Switch>
