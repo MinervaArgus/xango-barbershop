@@ -10,6 +10,10 @@ export default function Navbar() {
             <li>
                 <a href="/admin">Admin</a>
             </li>
+            <li>
+                <a href="/location">Location</a>
+            </li>
+
         </ul>
     </nav >
     )
