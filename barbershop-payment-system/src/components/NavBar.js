@@ -18,7 +18,7 @@ function Navbar ({ history }) {
         <ul>
             <li>
                 <a href="/appointments">Book Appointment</a>
-            </li>
+            </li>   
             <li>
             {!userLoggedIn && (
                 <a href="/AdminLogin">Admin</a>
