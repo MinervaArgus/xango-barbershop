@@ -11,7 +11,7 @@ const PrivateRoute = ({ children, ...rest }) => {
         userLoggedIn ? (
           children
         ) : (
-          <Redirect to={{ pathname: "/Admin", state: { from: location } }} />
+          <Redirect to={{ pathname: "/AdminLogin", state: { from: location } }} />
         )
       }
     />
