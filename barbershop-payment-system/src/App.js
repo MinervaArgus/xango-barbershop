@@ -1,29 +1,22 @@
 import './styles/App.css';
-import React, { useState } from 'react';
 import Navbar from './components/NavBar';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, } from 'react-router-dom';
 import Home from './pages/Home';
 import Appointments from './pages/Appointments';
-import {SignIn} from './pages/AdminLogin';
+import {SignIn, authenticated} from './pages/AdminLogin';
 import Admin from './pages/Admin';
+import PrivateRoute from './components/PrivateRoute';
 
 
 function App() {
-
-  // function requireAuth(nextState, replace, next) {
-  //   if (!authenticated) {
-  //     replace({
-  //       pathname: "/login",
-  //       state: {nextPathname: nextState.location.pathname}
-  //     });
-  //   }
-  //   next();
-  // }
-
-  const [token, setToken] = useState();
-  
-  if(!token) {
-    return <SignIn setToken={setToken} />
+  function requireAuth(nextState, replace, next) {
+    if (!authenticated) {
+      replace({
+        pathname: "/login",
+        state: {nextPathname: nextState.location.pathname}
+      });
+    }
+    next();
   }
 
 
@@ -42,10 +35,9 @@ function App() {
             <Route path="/AdminLogin">
               <SignIn/>
             </Route>
-              <Route path="/Admin">
-                {/*onEnter={requireAuth}*/} 
+            <PrivateRoute path="/Admin">
               <Admin/>
-            </Route>
+            </PrivateRoute>
 
           </Switch>
         </Router>

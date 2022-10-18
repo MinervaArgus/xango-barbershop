@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { auth } from "../firebase";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+// import { useSelector, useDispatch } from "react-redux";
 
 const theme = createTheme();
 export var authenticated = false;
@@ -29,12 +30,13 @@ export function SignIn() {
         console.log(error)
       );
       authenticated = true;
+      // dispatchEvent(updateUserStatus(true));
       history.push("/Admin");
     }
     onRegister();
   };
 
-
+  // if (authenticated) history.push(location.state ? location.state.from.pathname : "/");
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
