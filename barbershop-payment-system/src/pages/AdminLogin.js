@@ -13,30 +13,37 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-// import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUserStatus } from "../components/global-state/userStateSlice";
 
 const theme = createTheme();
-export var authenticated = false;
 
 export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
+  const location = useLocation();
+  const { userLoggedIn } = useSelector((state) => state.userState);
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     function onRegister() {
-      signInWithEmailAndPassword(auth, email, password).catch((error) =>
-        console.log(error)
-      );
-      authenticated = true;
-      // dispatchEvent(updateUserStatus(true));
-      history.push("/Admin");
+      // signInWithEmailAndPassword(auth, email, password).catch((error) =>
+      //   console.log(error)
+      // );
+      if ((email === "crismartin994@gmail.com" && password === "testingPassword!!")) {
+        dispatch(updateUserStatus(true));
+        console.log('dispatch == true')
+      }
+      console.log("dispatcher false")
+      // history.push("/Admin");
     }
     onRegister();
   };
 
-  // if (authenticated) history.push(location.state ? location.state.from.pathname : "/");
+  if (userLoggedIn) history.push(location.state ? location.state.from.pathname : "/Admin");
+  
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -87,7 +94,7 @@ export function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={authenticated=false}
+              onClick={handleSubmit}
             >
               Sign In
             </Button>
