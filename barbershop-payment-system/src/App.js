@@ -1,21 +1,29 @@
 import './styles/App.css';
+import React, { useState } from 'react';
 import Navbar from './components/NavBar';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import Appointments from './pages/Appointments';
-import {SignIn, authenticated} from './pages/AdminLogin';
+import {SignIn} from './pages/AdminLogin';
 import Admin from './pages/Admin';
 
 
 function App() {
-  function requireAuth(nextState, replace, next) {
-    if (!authenticated) {
-      replace({
-        pathname: "/login",
-        state: {nextPathname: nextState.location.pathname}
-      });
-    }
-    next();
+
+  // function requireAuth(nextState, replace, next) {
+  //   if (!authenticated) {
+  //     replace({
+  //       pathname: "/login",
+  //       state: {nextPathname: nextState.location.pathname}
+  //     });
+  //   }
+  //   next();
+  // }
+
+  const [token, setToken] = useState();
+  
+  if(!token) {
+    return <SignIn setToken={setToken} />
   }
 
 
@@ -34,7 +42,8 @@ function App() {
             <Route path="/AdminLogin">
               <SignIn/>
             </Route>
-            <Route path="/Admin" onEnter={requireAuth}>
+              <Route path="/Admin">
+                {/*onEnter={requireAuth}*/} 
               <Admin/>
             </Route>
 
