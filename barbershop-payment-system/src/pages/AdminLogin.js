@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import { signInWithEmailAndPassword } from "firebase/auth";
+//import { signInWithEmailAndPassword } from "firebase/auth";
 import { useHistory, useLocation } from "react-router-dom";
-import { auth } from "../firebase";
+//import { auth } from "../firebase";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -34,9 +34,7 @@ export function SignIn() {
       // );
       if ((email === "crismartin994@gmail.com" && password === "testingPassword!!")) {
         dispatch(updateUserStatus(true));
-        console.log('dispatch == true')
       }
-      console.log("dispatcher false")
       // history.push("/Admin");
     }
     onRegister();

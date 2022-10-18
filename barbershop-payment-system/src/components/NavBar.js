@@ -1,6 +1,6 @@
 import React from "react";
 import Button from '@mui/material/Button';
-import { NavLink, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../components/global-state/userStateSlice";
 
