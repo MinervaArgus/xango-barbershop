@@ -1,4 +1,5 @@
 import React from "react";
+import Button from '@mui/material/Button';
 import '../styles/Admin.css';
 import { useState } from 'react';
 import { storage } from "../firebase.js"
@@ -38,13 +39,14 @@ function Admin() {
             <h1>Admin</h1>
             <h2>File uploader</h2>
             <form onSubmit={handleSubmit} className='form'>
-                <input type='file' />
-                <button type='submit'>Upload</button>
+                <Button variant="contained" component="label"><input type='file' hidden/>Select File</Button>
+                <Button variant="contained" type='submit'>Upload</Button>
+                <br></br>
             </form>
 
             {
             !imgUrl &&
-                <div className='outerbar'>
+                <div className='outerbar' style={{"margin: auto; width: auto;"}}>
                     <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
                 </div>
             }
@@ -55,12 +57,6 @@ function Admin() {
         </div>
     );
 }
-
-
-// User Authorization
-// https://v5.reactrouter.com/web/example/auth-workflow
-// https://www.digitalocean.com/community/tutorials/how-to-add-login-authentication-to-react-applications
-
 // Firebase Storage access
 // https://www.makeuseof.com/upload-files-to-firebase-using-reactjs/
 
