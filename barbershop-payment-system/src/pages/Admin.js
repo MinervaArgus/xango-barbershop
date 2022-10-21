@@ -46,7 +46,11 @@ function Admin() {
 
             {
             !imgUrl &&
-                <div className='outerbar' style={{"margin: auto; width: auto;"}}>
+                <div className='centered-div' style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
                     <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
                 </div>
             }

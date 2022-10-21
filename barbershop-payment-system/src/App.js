@@ -9,17 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 
 
 function App() {
-  // function requireAuth(nextState, replace, next) {
-  //   if (!authenticated) {
-  //     replace({
-  //       pathname: "/login",
-  //       state: {nextPathname: nextState.location.pathname}
-  //     });
-  //   }
-  //   next();
-  // }
-
-
+  
   return (
     <div className="App">
       <header className="App-header">
