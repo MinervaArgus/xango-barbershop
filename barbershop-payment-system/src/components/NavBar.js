@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import { withRouter } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../components/global-state/userStateSlice";
+import '../styles/NavBar.css';
 
 function Navbar ({ history }) {
     const { userLoggedIn } = useSelector((state) => state.userState);
