@@ -25,7 +25,7 @@ function Navbar ({ history }) {
                 <a href="/AdminLogin">Admin</a>
             )}
             {userLoggedIn ? (
-                <Button type="submit" fullWidth variant="contained" sx={{ mt: 1}} onClick={logoutHandler}>
+                <Button type="submit" fullWidth variant="contained" sx={{ mt: 1, mb: 1}} onClick={logoutHandler}>
                     Log Out
                 </Button>
             ) : null}
