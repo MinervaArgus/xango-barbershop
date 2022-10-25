@@ -1,13 +1,34 @@
 import React from "react";
 import Button from '@mui/material/Button';
 import '../styles/Admin.css';
-import { useState } from 'react';
-import { storage } from "../firebase.js"
+import InputLabel from '@mui/material/InputLabel';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { useState, useEffect } from 'react';
+import { storage, db } from "../firebase.js"
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import {collection, onSnapshot, query, orderBy, addDoc, serverTimestamp} from "firebase/firestore"
+
+const q = query(collection(db, 'todos'), orderBy('timestamp', 'desc'));
 
 function Admin() {
     const [imgUrl, setImgUrl] = useState(null);
     const [progresspercent, setProgresspercent] = useState(0);
+    const imagesRef = ref(storage, 'images');
+
+    const [todos, setTodos]=useState([]);
+    const [input, setInput]=useState('');
+    const [input2, setInput2]=useState('');
+
+    useEffect(() => {
+        onSnapshot(q, (snapshot) => {
+            setTodos(snapshot.docs.map(doc => ({
+                id: doc.id,
+                item: doc.data()
+            })))
+        })
+    }, [input], [input2]);
+
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -28,6 +49,7 @@ function Admin() {
         () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setImgUrl(downloadURL)
+            // add doc in collection to ref image and hair type
             });
         }
         );
@@ -39,6 +61,19 @@ function Admin() {
             <h1>Admin</h1>
             <h2>File uploader</h2>
             <form onSubmit={handleSubmit} className='form'>
+                {/* <TextField id="outlined-basic" label="Type Of Cut" variant="outlined" size="small" value={input} InputLabelProps={{shrink: true}} onChange={e=>setInput(e.target.value)} /> */}
+                <InputLabel id="hairStyleSelect">Type of Hair Style</InputLabel>
+                <Select
+                    labelId="hairStyleSelect"
+                    id="hair-style-select"
+                    value={input}
+                    label="Hair Style"
+                    onChange={e=>setInput(e.target.value)}
+                    >
+                    <MenuItem value={"Low Fade"}>Low-Fade</MenuItem>
+                    <MenuItem value={"Mid Fade"}>Mid-Fade</MenuItem>
+                    <MenuItem value={"Short"}>Short Hair</MenuItem>
+                </Select>
                 <Button variant="contained" component="label"><input type='file' hidden/>Select File</Button>
                 <Button variant="contained" type='submit'>Upload</Button>
                 <br></br>

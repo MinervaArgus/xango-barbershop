@@ -19,7 +19,13 @@ function Navbar ({ history }) {
         <ul>
             <li>
                 <a href="/appointments">Book Appointment</a>
-            </li>   
+            </li>
+            <li>
+                <a href="/hairstyles">View Styles</a>
+            </li>
+            <li>
+                <a href="/hairpricing">View Pricing</a>
+            </li>
             <li>
             {!userLoggedIn && (
                 <a href="/AdminLogin">Admin</a>
