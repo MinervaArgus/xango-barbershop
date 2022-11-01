@@ -21,10 +21,10 @@ function Navbar ({ history }) {
                 <a href="/appointments">Book Appointment</a>
             </li>
             <li>
-                <a href="/hairstyles">View Styles</a>
+                <a href="/HairStyles">View Styles</a>
             </li>
             <li>
-                <a href="/hairpricing">View Pricing</a>
+                <a href="/HairPricing">View Pricing</a>
             </li>
             <li>
             {!userLoggedIn && (

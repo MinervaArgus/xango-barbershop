@@ -39,7 +39,6 @@ function Admin() {
         () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setImgUrl(downloadURL)
-            // add doc in collection to ref image and hair type
             });
         }
         );
@@ -49,9 +48,8 @@ function Admin() {
     return (
         <div>
             <h1>Admin</h1>
-            <h2>File uploader</h2>
+            <h2>Image uploader</h2>
             <form onSubmit={handleSubmit} className='form'>
-                {/* <TextField id="outlined-basic" label="Type Of Cut" variant="outlined" size="small" value={input} InputLabelProps={{shrink: true}} onChange={e=>setInput(e.target.value)} /> */}
                 <InputLabel id="hairStyleSelect">Type of Hair Style</InputLabel>
                 <Select
                     labelId="hairStyleSelect"
@@ -85,7 +83,5 @@ function Admin() {
         </div>
     );
 }
-// Firebase Storage access
-// https://www.makeuseof.com/upload-files-to-firebase-using-reactjs/
 
 export default Admin;

@@ -6,6 +6,8 @@ import Appointments from './pages/Appointments';
 import {SignIn} from './pages/AdminLogin';
 import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
+import HairStyles from './pages/HairStyles';
+import HairPricing from './pages/HairPricing';
 
 
 function App() {
@@ -24,6 +26,12 @@ function App() {
             </Route>
             <Route path="/AdminLogin">
               <SignIn/>
+            </Route>
+            <Route path="/hairstyles">
+              <HairStyles/>
+            </Route>
+            <Route path="/hairpricing">
+              <HairPricing/>
             </Route>
             <PrivateRoute path="/Admin">
               <Admin/>
