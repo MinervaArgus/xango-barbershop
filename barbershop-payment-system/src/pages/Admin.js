@@ -4,9 +4,9 @@ import { storage, db } from "../firebase.js"
 import Service from "../components/Services";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { TextField, Button } from "@mui/material";
-import {collection, onSnapshot, query, addDoc} from "firebase/firestore"
+import {collection, onSnapshot, query, addDoc, orderBy} from "firebase/firestore"
 
-const q = query(collection(db, 'hairstylePrices'));
+const q = query(collection(db, 'hairstylePrices'), orderBy('serviceType'));
 
 function Admin() {
     const [imgUrl, setImgUrl] = useState(null);
