@@ -30,7 +30,7 @@ function App() {
             <Route path="/hairstyles">
               <HairStyles/>
             </Route>
-            <Route path="/hairpricing">
+            <Route path="/HairPricing">
               <HairPricing/>
             </Route>
             <PrivateRoute path="/Admin">
