@@ -1,32 +1,37 @@
 import React from "react";
+import { storage } from "../firebase.js";
+import { useState, useEffect } from "react";
+import { ref, getDownloadURL, listAll } from "firebase/storage";
+import '../styles/HairStyles.css';
 
-import { storage } from "../components/config/config";
+function HairStyles() {
+  const [imageUrls, setImageUrls] = useState([]);
+  const imagesListRef = ref(storage, "images/");
 
- // Get all the images from Storage
-    const [files, setFiles] = useState();
+  useEffect(() => {
+    listAll(imagesListRef).then((response) => {
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          setImageUrls((prev) => [...prev, url]);
+        });
+      });
+    });
+    // eslint-disable-next-line
+  }, []);
 
-useEffect(() => {
-    const fetchImages = async () => {
-      let result = await storage.ref().child("images").listAll();
-      let urlPromises = result.items.map((imageRef) =>
-        imageRef.getDownloadURL()
-      );
-
-      return Promise.all(urlPromises);
-    };
-
-    const loadImages = async () => {
-      const urls = await fetchImages();
-      setFiles(urls);
-    };
-    loadImages();
-}, []);
-
-  console.log(files);
-
-const HairStyles = () => 
-    <div onLoad={useEffect()}>
-        <h1>Different types of hair styles</h1>
+  return(
+    <div>
+      <h1>Styles</h1>
+      <br></br>
+      <br></br>
+      <div id="Hair-Images">
+        {imageUrls.map((url) => {
+          return <img id="hair-imgs" src={url} alt=""/>;
+        })}
+      </div>
+      
     </div>
+  )
+}
 
 export default HairStyles;

@@ -1,37 +1,27 @@
-import React from "react";
-import Button from '@mui/material/Button';
+import React, { useEffect, useState } from "react";
 import '../styles/Admin.css';
-import InputLabel from '@mui/material/InputLabel';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { useState, useEffect } from 'react';
 import { storage, db } from "../firebase.js"
+import Service from "../components/Services";
+import ProgressBar from "../components/ProgressBar";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import {collection, onSnapshot, query, orderBy, addDoc, serverTimestamp} from "firebase/firestore"
+import { TextField, Button, Autocomplete, Box } from "@mui/material";
+import { doc, collection, onSnapshot, query, addDoc, orderBy, updateDoc } from "firebase/firestore"
 
-const q = query(collection(db, 'todos'), orderBy('timestamp', 'desc'));
+const q = query(collection(db, 'hairstylePrices'), orderBy('typeOfService'));
 
 function Admin() {
     const [imgUrl, setImgUrl] = useState(null);
     const [progresspercent, setProgresspercent] = useState(0);
-    const imagesRef = ref(storage, 'images');
-
-    const [todos, setTodos]=useState([]);
-    const [input, setInput]=useState('');
-    const [input2, setInput2]=useState('');
-
-    useEffect(() => {
-        onSnapshot(q, (snapshot) => {
-            setTodos(snapshot.docs.map(doc => ({
-                id: doc.id,
-                item: doc.data()
-            })))
-        })
-    }, [input], [input2]);
-
+    const [inputs, setInputs] = useState([]);
+    const [serviceInput, setServInput] = useState('');
+    const [servPriceInput, setServPriceInput] = useState(0);
+    const [editServPriceInput, setEditServPriceInput] = useState(0);
+    const [serviceName, setServiceName] = useState([{}]);
+    const [inputID, setInputID] = useState("");
+    let [filename, setFileName] = useState(null);
 
     const handleSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         const file = e.target[0]?.files[0]
         if (!file) return;
         const storageRef = ref(storage, `images/${file.name}`);
@@ -49,54 +39,144 @@ function Admin() {
         () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setImgUrl(downloadURL)
-            // add doc in collection to ref image and hair type
             });
         }
         );
+    }
+
+    useEffect(() => {
+        onSnapshot(q, (snapshot) => {
+            setInputs(snapshot.docs.map(doc => ({
+                id: doc.id,
+                item: doc.data()
+            })))
+            
+            setServiceName(snapshot.docs.map(doc => ({
+                id: doc.id,
+                item: doc.data().typeOfService
+            })))
+        })
+    }, [serviceInput], [servPriceInput], [serviceName]);
+
+    const handleServSubmit = (e) => {
+        e.preventDefault();
+        addDoc(collection(db, 'hairstylePrices'), {
+            typeOfService: serviceInput,
+            servicePrice: servPriceInput
+        })
+        setServInput();
+        setServPriceInput();
+    };
+
+    const handleServUpdate = (e) => {
+        e.preventDefault();
+        // Reference to specific field in doc
+        for (let i = 0; i < inputs.length; i++){
+            if (serviceName === inputs[i].item){
+                setInputID(inputs[i].id);
+            }
+        }
+
+        const docRef = doc(db, "hairstylePrices", inputID);
+        updateDoc(docRef, {servicePrice: editServPriceInput})
+    }
+
+    const changeHandler = (e) => {
+        if (e.target.files.length > 0) {
+            filename = e.target.files[0].name;
+            setFileName(filename);
+        } else {
+            filename = 'none';
+            setFileName(filename);
+        }
+    }
+
+    for (let i = 0; i < inputs.length; i++){
+        console.log(serviceName[i]);
+        serviceName[i] = inputs[i].item.typeOfService; 
     }
     
 
     return (
         <div>
             <h1>Admin</h1>
-            <h2>File uploader</h2>
-            <form onSubmit={handleSubmit} className='form'>
-                {/* <TextField id="outlined-basic" label="Type Of Cut" variant="outlined" size="small" value={input} InputLabelProps={{shrink: true}} onChange={e=>setInput(e.target.value)} /> */}
-                <InputLabel id="hairStyleSelect">Type of Hair Style</InputLabel>
-                <Select
-                    labelId="hairStyleSelect"
-                    id="hair-style-select"
-                    value={input}
-                    label="Hair Style"
-                    onChange={e=>setInput(e.target.value)}
-                    >
-                    <MenuItem value={"Low Fade"}>Low-Fade</MenuItem>
-                    <MenuItem value={"Mid Fade"}>Mid-Fade</MenuItem>
-                    <MenuItem value={"Short"}>Short Hair</MenuItem>
-                </Select>
-                <Button variant="contained" component="label"><input type='file' hidden/>Select File</Button>
-                <Button variant="contained" type='submit'>Upload</Button>
+            <div>
+                <h2>Image Uploader</h2>
+                <form onSubmit={handleSubmit} className='form'>
+                    <Button variant="contained" component="label"><input type='file' accept='image/*' hidden onChange={changeHandler}/>Select File</Button>
+                    <Button variant="contained" type='submit'>Upload</Button>
+                </form>
+                <h2>Selected File: {filename}</h2>
                 <br></br>
-            </form>
+                {
+                !imgUrl &&
+                    <div className='centered-div' style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                        <ProgressBar  bgcolor={"#a00000"} completed={progresspercent} />;
+                    </div>
+                }
+                {
+                    imgUrl &&
+                    <img src={imgUrl} alt='uploaded file' height={200} />
+                }
+            </div>
 
-            {
-            !imgUrl &&
-                <div className='centered-div' style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                    <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
-                </div>
-            }
-            {
-                imgUrl &&
-                <img src={imgUrl} alt='uploaded file' height={200} />
-            }
+            <div>
+                <h2>Add Service</h2>
+                <form className="form">
+                    <Box 
+                        display="flex" 
+                        width="auto" height="auto" 
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <TextField id="outlined-basic" label="Service Name" variant="outlined" value={serviceInput} InputLabelProps={{shrink: true}} onChange={e => setServInput(e.target.value)}/>
+                        <TextField id="outlined-basic" label="Service Price" variant="outlined" value={servPriceInput} InputLabelProps={{shrink: true}} onChange={e => setServPriceInput(e.target.value)}/>
+                        <Button variant="contained" onClick={handleServSubmit}>Edit Service</Button>
+                    </Box>
+                </form>
+            </div>
+
+            <br></br>
+
+            <div>
+                <h2>Edit Service</h2>
+                <form className="form">
+                    <Box 
+                        display="flex" 
+                        width="auto" height="auto" 
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Autocomplete
+                            id="outlined-basic"
+                            options={serviceName}
+                            variant="outlined"
+                            sx={{width: 227}}
+                            onChange={e => setServiceName(e.target.value)}
+                            renderInput={(params) => <TextField {...params} label="Services" variant="outlined" InputLabelProps={{shrink: true}}/>}
+                        />
+
+                    <TextField id="outlined-basic" label="Service Price" variant="outlined" value={editServPriceInput} InputLabelProps={{shrink: true}} onChange={e => setEditServPriceInput(e.target.value)}/>
+                    <Button variant="contained" onClick={handleServUpdate}>Edit Service</Button>
+                    </Box>
+                    
+                </form>
+            </div>
+
+            <br></br>
+
+            <div>                
+                <h2>List of Services and Prices</h2>
+                <ul>
+                    {inputs.map(item => <Service key = {item.id} arr = {item}/>)}
+                </ul>
+            </div>
         </div>
     );
 }
-// Firebase Storage access
-// https://www.makeuseof.com/upload-files-to-firebase-using-reactjs/
 
 export default Admin;
