@@ -18,6 +18,7 @@ function Admin() {
     const [dropInput, setDropInput] = useState([inputs]);
     //const [editServInput, setEditServInput] = useState('');
     const [editServPriceInput, setEditServPriceInput] = useState(0);
+    let [filename, setFileName] = useState(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -69,15 +70,24 @@ function Admin() {
         updateDoc(docRef, {servicePrice: editServPriceInput})
     }
 
+    const changeHandler = (e) => {
+        if (e.target.files.length > 0) {
+            filename = e.target.files[0].name;
+            setFileName(filename);
+            //console.log(filename)
+        }
+    }
+
     return (
         <div>
             <h1>Admin</h1>
             <div>
                 <h2>Image Uploader</h2>
                 <form onSubmit={handleSubmit} className='form'>
-                    <Button variant="contained" component="label"><input type='file' accept='image/*' hidden/>Select File</Button>
+                    <Button variant="contained" component="label"><input type='file' accept='image/*' hidden onChange={changeHandler}/>Select File</Button>
                     <Button variant="contained" type='submit'>Upload</Button>
                 </form>
+                <h2>Selected File: {filename}</h2>
                 <br></br>
                 {
                 !imgUrl &&
@@ -87,7 +97,6 @@ function Admin() {
                         justifyContent: 'center',
                     }}>
                         <ProgressBar  bgcolor={"#a00000"} completed={progresspercent} />;
-                        {/* <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div> */}
                     </div>
                 }
                 {
