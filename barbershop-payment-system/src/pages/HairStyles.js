@@ -19,14 +19,32 @@ function HairStyles() {
     // eslint-disable-next-line
   }, []);
 
+  // delete(){
+  //   var deleteRef = firebase.storage().child('images/example.jpg');
+  //   deleteRef.delete().then()
+   
+  // }
+
   return(
     <div>
       <h1>Styles</h1>
       <br></br>
       <br></br>
       <div id="Hair-Images">
-        {imageUrls.map((url) => {
-          return <img id="hair-imgs" src={url} alt=""/>;
+        {imageUrls && imageUrls.map((url) => {
+          // return <img id="hair-imgs" src={url} alt=""/>;
+          return(
+            <div key ={url} className='image'>
+          <img src={url} height="200" />
+          <button
+            onClick={() =>
+            setImageUrls(imageUrls.filter((e) => e !== url))
+          }
+          >
+            Delete Image
+            </button> 
+            </div>
+          );
         })}
       </div>
       
