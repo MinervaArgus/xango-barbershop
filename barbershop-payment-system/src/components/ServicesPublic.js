@@ -11,7 +11,7 @@ const Service = ({arr}) => {
                 secondary={
                     <React.Fragment>
                       <Typography component="span" variant="body1">
-                        Service Price: {arr.item.servicePrice}
+                        Service Price: €{arr.item.servicePrice}
                       </Typography>
                     </React.Fragment>
                   }

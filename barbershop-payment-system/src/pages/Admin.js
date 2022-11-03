@@ -15,9 +15,9 @@ function Admin() {
     const [inputs, setInputs] = useState([]);
     const [serviceInput, setServInput] = useState('');
     const [servPriceInput, setServPriceInput] = useState(0);
-    const [editServPriceInput, setEditServPriceInput] = useState(0);
-    const [serviceName, setServiceName] = useState([{}]);
-    const [inputID, setInputID] = useState("");
+    let [editServPriceInput, setEditServPriceInput] = useState(0);
+    let [serviceName, setServiceName] = useState([{}]);
+    let [inputID, setInputID] = useState("");
     let [filename, setFileName] = useState(null);
 
     const handleSubmit = (e) => {
@@ -51,10 +51,7 @@ function Admin() {
                 item: doc.data()
             })))
             
-            setServiceName(snapshot.docs.map(doc => ({
-                id: doc.id,
-                item: doc.data().typeOfService
-            })))
+           
         })
     }, [serviceInput], [servPriceInput], [serviceName]);
 

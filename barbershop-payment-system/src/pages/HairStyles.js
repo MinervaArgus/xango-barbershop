@@ -34,15 +34,15 @@ function HairStyles() {
         {imageUrls && imageUrls.map((url) => {
           // return <img id="hair-imgs" src={url} alt=""/>;
           return(
-            <div key ={url} className='image'>
-          <img src={url} height="200" />
-          <button
-            onClick={() =>
-            setImageUrls(imageUrls.filter((e) => e !== url))
-          }
-          >
-            Delete Image
-            </button> 
+            <div key = {url} className='image'>
+              <img src={url} height="200" />
+              <button
+                onClick={() =>
+                setImageUrls(imageUrls.filter((e) => e !== url))
+              }
+              >
+                Delete Image
+                </button> 
             </div>
           );
         })}
