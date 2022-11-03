@@ -22,7 +22,6 @@ function HairStyles() {
   // delete(){
   //   var deleteRef = firebase.storage().child('images/example.jpg');
   //   deleteRef.delete().then()
-   
   // }
 
   return(

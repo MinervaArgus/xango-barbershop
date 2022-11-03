@@ -16,8 +16,8 @@ function Admin() {
     const [serviceInput, setServInput] = useState('');
     const [servPriceInput, setServPriceInput] = useState(0);
     let [editServPriceInput, setEditServPriceInput] = useState(0);
-    let [serviceName, setServiceName] = useState([{}]);
-    let [inputID, setInputID] = useState("");
+    const [serviceName, setServiceName] = useState([{id: "placeholder"}]);
+    const [inputID, setInputID] = useState("");
     let [filename, setFileName] = useState(null);
 
     const handleSubmit = (e) => {
@@ -39,9 +39,8 @@ function Admin() {
         () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setImgUrl(downloadURL)
-            });
-        }
-        );
+            });}
+            );
     }
 
     useEffect(() => {
@@ -50,8 +49,6 @@ function Admin() {
                 id: doc.id,
                 item: doc.data()
             })))
-            
-           
         })
     }, [serviceInput], [servPriceInput], [serviceName]);
 
@@ -89,8 +86,7 @@ function Admin() {
     }
 
     for (let i = 0; i < inputs.length; i++){
-        console.log(serviceName[i]);
-        serviceName[i] = inputs[i].item.typeOfService; 
+        serviceName[i] = inputs[i].item.typeOfService;       
     }
     
 
