@@ -1,0 +1,56 @@
+.event-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 800px;
+    border: 1px solid lightgray;
+    margin-bottom: 10px !important;
+}
+
+.Events {
+    display: grid;
+    place-items: center;
+}
+
+.newEvents,
+.PotentialEvents,
+.ConfirmedEvents {
+    display: grid;
+    place-items: center;
+    text-align: center;
+}
+
+#outlined-basic {
+    margin: "0px 5px";
+}
+
+#button-basic {
+    margin-left: 5px;
+    margin-top: 1px;
+}
+
+#delete-icon {
+    opacity: 0.7;
+}
+.userInput{
+    align-items: center;
+    text-align: center;
+}
+.MuiFormControl-root.MuiTextField-root.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+    margin-right: 0.25vw;
+    margin-left: 0.25vw;
+    margin-top: 2vh;
+}
+button#button-basic {
+    margin-top: 2vh;
+}
+.rbc-toolbar {
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-bottom: 2%;
+    padding-top: 2%;
+}
+.calendar {
+    padding-left: .5%;
+    padding-right: .5%;
+}
