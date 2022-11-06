@@ -3,5 +3,10 @@
 nav{
     margin: 0;
     font-family: 'Roboto', cursive;
-    background-color:white;
+    background-color:white !important;
+    color: black !important;
+}
+
+.nav li:hover{
+    color: grey;
 }

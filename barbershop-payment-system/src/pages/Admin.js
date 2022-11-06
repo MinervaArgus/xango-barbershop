@@ -4,8 +4,8 @@ import { storage, db } from "../firebase.js"
 import Service from "../components/Services";
 import ProgressBar from "../components/ProgressBar";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { TextField, Button, Autocomplete, Box } from "@mui/material";
-import { doc, collection, onSnapshot, query, addDoc, orderBy, updateDoc } from "firebase/firestore"
+import { TextField, Button, Box } from "@mui/material";
+import { collection, onSnapshot, query, addDoc, orderBy } from "firebase/firestore"
 
 const q = query(collection(db, 'hairstylePrices'), orderBy('typeOfService'));
 
@@ -15,9 +15,7 @@ function Admin() {
     const [inputs, setInputs] = useState([]);
     const [serviceInput, setServInput] = useState('');
     const [servPriceInput, setServPriceInput] = useState(0);
-    let [editServPriceInput, setEditServPriceInput] = useState(0);
-    const [serviceName, setServiceName] = useState([{id: "placeholder"}]);
-    const [inputID, setInputID] = useState("");
+
     let [filename, setFileName] = useState(null);
 
     const handleSubmit = (e) => {
@@ -50,7 +48,7 @@ function Admin() {
                 item: doc.data()
             })))
         })
-    }, [serviceInput], [servPriceInput], [serviceName]);
+    }, [serviceInput], [servPriceInput]);
 
     const handleServSubmit = (e) => {
         e.preventDefault();
@@ -58,37 +56,16 @@ function Admin() {
             typeOfService: serviceInput,
             servicePrice: servPriceInput
         })
-        setServInput();
-        setServPriceInput();
+        setServInput("");
+        setServPriceInput(0);
     };
-
-    const handleServUpdate = (e) => {
-        e.preventDefault();
-        // Reference to specific field in doc
-        for (let i = 0; i < inputs.length; i++){
-            if (serviceName === inputs[i].item){
-                setInputID(inputs[i].id);
-            }
-        }
-
-        const docRef = doc(db, "hairstylePrices", inputID);
-        updateDoc(docRef, {servicePrice: editServPriceInput})
-    }
 
     const changeHandler = (e) => {
         if (e.target.files.length > 0) {
             filename = e.target.files[0].name;
             setFileName(filename);
-        } else {
-            filename = 'none';
-            setFileName(filename);
         }
-    }
-
-    for (let i = 0; i < inputs.length; i++){
-        serviceName[i] = inputs[i].item.typeOfService;       
-    }
-    
+    } 
 
     return (
         <div>
@@ -128,39 +105,12 @@ function Admin() {
                     >
                         <TextField id="outlined-basic" label="Service Name" variant="outlined" value={serviceInput} InputLabelProps={{shrink: true}} onChange={e => setServInput(e.target.value)}/>
                         <TextField id="outlined-basic" label="Service Price" variant="outlined" value={servPriceInput} InputLabelProps={{shrink: true}} onChange={e => setServPriceInput(e.target.value)}/>
-                        <Button variant="contained" onClick={handleServSubmit}>Edit Service</Button>
+                        <Button variant="contained" onClick={handleServSubmit}>Add Service</Button>
                     </Box>
                 </form>
             </div>
 
-            <br></br>
-
-            <div>
-                <h2>Edit Service</h2>
-                <form className="form">
-                    <Box 
-                        display="flex" 
-                        width="auto" height="auto" 
-                        alignItems="center"
-                        justifyContent="center"
-                    >
-                        <Autocomplete
-                            id="outlined-basic"
-                            options={serviceName}
-                            variant="outlined"
-                            sx={{width: 227}}
-                            onChange={e => setServiceName(e.target.value)}
-                            renderInput={(params) => <TextField {...params} label="Services" variant="outlined" InputLabelProps={{shrink: true}}/>}
-                        />
-
-                    <TextField id="outlined-basic" label="Service Price" variant="outlined" value={editServPriceInput} InputLabelProps={{shrink: true}} onChange={e => setEditServPriceInput(e.target.value)}/>
-                    <Button variant="contained" onClick={handleServUpdate}>Edit Service</Button>
-                    </Box>
-                    
-                </form>
-            </div>
-
-            <br></br>
+            <br/><br/>
 
             <div>                
                 <h2>List of Services and Prices</h2>

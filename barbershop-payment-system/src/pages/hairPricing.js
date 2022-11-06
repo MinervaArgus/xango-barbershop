@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Service from "../components/Services";
+import Service from "../components/ServicesPublic";
 import {collection, onSnapshot, query} from "firebase/firestore"
 import { db } from "../firebase.js";
 

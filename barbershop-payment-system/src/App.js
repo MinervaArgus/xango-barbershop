@@ -9,7 +9,6 @@ import PrivateRoute from './components/PrivateRoute';
 import HairStyles from './pages/HairStyles';
 import HairPricing from './pages/HairPricing';
 
-
 function App() {
   
   return (
@@ -18,7 +17,7 @@ function App() {
         <Navbar />
         <Router>
           <Switch>
-            <Route path="/home">
+            <Route path="/Home">
               <Home />
             </Route>
             <Route path="/appointments">
