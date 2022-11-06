@@ -13,8 +13,8 @@ function Admin() {
     const [imgUrl, setImgUrl] = useState(null);
     const [progresspercent, setProgresspercent] = useState(0);
     const [inputs, setInputs] = useState([]);
-    const [serviceInput, setServInput] = useState('');
-    const [servPriceInput, setServPriceInput] = useState(0);
+    const [serviceInput, setServInput] = useState("");
+    const [servPriceInput, setServPriceInput] = useState("");
 
     let [filename, setFileName] = useState(null);
 
