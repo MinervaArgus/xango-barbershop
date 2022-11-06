@@ -15,7 +15,7 @@ function Navbar ({ history }) {
     };
 
     return (<nav className="nav">
-        <a href="/home" className="site-title">Xango</a>
+        <a href="/Home" className="site-title">Xango</a>
         <ul>
             <li>
                 <a href="/appointments">Book Appointment</a>

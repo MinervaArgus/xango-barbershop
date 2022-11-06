@@ -1,9 +1,9 @@
 import './styles/App.css';
 import Navbar from './components/NavBar';
-import { BrowserRouter as Router, Route, Switch, } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import Appointments from './pages/Appointments';
-import {SignIn} from './pages/AdminLogin';
+import { SignIn } from './pages/AdminLogin';
 import Admin from './pages/Admin';
 import PrivateRoute from './components/PrivateRoute';
 import HairStyles from './pages/HairStyles';

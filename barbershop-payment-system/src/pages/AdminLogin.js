@@ -1,20 +1,11 @@
 import React, {useState} from 'react';
-//import { signInWithEmailAndPassword } from "firebase/auth";
 import { useHistory, useLocation } from "react-router-dom";
-//import { auth } from "../firebase";
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Box from '@mui/material/Box';
+import {Avatar, Button, CssBaseline, TextField, Box, Typography, Container, createTheme, ThemeProvider } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserStatus } from "../components/global-state/userStateSlice";
+// import { signInWithEmailAndPassword } from 'firebase/auth';
+// import { auth } from '../firebase';
 
 const theme = createTheme();
 
@@ -29,17 +20,30 @@ export function SignIn() {
   const handleSubmit = (e) => {
     e.preventDefault();
     function onRegister() {
-      // signInWithEmailAndPassword(auth, email, password).catch((error) =>
-      //   console.log(error)
-      // );
-      if ((email === "crismartin994@gmail.com" && password === "testingPassword!!")) {
+
+      
+      // signInWithEmailAndPassword(auth, email, password)
+      //   .then((userCredential) => {
+      //     const user = userCredential.user;
+      //     history.go("/Admin");
+      //     console.log("logged in")
+      //   })
+      //   .catch((error) => {
+      //     const errorCode = error.code;
+      //     const errorMessage = error.message;
+
+      //     console.log(errorCode, errorMessage);
+      //   })
+
+        
+      if ((email === "crismartin994@gmail.com" && password === "488592Is")) {
         dispatch(updateUserStatus(true));
       }
-      // history.push("/Admin");
+      
     }
     onRegister();
   };
-
+  
   if (userLoggedIn) history.push(location.state ? location.state.from.pathname : "/Admin");
   
   return (
@@ -83,16 +87,15 @@ export function SignIn() {
               autoComplete="current-password"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
-            />
+            /> */}
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={handleSubmit}
             >
               Sign In
             </Button>
