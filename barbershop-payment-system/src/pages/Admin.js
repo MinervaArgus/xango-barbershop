@@ -3,6 +3,7 @@ import '../styles/Admin.css';
 import { storage, db } from "../firebase.js"
 import Service from "../components/Services";
 import ProgressBar from "../components/ProgressBar";
+import AdminStyles from "../components/AdminStyles";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { TextField, Button, Box } from "@mui/material";
 import { collection, onSnapshot, query, addDoc, orderBy } from "firebase/firestore"
@@ -71,7 +72,7 @@ function Admin() {
         <div>
             <h1>Admin</h1>
             <div>
-                <h2>Image Uploader</h2>
+                <h2>Upload Images</h2>
                 <form onSubmit={handleSubmit} className='form'>
                     <Button variant="contained" component="label"><input type='file' accept='image/*' hidden onChange={changeHandler}/>Select File</Button>
                     <Button variant="contained" type='submit'>Upload</Button>
@@ -80,19 +81,38 @@ function Admin() {
                 <br></br>
                 {
                 !imgUrl &&
-                    <div className='centered-div' style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}>
-                        <ProgressBar  bgcolor={"#a00000"} completed={progresspercent} />;
-                    </div>
+                    <Box
+                        display="flex" 
+                        width="auto" height="auto" 
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <ProgressBar bgcolor={"#a00000"} completed={progresspercent} />
+                    </Box>
+                    
                 }
                 {
                     imgUrl &&
                     <img src={imgUrl} alt='uploaded file' height={200} />
                 }
             </div>
+
+            <br></br>
+
+            <div>
+                <h2>Remove Images</h2>
+                <p>(Browser will refresh!)</p>
+                <Box
+                    display="flex" 
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <AdminStyles></AdminStyles>
+                </Box>
+                
+            </div>
+
+            <br></br>
 
             <div>
                 <h2>Add Service</h2>

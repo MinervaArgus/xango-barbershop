@@ -1,11 +1,11 @@
 import React from "react";
-import { storage } from "../firebase.js";
 import { useState, useEffect } from "react";
-import { ref, getDownloadURL, listAll } from "firebase/storage";
+import { ref, getDownloadURL, getStorage ,listAll } from "firebase/storage";
 import '../styles/HairStyles.css';
 
 function HairStyles() {
-  const [imageUrls, setImageUrls] = useState([]);
+  const [imageUrls, setImageUrls] = useState([])
+  const storage = getStorage();
   const imagesListRef = ref(storage, "images/");
 
   useEffect(() => {
@@ -19,11 +19,6 @@ function HairStyles() {
     // eslint-disable-next-line
   }, []);
 
-  // delete(){
-  //   var deleteRef = firebase.storage().child('images/example.jpg');
-  //   deleteRef.delete().then()
-  // }
-
   return(
     <div>
       <h1>Styles</h1>
@@ -31,18 +26,9 @@ function HairStyles() {
       <br></br>
       <div id="Hair-Images">
         {imageUrls && imageUrls.map((url) => {
-          // return <img id="hair-imgs" src={url} alt=""/>;
-          return(
-            <div key = {url} className='image'>
-              <img src={url} height="200" alt=""/>
-              <button onClick={() => setImageUrls(imageUrls.filter((e) => e !== url))}>
-                Delete Image
-              </button> 
-            </div>
-          );
+          return <img id="hair-imgs" src={url} alt=""/>;
         })}
       </div>
-      
     </div>
   )
 }

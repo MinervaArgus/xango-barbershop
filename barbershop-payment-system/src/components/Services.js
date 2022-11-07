@@ -14,8 +14,6 @@ const Service = ({arr}) => {
     e.preventDefault();
     const docRef = doc(db, "hairstylePrices", arr.id);
 
-    console.log(JSON.stringify(editServNameInput), JSON.stringify(editServPriceInput));
-
     if (editServNameInput === "" && editServPriceInput === ""){
       return;
     } else {
@@ -38,20 +36,25 @@ const Service = ({arr}) => {
     setEditServPriceInput("");
   }
 
-  const handleClickOpen = (e) => {
+  const handleClickOpen = () => {
     setOpen(true);
   }
 
-  const handleClose = (e) => {
+  const handleClose = () => {
     setOpen(false);
   }
 
-  const confirmRemoval = (e) => {
+  const confirmRemoval = () => {
     deleteDoc(doc(db, "hairstylePrices", arr.id))
   }
 
   return (
-    <Box>
+    <Box
+      display="flex" 
+      width="auto" height="auto" 
+      alignItems="center"
+      justifyContent="center"
+    >
       <List className="todo-list">
         <ListItem>
             <ListItemAvatar id="list-item"/>
@@ -89,9 +92,9 @@ const Service = ({arr}) => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Disagree</Button>
+            <Button onClick={handleClose}>Go Back</Button>
             <Button onClick={confirmRemoval} autoFocus>
-              Agree
+              Confirm
             </Button>
           </DialogActions>
         </Dialog>

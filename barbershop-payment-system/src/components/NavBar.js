@@ -11,7 +11,7 @@ function Navbar ({ history }) {
 
     const logoutHandler = () => {
         dispatch(logout(false));
-        history.push("/");
+        history.push("/Home");
     };
 
     return (<nav className="nav">
