@@ -8,7 +8,23 @@ import { FirebaseError } from "@firebase/util";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TextField, Button } from '@mui/material';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
+import { esES } from '@mui/material/locale'
+import { createTheme } from "@mui/system";
+import { ThemeProvider } from "@emotion/react";
+import LinearProgress from '@mui/material/LinearProgress';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Skeleton from '@mui/material/Skeleton';
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 require('moment/locale/es.js')
 
 const localizer = momentLocalizer(moment);
@@ -30,8 +46,8 @@ function AppointmentsCalendar() {
         name: '',
         email: '',
         haircut: '',
-        start: '',
-        end: ''
+        date: '',
+        time: ''
     });//appointmment state 
     /* const dateInitial = {};
     const [date, setDate] = useState(''); //date state */
@@ -53,12 +69,23 @@ function AppointmentsCalendar() {
         start: new Date(2022, 9, 19, 15, 30, 0), end: new Date(2022, 9, 19, 17, 30, 0)
     }]); //filtered appointments
 
+    const dateInitial = {};
+    const [date, setDate] = useState(new Date()); //date state
+
+    const [haircuts, setHaircuts] = useState([{
+        id: '',
+        servicePrice: '',
+        typeOfService: ''
+    }])//haircut state
 
     //query to get all appointments from db
     const q = query(collection(db, 'appointments'));
 
+    //query to get all haircuts
+    const q2 = query(collection(db, 'hairstylePrices'));
     //get all the appointments from db
     useEffect(() => {
+        //get all appointments from db
         onSnapshot(q, (snapshot) => {
             snapshot.docs.map(doc => {
                 console.log("docu: " + new Date(doc.data().start));
@@ -82,10 +109,22 @@ function AppointmentsCalendar() {
             // snapshot.docs.map(doc => { filterAppointments(doc) }) */
         })
 
+        //get all haircutsn from db
+        onSnapshot(q2, (snapshot) => {
+            setHaircuts(snapshot.docs.map(doc => ({
+                id: doc.id,
+                servicePrice: doc.data().servicePrice,
+                typeOfService: doc.data().typeOfService
+            })))
+        })
 
+        filterTime();
     }, []);//useEffect
+
     console.log("depues de setAllAppointments: " + JSON.stringify(allAppointments));
     console.log("calendar appointments: " + JSON.stringify(calendarAppointments));
+    console.log("haircuts: " + JSON.stringify(haircuts));
+
     function filterAppointments(doc) {
         calendarAppointments.map((item) => {
             if (item.id === '' &&
@@ -141,30 +180,40 @@ function AppointmentsCalendar() {
         return d;
     }
 
+    function formatDateNoTime(date) {
+        var d = date.slice(5, 16);
+        return d;
+    }
+
     const addAppointment = async (e) => {
+        setLoading(true);
         e.preventDefault();
         //if date is not undefined, add date to appointment state
         /* if (date !== '') {
             setAppointment({ ...appointment, [date]: date.toString() })
         } */ //not working right now, but should be the way to do it
 
-        let s = formatDate(appointment.start.toString())
-        let f = formatDate(appointment.end.toString())
-        console.log("start length" + s.length);
-        if (s.length === 25 && f.length === 25) {
+        let s = formatDateNoTime(date.toString())
+        let f = appointment.time
+        console.log("s: " + s);
+        console.log("date length" + s.length);
+        console.log("timelength" + f.length);
+        if (s.length === 11 && f.length === 5) {
 
             await addDoc(collection(db, 'appointments'), {
                 name: appointment.name,
                 email: appointment.email,
                 haircut: appointment.haircut,
-                start: s,
-                end: f
+                date: s,
+                time: f
             })
             setAppointment(initialState);
             eventStart = undefined;
             eventEnd = undefined;
+            setLoading(false);
+            setSucces({ open: true });
         } else {
-            window.alert('Select desired time in calendar');
+            window.alert('Select desired time and date:');
         }
         // setDate(dateInitial);
 
@@ -174,15 +223,100 @@ function AppointmentsCalendar() {
 
     const changeHandler = e => {
         if (e.target !== undefined) {
-            console.log();
             setAppointment({ ...appointment, [e.target.name]: e.target.value })
         }
-        console.log(JSON.stringify(appointment));
+        console.log("handle change: " + JSON.stringify(appointment));
     } //change handler
+
+    const [initTime] = useState(['']);
+    const [time, setTime] = useState([filterDefaultTime(new Date().getDay())]);
+    function filterDefaultTime(d) {
+        if (d === 1) {//if for Mondays
+            return "closed";
+            /* if (item.start.toString().slice(20, 25)) {
+
+            } */
+        } else if (d === 2) {
+            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'])
+        } else if (d === 3) {
+            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'])
+        } else if (d === 4) {
+            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
+                '16:30', '17:30'])
+        } else if (d === 5) {
+            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
+                '16:30', '17:30'])
+        } else if (d === 6) {
+            setTime(['09:30', '10:30', '11:30', '12:30'])
+        } else if (d === 0) {
+            return "closed";
+        }
+    }
+    function filterTime(e) {
+        let d = new Date(e).getDay();
+        // setTime(initTime);
+        console.log("whatever: " + new Date(e).getDay());
+        // calendarAppointments.map((item) => {
+        // console.log("selected day: " + item.start.toString().slice(0, 3));
+        if (d === 1) {//if for Mondays
+            setTime(["closed"]);
+            /* if (item.start.toString().slice(20, 25)) {
+
+            } */
+        } else if (d === 2) {
+            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'])
+        } else if (d === 3) {
+            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'])
+        } else if (d === 4) {
+            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
+                '16:30', '17:30'])
+        } else if (d === 5) {
+            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
+                '16:30', '17:30'])
+        } else if (d === 6) {
+            setTime(['09:30', '10:30', '11:30', '12:30'])
+        } else if (d === 0) {
+            setTime(["closed"])
+        }
+        console.log("time state: " + JSON.stringify(time));
+    }
+
+    //todays date
+    const today = new Date();
+
+    const handleDateChange = (e) => {
+        setDate(e);
+        // console.log("date state" + JSON.stringify(date));
+        filterTime(e);
+    }
+    const [loading, setLoading] = useState(false);
+    const [succes, setSucces] = useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'right'
+    });
+    const { vertical, horizontal, open } = succes;
+
+    const handleClose = () => {
+        setSucces({ ...succes, open: false });
+    };
+
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
+            {/* <ThemeProvider theme={theme}> */}
             <div className="appointments">
+
+                {
+                    loading ? (<LinearProgress />) : null
+                }
+                {
+                    succes ? (<Snackbar open={open} autoHideDuration={6000} onClose={handleClose} key={vertical + horizontal}>
+                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                            Appointment added!
+                        </Alert>
+                    </Snackbar>) : null
+                }
                 <div className="userInput">
                     <form id="appointmentsForm">
                         <h2>Make an appointment</h2>
@@ -205,26 +339,50 @@ function AppointmentsCalendar() {
                                 size="small"
                                 onChange={changeHandler} />{/* email */}
 
-                            <TextField
-                                required
-                                id="outlined-basic"
-                                label="Haircut"
-                                variant="outlined"
-                                name="haircut"
-                                size="small"
-                                onChange={changeHandler} />{/* haircute */}
+                            <FormControl required sx={{ m: 1, minWidth: 120, maxHeight: 50 }}>
+                                <InputLabel id="demo-simple-select-required-label">Haircut</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-required-label"
+                                    id="demo-simple-select-required"
+                                    /* value={haircuts} */
+                                    name="haircut"
+                                    autoWidth
+                                    label="Haircut *"
+                                    onChange={changeHandler}
+                                >
+                                    {haircuts.map((e, key) => {
+                                        return <MenuItem key={key} value={e.typeOfService || ''}>{e.typeOfService}</MenuItem>;
+                                    })}
+                                </Select>
+                            </FormControl>
 
-                            {/*  <DateTimePicker
+                            <DesktopDatePicker
                                 required
                                 id="outlined-basic"
-                                label="Date&Time picker"
                                 variant="outlined"
                                 name="date"
+                                minDate={today}
                                 size="small"
                                 value={date}
-                                onChange={e => setDate(e)}
+                                onChange={handleDateChange}
                                 renderInput={(params) => <TextField {...params} />}
-                            />/* date */}
+                            />
+                            <FormControl required sx={{ m: 1, minWidth: 120, maxHeight: 50 }}>
+                                <InputLabel id="demo-simple-select-required-label">Time</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-required-label"
+                                    id="demo-simple-select-required"
+                                    // value={time}
+                                    name="time"
+                                    autoWidth
+                                    label="Time *"
+                                    onChange={changeHandler}
+                                >
+                                    {time.map((e, key) => {
+                                        return <MenuItem key={key} value={e || ''}>{e}</MenuItem>;
+                                    })}
+                                </Select>
+                            </FormControl>
                             <Button id="button-basic" variant="contained" color="primary" onClick={addAppointment}>Make Appointment</Button>
                         </div>
                     </form>
@@ -239,7 +397,7 @@ function AppointmentsCalendar() {
                         }
                     } */
 
-                    selectable
+                    // selectable
                     localizer={localizer}
                     events={calendarAppointments}
                     defaultDate={new Date()}
@@ -253,10 +411,11 @@ function AppointmentsCalendar() {
                         week: "Semana",
                         day: "Día"
                     }}
-                    onSelectEvent={handleSelectEvent}
-                    onSelectSlot={handleSelectSlot}
+                // onSelectEvent={handleSelectEvent}
+                // onSelectSlot={handleSelectSlot}
                 />
             </div>
+            {/* </ThemeProvider> */}
         </LocalizationProvider>
     );
 }
