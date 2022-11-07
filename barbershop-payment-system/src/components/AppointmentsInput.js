@@ -29,7 +29,7 @@ require('moment/locale/es.js')
 
 const localizer = momentLocalizer(moment);
 
-function AppointmentsCalendar() {
+function AppointmentsInput() {
     var title, email, haircut;
     const initialState = {
         id: '',
@@ -420,4 +420,4 @@ function AppointmentsCalendar() {
     );
 }
 
-export default AppointmentsCalendar;
+export default AppointmentsInput;

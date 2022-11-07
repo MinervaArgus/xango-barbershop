@@ -6,8 +6,8 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import "../styles/Appointments.css";
-import AppointmentsCalendar from "../components/AppointmentsCalendar.js";
 import AppointPicker from "../components/AppointPicker.js";
+import AppointmentsInput from "../components/AppointmentsInput.js";
 
 //variable for current date
 const current = new Date();
@@ -64,7 +64,7 @@ const Appointments = () => {
 
     } */
     return (
-        <AppointmentsCalendar />
+        <AppointmentsInput />
     );
 }//appointment function
 
