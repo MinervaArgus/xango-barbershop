@@ -6,7 +6,7 @@ import Appointments from './pages/Appointments';
 import { SignIn } from './pages/AdminLogin';
 import Admin from './pages/Admin';
 import HairStyles from './pages/HairStyles';
-import HairPricing from './pages/HairPricing';
+import HairPricing from './pages/StylePricing';
 
 function App() {
   
