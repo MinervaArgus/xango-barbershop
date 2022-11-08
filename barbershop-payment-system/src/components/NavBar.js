@@ -1,16 +1,39 @@
 import React from "react";
+import { Button } from "@mui/material";
+import { useLocation } from "react-router-dom";
+import '../styles/NavBar.css';
+import { logout } from "../firebase.js"
 
-export default function Navbar() {
-    return (<nav className="nav">
-        <a href="/home" className="site-title">Xango</a>
+function Navbar () {
+    const location = useLocation();
+
+    return (
+    <nav className="nav">
+        <a href="/Home" className="site-title">Xango</a>
         <ul>
             <li>
                 <a href="/appointments">Book Appointment</a>
             </li>
             <li>
-                <a href="/admin">Admin</a>
+                <a href="/HairStyles">View Styles</a>
             </li>
+            <li>
+                <a href="/HairPricing">View Pricing</a>
+            </li>
+            {(location.pathname !== "/AdminLogin" && location.pathname !== "/Admin") && 
+                <li>
+                    <a href="/AdminLogin">Admin Dashboard</a>
+                </li>
+            }
+            {location.pathname === "/Admin" &&
+                <Button variant="contained" onClick={logout}>
+                    Logout
+                </Button>
+            }
+            
         </ul>
-    </nav >
+    </nav>
     )
 }
+
+export default Navbar;
