@@ -229,7 +229,8 @@ function AppointmentsInput() {
     } //change handler
 
     const [initTime] = useState(['']);
-    const [time, setTime] = useState([filterDefaultTime(new Date().getDay())]);
+    const [time, setTime] = useState(filterDefaultTime(new Date().getDay()));
+
     function filterDefaultTime(d) {
         if (d === 1) {//if for Mondays
             return "closed";
@@ -237,17 +238,17 @@ function AppointmentsInput() {
 
             } */
         } else if (d === 2) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'])
+            return ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'];
         } else if (d === 3) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'])
+            return ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'];
         } else if (d === 4) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
-                '16:30', '17:30'])
+            return ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
+                '16:30', '17:30'];
         } else if (d === 5) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
-                '16:30', '17:30'])
+            return ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
+                '16:30', '17:30']
         } else if (d === 6) {
-            setTime(['09:30', '10:30', '11:30', '12:30'])
+            return ['09:30', '10:30', '11:30', '12:30'];
         } else if (d === 0) {
             return "closed";
         }
