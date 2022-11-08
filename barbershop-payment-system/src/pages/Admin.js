@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import '../styles/Admin.css';
-import { storage, db } from "../firebase.js"
+import { useHistory } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { storage, db, auth } from "../firebase.js"
 import Service from "../components/Services";
 import ProgressBar from "../components/ProgressBar";
 import AdminStyles from "../components/AdminStyles";
@@ -16,6 +18,8 @@ function Admin() {
     const [inputs, setInputs] = useState([]);
     const [serviceInput, setServInput] = useState("");
     const [servPriceInput, setServPriceInput] = useState("");
+    const history = useHistory();
+    const [user, loading] = useAuthState(auth);
 
     let [filename, setFileName] = useState(null);
 
@@ -43,13 +47,19 @@ function Admin() {
     }
 
     useEffect(() => {
+        if (loading) return;
+        if (!user) {
+            history.push("/AdminLogin");
+            window.location.reload(false);
+        }
+
         onSnapshot(q, (snapshot) => {
             setInputs(snapshot.docs.map(doc => ({
                 id: doc.id,
                 item: doc.data()
             })))
         })
-    }, [serviceInput], [servPriceInput]);
+    }, [serviceInput, servPriceInput, user, loading, history]);
 
     const handleServSubmit = (e) => {
         e.preventDefault();
@@ -78,7 +88,6 @@ function Admin() {
                     <Button variant="contained" type='submit'>Upload</Button>
                 </form>
                 <h2>Selected File: {filename}</h2>
-                <br></br>
                 {
                 !imgUrl &&
                     <Box

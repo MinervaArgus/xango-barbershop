@@ -1,51 +1,30 @@
-import React, {useState} from 'react';
-import { useHistory, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 import {Avatar, Button, CssBaseline, TextField, Box, Typography, Container, createTheme, ThemeProvider } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useSelector, useDispatch } from "react-redux";
-import { updateUserStatus } from "../components/global-state/userStateSlice";
-// import { signInWithEmailAndPassword } from 'firebase/auth';
-// import { auth } from '../firebase';
+import { auth, logInWithEmailAndPassword } from '../firebase';
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const theme = createTheme();
 
 export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [user, loading] = useAuthState(auth);
   const history = useHistory();
-  const location = useLocation();
-  const { userLoggedIn } = useSelector((state) => state.userState);
-  const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    function onRegister() {
-
-      
-      // signInWithEmailAndPassword(auth, email, password)
-      //   .then((userCredential) => {
-      //     const user = userCredential.user;
-      //     history.go("/Admin");
-      //     console.log("logged in")
-      //   })
-      //   .catch((error) => {
-      //     const errorCode = error.code;
-      //     const errorMessage = error.message;
-
-      //     console.log(errorCode, errorMessage);
-      //   })
-
-        
-      if ((email === "crismartin994@gmail.com" && password === "488592Is")) {
-        dispatch(updateUserStatus(true));
-      }
-      
+  useEffect(() => {
+    if (loading) {
+        // Maybe return loading?
+      return;
     }
-    onRegister();
-  };
-  
-  if (userLoggedIn) history.push(location.state ? location.state.from.pathname : "/Admin");
-  
+    if (user) {
+      history.push("/Admin");
+      window.location.reload(false);
+    }
+  }, [user, loading, history]);
+
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -64,7 +43,7 @@ export function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -87,15 +66,11 @@ export function SignIn() {
               autoComplete="current-password"
               onChange={(e) => setPassword(e.target.value)}
             />
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={() => logInWithEmailAndPassword(email, password)}
             >
               Sign In
             </Button>

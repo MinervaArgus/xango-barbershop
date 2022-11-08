@@ -26,7 +26,7 @@ function HairStyles() {
       <br></br>
       <div id="Hair-Images">
         {imageUrls && imageUrls.map((url) => {
-          return <img id="hair-imgs" src={url} alt=""/>;
+          return <img key={url} id="hair-imgs" src={url} alt=""/>;
         })}
       </div>
     </div>

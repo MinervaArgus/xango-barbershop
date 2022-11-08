@@ -28,7 +28,7 @@ function AdminStyles() {
                         deleteObject(ref(storage, url))
                         window.location.reload(false);
                     }}>
-                  <img width={200} src={url}/>
+                  <img width={200} src={url} alt=""/>
                   Delete Image
                 </Button> 
               </div>

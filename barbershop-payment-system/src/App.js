@@ -5,7 +5,6 @@ import Home from './pages/Home';
 import Appointments from './pages/Appointments';
 import { SignIn } from './pages/AdminLogin';
 import Admin from './pages/Admin';
-import PrivateRoute from './components/PrivateRoute';
 import HairStyles from './pages/HairStyles';
 import HairPricing from './pages/HairPricing';
 
@@ -32,9 +31,9 @@ function App() {
             <Route path="/HairPricing">
               <HairPricing/>
             </Route>
-            <PrivateRoute path="/Admin">
+            <Route path="/Admin">
               <Admin/>
-            </PrivateRoute>
+            </Route>
           </Switch>
         </Router>
       </header>

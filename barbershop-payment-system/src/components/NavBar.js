@@ -1,20 +1,14 @@
 import React from "react";
-import Button from '@mui/material/Button';
-import { withRouter } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../components/global-state/userStateSlice";
+import { Button } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import '../styles/NavBar.css';
+import { logout } from "../firebase.js"
 
-function Navbar ({ history }) {
-    const { userLoggedIn } = useSelector((state) => state.userState);
-    const dispatch = useDispatch();
+function Navbar () {
+    const location = useLocation();
 
-    const logoutHandler = () => {
-        dispatch(logout(false));
-        history.push("/Home");
-    };
-
-    return (<nav className="nav">
+    return (
+    <nav className="nav">
         <a href="/Home" className="site-title">Xango</a>
         <ul>
             <li>
@@ -26,19 +20,20 @@ function Navbar ({ history }) {
             <li>
                 <a href="/HairPricing">View Pricing</a>
             </li>
-            <li>
-            {!userLoggedIn && (
-                <a href="/AdminLogin">Admin</a>
-            )}
-            {userLoggedIn ? (
-                <Button type="submit" fullWidth variant="contained" sx={{ mt: 1, mb: 1}} onClick={logoutHandler}>
-                    Log Out
+            {(location.pathname !== "/AdminLogin" && location.pathname !== "/Admin") && 
+                <li>
+                    <a href="/AdminLogin">Admin Dashboard</a>
+                </li>
+            }
+            {location.pathname === "/Admin" &&
+                <Button variant="contained" onClick={logout}>
+                    Logout
                 </Button>
-            ) : null}
-            </li>
+            }
+            
         </ul>
-    </nav >
+    </nav>
     )
 }
 
-export default withRouter(Navbar);
+export default Navbar;
