@@ -83,6 +83,7 @@ function AppointmentsInput() {
 
     //query to get all haircuts
     const q2 = query(collection(db, 'hairstylePrices'));
+
     //get all the appointments from db
     useEffect(() => {
         //get all appointments from db
@@ -100,14 +101,53 @@ function AppointmentsInput() {
             })))
 
             setCalendarAppointments(snapshot.docs.map(doc => ({
-                ...calendarAppointments,
+                // ...calendarAppointments,
                 id: doc.id,
                 title: doc.data().name,
-                start: new Date(doc.data().start),
-                end: new Date(doc.data().end)
+                start: new Date(doc.data().date + " " + doc.data().time),
+                end: new Date(formatEndDate(doc.data().date, doc.data().time))
             })))
             // snapshot.docs.map(doc => { filterAppointments(doc) }) */
         })
+
+        //function to format end date
+        function formatEndDate(d, t) {
+            console.log("end date: " + new Date(d).getDay());
+            let hour = t.slice(0, 2);
+            let minutes = t.slice(3, 5);
+            let weekDay = new Date(d).getDay();
+            let newHour = 0;
+            let formatedDate;
+            if (weekDay === 2 || weekDay === 3) {
+                if (parseInt(hour) <= 13) {
+                    if (minutes == '30') {
+                        newHour = parseInt(hour) + 1;
+                    } else if (minutes == '00') {
+                        //to be implemented
+                    }
+                } else {
+                    newHour = parseInt(hour);
+                }
+            } else if (weekDay === 4 || weekDay === 5) {
+                if (parseInt(hour) <= 16) {
+                    if (minutes == '30') {
+                        newHour = parseInt(hour) + 1;
+                    } else if (minutes == '00') {
+                        //to be implemented
+                    }
+                }
+            } else if (weekDay === 6) {
+                if (parseInt(hour) <= 11) {
+                    if (minutes == '30') {
+                        newHour = parseInt(hour) + 1;
+                    } else if (minutes == '00') {
+                        //to be implemented
+                    }
+                }
+            }//end of if
+            console.log("finished product: " + d + " " + newHour.toString() + ":" + minutes);
+            return d + " " + newHour.toString() + ":" + minutes;
+        }
 
         //get all haircutsn from db
         onSnapshot(q2, (snapshot) => {
@@ -231,6 +271,7 @@ function AppointmentsInput() {
     const [initTime] = useState(['']);
     const [time, setTime] = useState(filterDefaultTime(new Date().getDay()));
 
+    //filter barbershop availability based on current date
     function filterDefaultTime(d) {
         if (d === 1) {//if for Mondays
             return "closed";
@@ -253,7 +294,9 @@ function AppointmentsInput() {
             return "closed";
         }
     }
+    //filter barbershop availability based on selected date
     function filterTime(e) {
+        // console.log("date change: " + e);
         let d = new Date(e).getDay();
         // setTime(initTime);
         console.log("whatever: " + new Date(e).getDay());
@@ -285,12 +328,15 @@ function AppointmentsInput() {
     //todays date
     const today = new Date();
 
+    //handles date change
     const handleDateChange = (e) => {
         setDate(e);
         // console.log("date state" + JSON.stringify(date));
         filterTime(e);
     }
+    //state for loading (true while appointment is getting written to DB)
     const [loading, setLoading] = useState(false);
+    //state for succes (true if appointment was correctly registered to DB)
     const [succes, setSucces] = useState({
         open: false,
         vertical: 'top',
