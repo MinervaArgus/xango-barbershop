@@ -10,6 +10,14 @@ import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { TextField, Button, Box } from "@mui/material";
 import { collection, onSnapshot, query, addDoc, orderBy } from "firebase/firestore"
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const q = query(collection(db, 'hairstylePrices'), orderBy('typeOfService'));
 
@@ -91,9 +99,33 @@ function Admin() {
         await addDoc(collection(db, 'daysClosed'), {
             date: s
         })
+        setSucces({ open: true });
     }
+    let today = new Date();
+    const handleDateChange = (e) => {
+        setDate(e);
+    }
+
+    const [succes, setSucces] = useState({
+        open: false
+    });
+
+    const { open } = succes;
+    const handleClose = () => {
+        setSucces({ ...succes, open: false });
+    };
+
+
     return (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div>
+        {
+                    succes ? (<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                            Day to be Closed added!
+                        </Alert>
+                    </Snackbar>) : null
+        }
             <h1>Admin</h1>
             <div>
                 <h2>Upload Images</h2>
@@ -164,9 +196,18 @@ function Admin() {
 
             <div>
                 <h2>Set a Date to be Closed</h2>
-                <DesktopDatePicker/>
+                <DesktopDatePicker
+                    name = "date"
+                    minDate={today}
+                    size="small"
+                    value={date}
+                    onChange={handleDateChange}
+                    renderInput={(params) => <TextField {...params} />}
+                    />
+                    <Button id="button-basic" variant="contained" color="primary" onClick={addDayClosed}>Submit Date to be Closed</Button>
             </div>
         </div>
+        </LocalizationProvider>
     );
 }
 
