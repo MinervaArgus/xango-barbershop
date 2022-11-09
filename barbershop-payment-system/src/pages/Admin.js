@@ -127,6 +127,22 @@ function Admin() {
                     </Snackbar>) : null
         }
             <h1>Admin</h1>
+
+            <div>
+                <h2>Set a Date to be Closed</h2>
+                <DesktopDatePicker
+                    name = "date"
+                    minDate={today}
+                    size="small"
+                    value={date}
+                    onChange={handleDateChange}
+                    renderInput={(params) => <TextField {...params} />}
+                    />
+                    <Button id="button-basic" variant="contained" color="primary" onClick={addDayClosed}>Submit Date to be Closed</Button>
+            </div>
+
+            <br></br>
+
             <div>
                 <h2>Upload Images</h2>
                 <form onSubmit={handleSubmit} className='form'>
@@ -192,19 +208,6 @@ function Admin() {
                 <ul>
                     {inputs.map(item => <Service key = {item.id} arr = {item}/>)}
                 </ul>
-            </div>
-
-            <div>
-                <h2>Set a Date to be Closed</h2>
-                <DesktopDatePicker
-                    name = "date"
-                    minDate={today}
-                    size="small"
-                    value={date}
-                    onChange={handleDateChange}
-                    renderInput={(params) => <TextField {...params} />}
-                    />
-                    <Button id="button-basic" variant="contained" color="primary" onClick={addDayClosed}>Submit Date to be Closed</Button>
             </div>
         </div>
         </LocalizationProvider>
