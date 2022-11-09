@@ -1,0 +1,17 @@
+.Location {
+
+  margin: 0;
+  /* padding: 0; */
+  /* box-sizing: border-box; */
+  font-family: 'Poppins', sans-serif;
+  width: 100vw;
+  height: 50vh;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+
+}
+
+.Location-link {
+  color: #fb6161;
+}
