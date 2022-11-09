@@ -9,6 +9,7 @@ import AdminStyles from "../components/AdminStyles";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { TextField, Button, Box } from "@mui/material";
 import { collection, onSnapshot, query, addDoc, orderBy } from "firebase/firestore"
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 const q = query(collection(db, 'hairstylePrices'), orderBy('typeOfService'));
 
@@ -20,6 +21,7 @@ function Admin() {
     const [servPriceInput, setServPriceInput] = useState("");
     const history = useHistory();
     const [user, loading] = useAuthState(auth);
+    const [date, setDate] = useState(new Date()); //date state
 
     let [filename, setFileName] = useState(null);
 
@@ -78,6 +80,18 @@ function Admin() {
         }
     } 
 
+    function formatDateNoTime(date) {
+        var d = date.slice(5, 16);
+        return d;
+    }
+    
+    const addDayClosed = async (e) => {
+        e.preventDefault();
+        let s = formatDateNoTime(date.toString())
+        await addDoc(collection(db, 'daysClosed'), {
+            date: s
+        })
+    }
     return (
         <div>
             <h1>Admin</h1>
@@ -146,6 +160,11 @@ function Admin() {
                 <ul>
                     {inputs.map(item => <Service key = {item.id} arr = {item}/>)}
                 </ul>
+            </div>
+
+            <div>
+                <h2>Set a Date to be Closed</h2>
+                <DesktopDatePicker/>
             </div>
         </div>
     );
