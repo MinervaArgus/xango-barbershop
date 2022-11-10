@@ -20,6 +20,9 @@ function Navbar () {
             <li>
                 <a href="/HairPricing">View Pricing</a>
             </li>
+            <li>
+                <a href="/AboutUs">About Us</a>
+            </li>
             {(location.pathname !== "/AdminLogin" && location.pathname !== "/Admin") && 
                 <li>
                     <a href="/AdminLogin">Admin Dashboard</a>
