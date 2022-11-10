@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 import {Avatar, Button, CssBaseline, TextField, Box, Typography, Container, createTheme, ThemeProvider } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { auth, logInWithEmailAndPassword } from '../firebase';
+import { auth, logInWithEmailAndPassword } from '../Firebase';
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const theme = createTheme();
