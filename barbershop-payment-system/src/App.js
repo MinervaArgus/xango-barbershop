@@ -7,9 +7,9 @@ import { SignIn } from './pages/AdminLogin';
 import Admin from './pages/Admin';
 import HairStyles from './pages/HairStyles';
 import HairPricing from './pages/StylePricing';
-
+import AboutUs from './pages/AboutUs';
 function App() {
-  
+
   return (
     <div className="App">
       <header className="App-header">
@@ -23,16 +23,19 @@ function App() {
               <Appointments />
             </Route>
             <Route path="/AdminLogin">
-              <SignIn/>
+              <SignIn />
             </Route>
             <Route path="/hairstyles">
-              <HairStyles/>
+              <HairStyles />
             </Route>
             <Route path="/HairPricing">
-              <HairPricing/>
+              <HairPricing />
             </Route>
             <Route path="/Admin">
-              <Admin/>
+              <Admin />
+            </Route>
+            <Route path="/AboutUs">
+              <AboutUs />
             </Route>
           </Switch>
         </Router>
