@@ -8,6 +8,7 @@ import Admin from './pages/Admin';
 import HairStyles from './pages/HairStyles';
 import HairPricing from './pages/StylePricing';
 import AboutUs from './pages/AboutUs';
+
 function App() {
 
   return (
