@@ -11,12 +11,28 @@ function Navbar () {
     return (
         <Navbar sticky="top" collapseOnSelect expand="lg" className="navbar navbar-custom" variant="light">
             <Container>
-                <Navbar.Brand href="/Home">Barbershop Test Cart</Navbar.Brand>
+                <Navbar.Brand href="/Home">Xango</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                     <Nav>
-                        <Nav.Link href="/appointments">Buy Products</Nav.Link>
+                        <Nav.Link href="/appointments">Book Appointment</Nav.Link>
                         <Button size="lg" className="me-auto" variant="outline-dark"> Cart Items</Button>
+                    
+                        <Nav.Link href="/HairStyles">View Styles</Nav.Link>
+                        <Nav.Link href="/HairPricing">View Pricing</Nav.Link>
+                        <Nav.Link href="/AboutUs">About Us</Nav.Link>
+                        
+                        {(location.pathname !== "/AdminLogin" && location.pathname !== "/Admin") && 
+                            <Button size="lg" className="me-auto" variant="outline-dark">
+                                Admin Dashboard
+                            </Button>
+                        }
+                        {location.pathname === "/Admin" &&
+                            <Button size="lg" className="me-auto" variant="outline-dark" onClick={logout}>
+                                Logout
+                            </Button>
+                        }
+
                     </Nav>
                 </Navbar.Collapse>
             </Container>
