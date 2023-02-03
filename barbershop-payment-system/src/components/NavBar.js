@@ -1,38 +1,49 @@
 import React from "react";
-import { Button } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import '../styles/NavBar.css';
 import { logout } from "../Firebase.js"
-import { Container, Nav } from "react-bootstrap"; 
+import { Container, Nav, Navbar, Button } from "react-bootstrap"; 
 
-function Navbar () {
+function NavigationBar () {
     const location = useLocation();
+
+
 
     return (
         <Navbar sticky="top" collapseOnSelect expand="lg" className="navbar navbar-custom" variant="light">
             <Container>
                 <Navbar.Brand href="/Home">Xango</Navbar.Brand>
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                 <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                     <Nav>
-                        <Nav.Link href="/appointments">Book Appointment</Nav.Link>
-                        <Button size="lg" className="me-auto" variant="outline-dark"> Cart Items</Button>
-                    
-                        <Nav.Link href="/HairStyles">View Styles</Nav.Link>
-                        <Nav.Link href="/HairPricing">View Pricing</Nav.Link>
-                        <Nav.Link href="/AboutUs">About Us</Nav.Link>
+                        <Nav.Item>
+                            <Nav.Link href="/appointments">Book Appointment</Nav.Link>    
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="/HairStyles">View Styles</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="/HairPricing">View Pricing</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="/AboutUs">About Us</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Container>
+                                {(location.pathname !== "/AdminLogin" && location.pathname !== "/Admin") && 
+                                    <Button href="/AdminLogin" size="md" variant="outline-dark">
+                                        Admin Dashboard
+                                    </Button>
+                                }
+                                {location.pathname === "/Admin" &&
+                                        <Button size="md" variant="outline-dark" onClick={logout}>
+                                            Logout
+                                        </Button>
+                                }
+                            </Container>
+                        </Nav.Item>
                         
-                        {(location.pathname !== "/AdminLogin" && location.pathname !== "/Admin") && 
-                            <Button size="lg" className="me-auto" variant="outline-dark">
-                                Admin Dashboard
-                            </Button>
-                        }
-                        {location.pathname === "/Admin" &&
-                            <Button size="lg" className="me-auto" variant="outline-dark" onClick={logout}>
-                                Logout
-                            </Button>
-                        }
-
+                        
                     </Nav>
                 </Navbar.Collapse>
             </Container>
@@ -54,6 +65,7 @@ function Navbar () {
             <li>
                 <a href="/AboutUs">About Us</a>
             </li>
+
             {(location.pathname !== "/AdminLogin" && location.pathname !== "/Admin") && 
                 <li>
                     <a href="/AdminLogin">Admin Dashboard</a>
@@ -71,4 +83,4 @@ function Navbar () {
     )
 }
 
-export default Navbar;
+export default NavigationBar;

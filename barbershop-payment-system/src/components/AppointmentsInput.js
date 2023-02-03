@@ -194,10 +194,10 @@ function AppointmentsInput() {
 
     var eventStart, eventEnd;
 
-    const handleSelectSlot =
-        (e) => {
-            console.log(e.start);
-            console.log("inside" + JSON.stringify(appointment));
+    const handleSelectSlot = (e) => {
+            // console.log(e.start);
+            // console.log("inside" + JSON.stringify(appointment));
+
             if (appointment.name.length === 0) {
                 window.alert('Enter name first')
             } else if (appointment.email.length === 0) {
@@ -209,13 +209,11 @@ function AppointmentsInput() {
                 var start = e.start;
                 var end = e.end;
                 setAppointment({ ...appointment, ["start"]: e.start, ["end"]: e.end })
-
                 setCalendarAppointments((prev) => [...prev, { title, start, end }])
-
                 // console.log(JSON.stringify(calendarAppointments));
             }
-            // }   
-            console.log("appointment after inside: ", JSON.stringify(appointment));
+               
+            // console.log("appointment after inside: ", JSON.stringify(appointment));
         }
 
 

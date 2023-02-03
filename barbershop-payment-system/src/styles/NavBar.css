@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
 
-nav{
-    margin: 0;
-    font-family: 'Roboto', cursive;
-    background-color:white !important;
-    color: black !important;
+.navbar-custom {
+	background-color: lightgrey;
+	font-size: 1.1rem;
 }
 
-.nav li:hover{
-    color: grey;
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-text {
+	color: black;
+	font-size: 2rem;   
 }
