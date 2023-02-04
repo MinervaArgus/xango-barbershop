@@ -10,7 +10,6 @@ import HairPricing from './pages/StylePricing';
 import AboutUs from './pages/AboutUs';
 
 function App() {
-
   return (
     <div className="App">
       <header className="App-header">
