@@ -1,12 +1,12 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { ref, getDownloadURL, getStorage ,listAll } from "firebase/storage";
-import '../styles/HairStyles.css';
+import '../styles/Products.css';
 
-function HairStyles() {
+function Products() {
   const [imageUrls, setImageUrls] = useState([])
   const storage = getStorage();
-  const imagesListRef = ref(storage, "images/Hairstyles/");
+  const imagesListRef = ref(storage, "images/Products/");
 
   useEffect(() => {
     listAll(imagesListRef).then((response) => {
@@ -21,16 +21,16 @@ function HairStyles() {
 
   return(
     <div>
-      <h1>Styles</h1>
+      <h1>Products</h1>
       <br></br>
       <br></br>
-      <div id="Hair-Images">
+      <div id="Product-Images">
         {imageUrls && imageUrls.map((url) => {
-          return <img key={url} id="hair-imgs" src={url} alt=""/>;
+          return <img key={url} id="product-imgs" src={url} alt=""/>;
         })}
       </div>
     </div>
   )
 }
 
-export default HairStyles;
+export default Products;

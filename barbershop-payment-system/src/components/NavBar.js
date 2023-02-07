@@ -18,6 +18,9 @@ function Navbar () {
                 <a href="/HairStyles">View Styles</a>
             </li>
             <li>
+                <a href="/Products">View Products</a>
+            </li>
+            <li>
                 <a href="/HairPricing">View Pricing</a>
             </li>
             <li>
