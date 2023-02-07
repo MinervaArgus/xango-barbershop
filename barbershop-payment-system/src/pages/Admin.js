@@ -7,13 +7,14 @@ import Service from "../components/Services";
 import ProgressBar from "../components/ProgressBar";
 import AdminStyles from "../components/AdminStyles";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { TextField, Button, Box } from "@mui/material";
+import { TextField, Box } from "@mui/material";
 import { collection, onSnapshot, query, addDoc, orderBy } from "firebase/firestore"
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { Container, Form, Button } from "react-bootstrap";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -37,7 +38,7 @@ function Admin() {
         e.preventDefault();
         const file = e.target[0]?.files[0]
         if (!file) return;
-        const storageRef = ref(storage, `images/${file.name}`);
+        const storageRef = ref(storage, `images/Hairstyles/${file.name}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         uploadTask.on("state_changed",
@@ -118,36 +119,44 @@ function Admin() {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <div>
+        <Container>
         {
-                    succes ? (<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                            Day to be Closed added!
-                        </Alert>
-                    </Snackbar>) : null
+            succes ? (<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                    Day to be Closed added!
+                </Alert>
+            </Snackbar>) : null
         }
             <h1>Admin</h1>
 
-            <div>
+            <Container>
                 <h2>Set a Date to be Closed</h2>
-                <DesktopDatePicker
+                <Form.Control 
+                    type="date" 
+                    name='Date'
+                    minDate={today}
+                    value={date}
+                    onChange={handleDateChange}
+                    />
+                
+                {/* <DesktopDatePicker
                     name = "date"
                     minDate={today}
                     size="small"
                     value={date}
                     onChange={handleDateChange}
                     renderInput={(params) => <TextField {...params} />}
-                    />
-                    <Button id="button-basic" variant="contained" color="primary" onClick={addDayClosed}>Submit Date to be Closed</Button>
-            </div>
+                    /> */}
+                    <Button variant="primary" onClick={addDayClosed}>Submit Date to be Closed</Button>
+            </Container>
 
             <br></br>
 
-            <div>
+            <Container>
                 <h2>Upload Images</h2>
                 <form onSubmit={handleSubmit} className='form'>
-                    <Button variant="contained" component="label"><input type='file' accept='image/*' hidden onChange={changeHandler}/>Select File</Button>
-                    <Button variant="contained" type='submit'>Upload</Button>
+                    <Button variant="primary"><input type='file' accept='image/*' hidden onChange={changeHandler}/>Select File</Button>
+                    <Button variant="primary" type='submit'>Upload</Button>
                 </form>
                 <h2>Selected File: {filename}</h2>
                 {
@@ -166,11 +175,9 @@ function Admin() {
                     imgUrl &&
                     <img src={imgUrl} alt='uploaded file' height={200} />
                 }
-            </div>
+            </Container>
 
-            <br></br>
-
-            <div>
+            <Container>
                 <h2>Remove Images</h2>
                 <p>(Browser will refresh!)</p>
                 <Box
@@ -181,11 +188,11 @@ function Admin() {
                     <AdminStyles></AdminStyles>
                 </Box>
                 
-            </div>
+            </Container>
 
             <br></br>
 
-            <div>
+            <Container>
                 <h2>Add Service</h2>
                 <form className="form">
                     <Box 
@@ -196,20 +203,20 @@ function Admin() {
                     >
                         <TextField id="outlined-basic" label="Service Name" variant="outlined" value={serviceInput} InputLabelProps={{shrink: true}} onChange={e => setServInput(e.target.value)}/>
                         <TextField id="outlined-basic" label="Service Price" variant="outlined" value={servPriceInput} InputLabelProps={{shrink: true}} onChange={e => setServPriceInput(e.target.value)}/>
-                        <Button variant="contained" onClick={handleServSubmit}>Add Service</Button>
+                        <Button variant="primary" onClick={handleServSubmit}>Add Service</Button>
                     </Box>
                 </form>
-            </div>
+            </Container>
 
             <br/><br/>
 
-            <div>                
+            <Container>                
                 <h2>List of Services and Prices</h2>
                 <ul>
                     {inputs.map(item => <Service key = {item.id} arr = {item}/>)}
                 </ul>
-            </div>
-        </div>
+            </Container>
+        </Container>
         </LocalizationProvider>
     );
 }

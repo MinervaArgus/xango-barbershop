@@ -5,7 +5,7 @@ import { ref, getDownloadURL, getStorage ,listAll, deleteObject } from "firebase
 function AdminStyles() {
     const [imageUrls, setImageUrls] = useState([])
     const storage = getStorage();
-    const imagesListRef = ref(storage, "images/");
+    const imagesListRef = ref(storage, "images/Hairstyles");
     
     useEffect(() => {
       listAll(imagesListRef).then((response) => {

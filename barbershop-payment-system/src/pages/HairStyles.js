@@ -6,7 +6,7 @@ import '../styles/HairStyles.css';
 function HairStyles() {
   const [imageUrls, setImageUrls] = useState([])
   const storage = getStorage();
-  const imagesListRef = ref(storage, "images/");
+  const imagesListRef = ref(storage, "images/Hairstyles/");
 
   useEffect(() => {
     listAll(imagesListRef).then((response) => {
