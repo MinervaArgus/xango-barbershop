@@ -2,9 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { db } from "../Firebase.js";
-import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp } from "firebase/firestore"
+import { collection, onSnapshot, query, addDoc } from "firebase/firestore"
 import moment from "moment";
-import { FirebaseError } from "@firebase/util";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TextField, Button } from '@mui/material';
@@ -13,14 +12,10 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import { esES } from '@mui/material/locale'
-import { createTheme } from "@mui/system";
-import { ThemeProvider } from "@emotion/react";
 import LinearProgress from '@mui/material/LinearProgress';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import Skeleton from '@mui/material/Skeleton';
+import axios from 'axios'
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -37,7 +32,8 @@ function AppointmentsInput() {
         email: '',
         haircut: '',
         start: '',
-        end: ''
+        end: '',
+        price: ''
     }//initial empty state
 
     //state for appointment to be added to db
@@ -47,7 +43,8 @@ function AppointmentsInput() {
         email: '',
         haircut: '',
         date: '',
-        time: ''
+        time: '',
+        price: ''
     });//appointmment state 
     /* const dateInitial = {};
     const [date, setDate] = useState(''); //date state */
@@ -59,7 +56,8 @@ function AppointmentsInput() {
         email: '',
         haircut: '',
         start: '',
-        end: ''
+        end: '',
+        price: ''
     }]);//raw appointments from db
 
     //state with all the appointments filtered to display them in calendar
@@ -71,6 +69,7 @@ function AppointmentsInput() {
 
     const dateInitial = useState('');
     const [date, setDate] = useState(new Date()); //date state
+    console.log("hoyyy " + date);
 
     const [haircuts, setHaircuts] = useState([{
         id: '',
@@ -103,7 +102,8 @@ function AppointmentsInput() {
                 email: doc.data().email,
                 haircut: doc.data().haircut,
                 start: new Date(doc.data().start),
-                end: new Date(doc.data().end)
+                end: new Date(doc.data().end),
+                price: doc.data().price
             })))
 
             setCalendarAppointments(snapshot.docs.map(doc => ({
@@ -141,16 +141,16 @@ function AppointmentsInput() {
 
     //function to format end date
     function formatEndDate(d, t) {
-        console.log("end date: " + new Date(d).getDay());
+        // console.log("end date: " + new Date(d).getDay());
         let hour = t.slice(0, 2);
         let minutes = t.slice(3, 5);
         let weekDay = new Date(d).getDay();
         let newHour = 0;
         if (weekDay === 2 || weekDay === 3) {
             if (parseInt(hour) <= 13) {
-                if (minutes == '30') {
+                if (minutes === '30') {
                     newHour = parseInt(hour) + 1;
-                } else if (minutes == '00') {
+                } else if (minutes === '00') {
                     //to be implemented
                 }
             } else {
@@ -158,22 +158,22 @@ function AppointmentsInput() {
             }
         } else if (weekDay === 4 || weekDay === 5) {
             if (parseInt(hour) <= 16) {
-                if (minutes == '30') {
+                if (minutes === '30') {
                     newHour = parseInt(hour) + 1;
-                } else if (minutes == '00') {
+                } else if (minutes === '00') {
                     //to be implemented
                 }
             }
         } else if (weekDay === 6) {
             if (parseInt(hour) <= 11) {
-                if (minutes == '30') {
+                if (minutes === '30') {
                     newHour = parseInt(hour) + 1;
-                } else if (minutes == '00') {
+                } else if (minutes === '00') {
                     //to be implemented
                 }
             }
         }//end of if
-        console.log("finished product: " + d + " " + newHour.toString() + ":" + minutes);
+        // console.log("finished product: " + d + " " + newHour.toString() + ":" + minutes);
         return d + " " + newHour.toString() + ":" + minutes;
     }
 
@@ -247,19 +247,37 @@ function AppointmentsInput() {
 
         let s = formatDateNoTime(date.toString())
         let f = appointment.time
+        let appointPrice = getHaircutPrice(appointment.haircut)
         console.log("s: " + s);
         console.log("date length" + s.length);
         console.log("timelength" + f.length);
+        console.log("current appoint: " + JSON.stringify(appointment));
         if (s.length === 11 && f.length === 5) {
+            try {
+                await addDoc(collection(db, 'appointments'), {
+                    name: appointment.name,
+                    email: appointment.email,
+                    haircut: appointment.haircut,
+                    date: s,
+                    time: f,
+                    price: appointPrice.servicePrice
+                })
+                await axios.post('http://localhost:4000/api/mail', {
+                    customerName: appointment.name,
+                    to: appointment.email,
+                    subject: "Appointment confirmation",
+                    price: appointPrice.servicePrice + "€",
+                    service: appointment.haircut,
+                    date: s,
+                    time: f,
+                    html: '<strong>Some random html code</strong>'
+                });
 
-            await addDoc(collection(db, 'appointments'), {
-                name: appointment.name,
-                email: appointment.email,
-                haircut: appointment.haircut,
-                date: s,
-                time: f
-            })
+            } catch (e) {
+                console.log(e.response.data);
+            }
             setAppointment(initialState);
+            appointPrice = '';
             eventStart = undefined;
             eventEnd = undefined;
             setLoading(false);
@@ -272,21 +290,38 @@ function AppointmentsInput() {
         // setDate('')
     }//addAppointment
 
+    function getHaircutPrice(name) {
+        let haircutData = haircuts.find(haircut => haircut.typeOfService === name)
+
+        if (haircutData === undefined) {
+            console.log("Haircut data doesn't exist for:" + name);
+            return undefined;
+        }
+        return haircutData;
+    }
 
     const changeHandler = e => {
         if (e.target !== undefined) {
-            setAppointment({ ...appointment, [e.target.name]: e.target.value })
+            console.log("haircuts array " + haircuts);
+            if (e.target.name === 'haircut') {
+                let hD = getHaircutPrice(e.target.value)
+                console.log("HD" + hD.servicePrice);
+                // setAppointment({ ...appointment, price: hD.servicePrice })
+                setAppointment({ ...appointment, [e.target.name]: e.target.value })
+            } else {
+                setAppointment({ ...appointment, [e.target.name]: e.target.value })
+            }
         }
-        console.log("handle change: " + JSON.stringify(appointment));
-    } //change handler
 
+    } //change handler
+    console.log("handle change: " + JSON.stringify(appointment));
     const [initTime] = useState(['']);
     const [time, setTime] = useState(filterDefaultTime(new Date().getDay()));
 
     //filter barbershop availability based on current date
     function filterDefaultTime(d) {
         if (d === 1) {//if for Mondays
-            return "closed";
+            return ["closed on mondays"];
             /* if (item.start.toString().slice(20, 25)) {
     
             } */
@@ -303,7 +338,7 @@ function AppointmentsInput() {
         } else if (d === 6) {
             return ['09:30', '10:30', '11:30', '12:30'];
         } else if (d === 0) {
-            return "closed";
+            return ["closed on Sundays"];
         }
     }
     //filter barbershop availability based on selected date
@@ -371,9 +406,9 @@ function AppointmentsInput() {
     const funcDaysClosed = (date) => {
         let d = formatDisabled(new Date(date).toString());
         // console.log("weird: " + date.getTime());
-        console.log("days closed state: " + JSON.stringify(daysClosed));
-        console.log("event date: " + d);
-        console.log("each date from days closed state: " + daysClosed.map((myDate) => new Date(myDate)))
+        // console.log("days closed state: " + JSON.stringify(daysClosed));
+        // console.log("event date: " + d);
+        // console.log("each date from days closed state: " + daysClosed.map((myDate) => new Date(myDate)))
         return daysClosed.map((myDate) => formatDisabled(new Date(myDate).toString())).includes(d)
     }
     return (
@@ -418,14 +453,17 @@ function AppointmentsInput() {
                                 <Select
                                     labelId="demo-simple-select-required-label"
                                     id="demo-simple-select-required"
-                                    /* value={haircuts} */
+                                    // value={haircuts}
                                     name="haircut"
                                     autoWidth
                                     label="Haircut *"
                                     onChange={changeHandler}
                                 >
                                     {haircuts.map((e, key) => {
-                                        return <MenuItem key={key} value={e.typeOfService || ''}>{e.typeOfService}</MenuItem>;
+                                        return <MenuItem
+                                            key={key}
+                                            value={e.typeOfService || ''}
+                                        >{e.typeOfService}</MenuItem>;
                                     })}
                                 </Select>
                             </FormControl>
