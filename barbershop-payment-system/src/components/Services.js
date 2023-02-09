@@ -81,10 +81,6 @@ const Service = ({arr}) => {
                                     onChange={e => setEditServPriceInput(e.target.value)}
                                 />
                             </InputGroup>
-
-                            
-                            
-                            
                         </Col>
                     </Row>
                   </Form>
@@ -97,12 +93,9 @@ const Service = ({arr}) => {
         </Row>
       </Container>
 
-    //     <TextField id="outlined-basic" label="Service Name" variant="outlined" value={editServNameInput} InputLabelProps={{shrink: true}} onChange={e => setEditServNameInput(e.target.value)}/>
-    //     <TextField id="outlined-basic" label="Service Price" variant="outlined" value={editServPriceInput} InputLabelProps={{shrink: true}} onChange={e => setEditServPriceInput(e.target.value)}/>
-        
-    //     <Button variant="contained" onClick={updateFunc}>Edit Service</Button>
-    //     <Button variant="contained" onClick={handleClickOpen}>Remove Service</Button>
-        
+
+    // Use <Modal>
+
     //     <Dialog
     //       open={open}
     //       onClose={handleClose}
@@ -125,8 +118,6 @@ const Service = ({arr}) => {
     //         </Button>
     //       </DialogActions>
     //     </Dialog>
-    //   </List>
-    // </Box>
   )
 }
 
