@@ -24,22 +24,23 @@ function AdminStyles() {
     }
   
     return(
-      <Container className="mt-4 mb-2">
-        <Row xs={1} md={2} lg={3} xl={4} className="g-4 justify-content-md-center">
-          {imageUrls && imageUrls.map((url) => {
-            return(
-              <Col key={url}>
-                    <Card style={{ width: '18rem' }}>
-                      <Card.Img variant="top" src={url} />
-                      <Card.Body>
-                        <Button variant="primary" onClick={() => deleteObj(url)}>Delete Image</Button>
-                      </Card.Body>
-                    </Card>
-              </Col>
-              );
-          })}
-        </Row>
-      </Container>
+          <Row xs="auto" md={2} lg={3} xl={4} className="g-4 justify-content-md-center">
+              {imageUrls && imageUrls.map((url) => {
+                return(
+                  <Container className="mt-4 mb-2 justify-content-md-center">
+                    <Col key={url}>
+                        <Card style={{ width: '18rem' }}>
+                          <Card.Img variant="top" src={url} />
+                          <Card.Body>
+                            <Button variant="primary" onClick={() => deleteObj(url)}>Delete Image</Button>
+                          </Card.Body>
+                        </Card>  
+                    </Col>
+                 </Container>
+                );
+              })}
+          </Row>
+      
     )
 }
 

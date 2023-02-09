@@ -142,7 +142,7 @@ function Admin() {
             <Container>
                 <Form>
                     <Row className="justify-content-md-center">
-                        <Col xs md={6} lg={5}>
+                        <Col xs md={7} lg={5}>
                             <Form.Label column="lg">
                                 Set a date to be closed
                             </Form.Label>
@@ -165,7 +165,7 @@ function Admin() {
 
             <Container>
                 <Row className="justify-content-md-center">
-                    <Col xs md={6} lg={5}>
+                    <Col xs md={7} lg={5}>
                         <Form.Label column="lg">
                             Upload Hair Styles
                         </Form.Label>
@@ -217,7 +217,11 @@ function Admin() {
 
             <Container>
                 <h5 className="mt-4">List of Services and Prices</h5>
-                {inputs.map(item => <Service key = {item.id} arr = {item}/>)}
+                <Container className="mt-4 mb-2">
+                    <Row xs="auto" md={2} lg={3} xl={4} className="g-4 justify-content-md-center">
+                        {inputs.map(item => <Service key = {item.id} arr = {item}/>)}
+                    </Row>
+                </Container>
                 
             </Container>
         </Container>
