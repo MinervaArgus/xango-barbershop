@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import '../styles/Admin.css';
 import { useHistory } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { storage, db, auth } from "../Firebase.js"
@@ -91,7 +90,7 @@ function Admin() {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Container>
+        <Container className="my-3">
             {
                 showNotif
                 ? 
@@ -142,7 +141,7 @@ function Admin() {
             <Container>
                 <Form>
                     <Row className="justify-content-md-center">
-                        <Col xs md={7} lg={5}>
+                        <Col xs md="auto" lg="auto">
                             <Form.Label column="lg">
                                 Set a date to be closed
                             </Form.Label>
@@ -165,7 +164,7 @@ function Admin() {
 
             <Container>
                 <Row className="justify-content-md-center">
-                    <Col xs md={7} lg={5}>
+                    <Col xs md="auto" lg="auto">
                         <Form.Label column="lg">
                             Upload Hair Styles
                         </Form.Label>
@@ -186,7 +185,7 @@ function Admin() {
             <Container className="mt-4 mb-2">
                 <Form>
                     <Row className="justify-content-md-center">
-                        <Col xs md={6} lg={5}>
+                        <Col xs md="auto" lg="auto" xl="auto">
                             <Form.Label column="lg">
                                 Add Service
                             </Form.Label>
@@ -218,11 +217,10 @@ function Admin() {
             <Container>
                 <h5 className="mt-4">List of Services and Prices</h5>
                 <Container className="mt-4 mb-2">
-                    <Row xs="auto" md={2} lg={3} xl={4} className="g-4 justify-content-md-center">
+                    <Row xs="auto" md="auto" lg="auto" xl="auto" className="g-4 justify-content-md-center">
                         {inputs.map(item => <Service key = {item.id} arr = {item}/>)}
                     </Row>
                 </Container>
-                
             </Container>
         </Container>
         </LocalizationProvider>

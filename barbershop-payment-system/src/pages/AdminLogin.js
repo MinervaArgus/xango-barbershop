@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import {Avatar, Button, CssBaseline, TextField, Box, Typography, Container, createTheme, ThemeProvider } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { auth, logInWithEmailAndPassword } from '../Firebase';
 import { useAuthState } from "react-firebase-hooks/auth";
-
-const theme = createTheme();
+import { Form, Row, Col, Button, Container } from 'react-bootstrap'
 
 export function SignIn() {
   const [email, setEmail] = useState("");
@@ -26,57 +23,41 @@ export function SignIn() {
 
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box component="form" noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={() => logInWithEmailAndPassword(email, password)}
-            >
-              Sign In
-            </Button>
-          </Box>
-        </Box>
+    
+    <Container className='my-4 align-items-center'>
+
+          <h3>Sign in</h3>
+          
+          <Container className="my-2">
+            <Row className="justify-content-md-center">
+              <Col md="auto" lg="auto">
+                <Form className='my-1' noValidate>
+                  <Form.Group>
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      required
+                      type="email"
+                      placeholder="Email Address"
+                      autoFocus
+                      autoComplete="email"
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <Form.Label className='mt-2'>Password</Form.Label>
+                    <Form.Control
+                      required
+                      type="password"
+                      placeholder="Password"
+                      autoComplete="current-password"
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <Container className='d-grid gap-2 mt-4'>
+                     <Button size="lg" onClick={() => logInWithEmailAndPassword(email, password)}>Sign In</Button>
+                    </Container>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </Row>
+          </Container>
       </Container>
-    </ThemeProvider>
   );
 }

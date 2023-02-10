@@ -6,9 +6,7 @@ import { Container, Nav, Navbar, Button } from "react-bootstrap";
 
 function NavigationBar () {
     const location = useLocation();
-
-
-
+    
     return (
         <Navbar sticky="top" collapseOnSelect expand="lg" className="navbar navbar-custom" variant="light">
             <Container>
@@ -42,8 +40,6 @@ function NavigationBar () {
                                 }
                             </Container>
                         </Nav.Item>
-                        
-                        
                     </Nav>
                 </Navbar.Collapse>
             </Container>

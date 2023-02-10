@@ -2,34 +2,28 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { db } from "../Firebase.js";
-import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp } from "firebase/firestore"
+import { collection, onSnapshot, query, addDoc } from "firebase/firestore"
 import moment from "moment";
-import { FirebaseError } from "@firebase/util";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TextField, Button } from '@mui/material';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import { esES } from '@mui/material/locale'
-import { createTheme } from "@mui/system";
-import { ThemeProvider } from "@emotion/react";
-import LinearProgress from '@mui/material/LinearProgress';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import Skeleton from '@mui/material/Skeleton';
+import { Button, Container, Form, Toast, ToastContainer, Row, Col, InputGroup, ProgressBar } from 'react-bootstrap';
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+import { TextField } from '@mui/material';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+
 require('moment/locale/es.js')
 
 const localizer = momentLocalizer(moment);
 
 function AppointmentsInput() {
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    const current = new Date();
+    let currentDate = current.toJSON();
+    // eslint-disable-next-line
+    const todaysDate = currentDate.slice(0, 10);
+
+    // eslint-disable-next-line
     var title, email, haircut;
     const initialState = {
         id: '',
@@ -94,6 +88,7 @@ function AppointmentsInput() {
     useEffect(() => {
         //get all appointments from db
         onSnapshot(q, (snapshot) => {
+            // eslint-disable-next-line
             snapshot.docs.map(doc => {
                 console.log("docu: " + new Date(doc.data().start));
             })
@@ -133,6 +128,7 @@ function AppointmentsInput() {
         })
 
         filterTime();
+        // eslint-disable-next-line
     }, []);//useEffect
 
     console.log("depues de setAllAppointments: " + JSON.stringify(allAppointments));
@@ -148,9 +144,9 @@ function AppointmentsInput() {
         let newHour = 0;
         if (weekDay === 2 || weekDay === 3) {
             if (parseInt(hour) <= 13) {
-                if (minutes == '30') {
+                if (minutes === '30') {
                     newHour = parseInt(hour) + 1;
-                } else if (minutes == '00') {
+                } else if (minutes === '00') {
                     //to be implemented
                 }
             } else {
@@ -158,17 +154,17 @@ function AppointmentsInput() {
             }
         } else if (weekDay === 4 || weekDay === 5) {
             if (parseInt(hour) <= 16) {
-                if (minutes == '30') {
+                if (minutes === '30') {
                     newHour = parseInt(hour) + 1;
-                } else if (minutes == '00') {
+                } else if (minutes === '00') {
                     //to be implemented
                 }
             }
         } else if (weekDay === 6) {
             if (parseInt(hour) <= 11) {
-                if (minutes == '30') {
+                if (minutes === '30') {
                     newHour = parseInt(hour) + 1;
-                } else if (minutes == '00') {
+                } else if (minutes === '00') {
                     //to be implemented
                 }
             }
@@ -177,7 +173,9 @@ function AppointmentsInput() {
         return d + " " + newHour.toString() + ":" + minutes;
     }
 
+    // eslint-disable-next-line
     function filterAppointments(doc) {
+        // eslint-disable-next-line
         calendarAppointments.map((item) => {
             if (item.id === '' &&
                 item.title === doc.data().name &&
@@ -192,8 +190,10 @@ function AppointmentsInput() {
     // console.log("time format from JS: " + JSON.stringify(calendarAppointments));
     //console.log("Appointments " + JSON.stringify(allAppointments));
 
+    // eslint-disable-next-line
     var eventStart, eventEnd;
 
+    // eslint-disable-next-line
     const handleSelectSlot = (e) => {
             // console.log(e.start);
             // console.log("inside" + JSON.stringify(appointment));
@@ -208,6 +208,7 @@ function AppointmentsInput() {
                 title = appointment.name;
                 var start = e.start;
                 var end = e.end;
+                // eslint-disable-next-line
                 setAppointment({ ...appointment, ["start"]: e.start, ["end"]: e.end })
                 setCalendarAppointments((prev) => [...prev, { title, start, end }])
                 // console.log(JSON.stringify(calendarAppointments));
@@ -217,11 +218,14 @@ function AppointmentsInput() {
         }
 
 
+    // eslint-disable-next-line
     const handleSelectEvent = useCallback(
         (event) => window.alert(event.title),
         []
     );
 
+
+    // eslint-disable-next-line
     function formatDate(date) {
         var d = date.slice(0, 25)
         console.log("formated date: " + d);
@@ -261,7 +265,7 @@ function AppointmentsInput() {
             eventStart = undefined;
             eventEnd = undefined;
             setLoading(false);
-            setSucces({ open: true });
+            setShowSuccess(true);
         } else {
             window.alert('Select desired time and date:');
         }
@@ -278,6 +282,7 @@ function AppointmentsInput() {
         console.log("handle change: " + JSON.stringify(appointment));
     } //change handler
 
+    // eslint-disable-next-line
     const [initTime] = useState(['']);
     const [time, setTime] = useState(filterDefaultTime(new Date().getDay()));
 
@@ -349,16 +354,8 @@ function AppointmentsInput() {
     //state for loading (true while appointment is getting written to DB)
     const [loading, setLoading] = useState(false);
     //state for succes (true if appointment was correctly registered to DB)
-    const [succes, setSucces] = useState({
-        open: false,
-        vertical: 'top',
-        horizontal: 'right'
-    });
-    const { vertical, horizontal, open } = succes;
 
-    const handleClose = () => {
-        setSucces({ ...succes, open: false });
-    };
+    const handleClose = () => setShowSuccess(false);
 
     //formatDisabledDays
     function formatDisabled(date) {
@@ -377,93 +374,85 @@ function AppointmentsInput() {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             {/* <ThemeProvider theme={theme}> */}
-            <div className="appointments">
+            <Container className="my-3">
 
                 {
-                    loading ? (<LinearProgress />) : null
+                    loading ? (<ProgressBar striped animated now={"100"}/>) : null
                 }
                 {
-                    succes ? (<Snackbar open={open} autoHideDuration={6000} onClose={handleClose} key={vertical + horizontal}>
-                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                            Appointment added!
-                        </Alert>
-                    </Snackbar>) : null
+                    showSuccess ? (
+                        <ToastContainer className="p-3" containerPosition="fixed" position="top-end">
+                            <Toast show={showSuccess} onClose={() => setShowSuccess(false)} autohide delay={5000}>
+                                <Toast.Body onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                                    Appointment added!
+                                </Toast.Body>
+                            </Toast>
+                        </ToastContainer>
+                    ) : null
                 }
-                <div className="userInput">
-                    <form id="appointmentsForm">
-                        <h2>Make an appointment</h2>
-                        <div className="inputFields">
-                            <TextField
-                                required
-                                id="outlined-basic"
-                                label="Name"
-                                variant="outlined"
-                                name="name"
-                                size="small"
-                                onChange={changeHandler} /> {/* name */}
+                
+                <h1>Make an appointment</h1>
 
-                            <TextField
-                                required
-                                id="outlined-basic"
-                                label="Email"
-                                variant="outlined"
-                                name="email"
-                                size="small"
-                                onChange={changeHandler} />{/* email */}
+                <Container>
+                    <Form>
+                        <Row className="justify-content-md-center">
+                            <Col xs md="auto" lg="auto" className="m-2">
+                                <InputGroup className="my-2">
+                                    <Form.Control 
+                                        type="input" 
+                                        name='Name'
+                                        placeholder={"Name"} 
+                                        onChange={changeHandler}
+                                    />
+                                    <Form.Control 
+                                        type="input" 
+                                        name='Email'
+                                        placeholder={"Email"} 
+                                        onChange={changeHandler}
+                                    />
+                                </InputGroup>
 
-                            <FormControl required sx={{ m: 1, minWidth: 120, maxHeight: 50 }}>
-                                <InputLabel id="demo-simple-select-required-label">Haircut</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-required-label"
-                                    id="demo-simple-select-required"
-                                    /* value={haircuts} */
-                                    name="haircut"
-                                    autoWidth
-                                    label="Haircut *"
-                                    onChange={changeHandler}
-                                >
-                                    {haircuts.map((e, key) => {
-                                        return <MenuItem key={key} value={e.typeOfService || ''}>{e.typeOfService}</MenuItem>;
-                                    })}
-                                </Select>
-                            </FormControl>
+                                <InputGroup className="my-2">
+                                    <DesktopDatePicker
+                                        required
+                                        id="outlined-basic"
+                                        variant="outlined"
+                                        name="date"
+                                        minDate={today}
+                                        size="small"
+                                        value={date}
+                                        //(d) => new Date(d).getTime() === new Date('2022-11-11T00:00').getTime()
+                                        onChange={handleDateChange}
+                                        shouldDisableDate={funcDaysClosed}  // Date Filter
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
 
-                            <DesktopDatePicker
-                                required
-                                id="outlined-basic"
-                                variant="outlined"
-                                name="date"
-                                minDate={today}
-                                size="small"
-                                value={date}
-                                //(d) => new Date(d).getTime() === new Date('2022-11-11T00:00').getTime()
-                                onChange={handleDateChange}
-                                shouldDisableDate={funcDaysClosed}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                            <FormControl required sx={{ m: 1, minWidth: 120, maxHeight: 50 }}>
-                                <InputLabel id="demo-simple-select-required-label">Time</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-required-label"
-                                    id="demo-simple-select-required"
-                                    // value={time}
-                                    name="time"
-                                    autoWidth
-                                    label="Time *"
-                                    onChange={changeHandler}
-                                >
-                                    {time.map((e, key) => {
-                                        return <MenuItem key={key} value={e || ''}>{e}</MenuItem>;
-                                    })}
-                                </Select>
-                            </FormControl>
-                            <Button id="button-basic" variant="contained" color="primary" onClick={addAppointment}>Make Appointment</Button>
-                        </div>
-                    </form>
-                </div>
+                                    <Form.Select defaultValue={"Desired Time:"} onChange={changeHandler}>
+                                        <option disabled={true}>Desired Time:</option>
+                                        <option disabled={true}>=========</option>
+                                        {time.map((e, key) => {
+                                            return <option key={key} value={e || ''}>{e}</option>;
+                                        })}
+                                    </Form.Select>
+                                </InputGroup>
+                                
+                                <InputGroup className="my-2">
+                                    <Form.Select defaultValue={"Type of Service:"} onChange={changeHandler}>
+                                        <option disabled={true}>Type of Service:</option>
+                                        <option disabled={true}>=========</option>
+                                        {haircuts.map((e, key) => {
+                                            return <option key={key} value={e.typeOfService || ''}>{e.typeOfService}</option>;
+                                        })}
+                                    </Form.Select>
+                                    <Button as="input" type="submit" onClick={addAppointment} value="Make Appointment"/>
+                                </InputGroup>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Container>
+            </Container>
 
-            </div>
-            <div className="calendar">
+            <Container className="my-4">
                 <Calendar
                     /* components={
                         {
@@ -488,7 +477,7 @@ function AppointmentsInput() {
                 // onSelectEvent={handleSelectEvent}
                 // onSelectSlot={handleSelectSlot}
                 />
-            </div>
+            </Container>
             {/* </ThemeProvider> */}
         </LocalizationProvider>
     );

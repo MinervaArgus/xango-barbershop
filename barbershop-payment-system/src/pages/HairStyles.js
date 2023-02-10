@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { ref, getDownloadURL, getStorage ,listAll } from "firebase/storage";
-import '../styles/HairStyles.css';
+import { Carousel, Container } from "react-bootstrap";
 
 function HairStyles() {
   const [imageUrls, setImageUrls] = useState([])
@@ -20,16 +20,19 @@ function HairStyles() {
   }, []);
 
   return(
-    <div>
+    <Container className="my-3">
       <h1>Styles</h1>
-      <br></br>
-      <br></br>
-      <div id="Hair-Images">
-        {imageUrls && imageUrls.map((url) => {
-          return <img key={url} id="hair-imgs" src={url} alt=""/>;
-        })}
-      </div>
-    </div>
+      <Carousel variant="dark" className="my-3">
+          {imageUrls && imageUrls.map((url) => {
+            return <Carousel.Item><img style={{height: "300px"}} key={url} src={url} alt=""/></Carousel.Item>
+          })}
+      </Carousel>
+      <Carousel variant="dark" className="my-3">
+          {imageUrls && imageUrls.map((url) => {
+            return <Carousel.Item><img style={{height: "300px"}} key={url} src={url} alt=""/></Carousel.Item>
+          })}
+      </Carousel>
+    </Container>
   )
 }
 

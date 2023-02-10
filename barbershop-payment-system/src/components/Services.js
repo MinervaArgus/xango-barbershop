@@ -64,7 +64,7 @@ const Service = ({arr}) => {
         }
 
 
-        <Card style={{ width: '19rem' }}>
+        <Card style={{ width: '18rem' }}>
           <Card.Body>
             <Card.Title>{arr.item.typeOfService}</Card.Title>
             <Card.Subtitle className="mb-2 text-muted">Precio de Servicio: {numberFormat(arr.item.servicePrice)}</Card.Subtitle>

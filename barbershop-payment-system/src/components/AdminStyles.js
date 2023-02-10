@@ -24,7 +24,7 @@ function AdminStyles() {
     }
   
     return(
-          <Row xs="auto" md={2} lg={3} xl={4} className="g-4 justify-content-md-center">
+          <Row xs="auto" md="auto" lg="auto" xl="auto" className="g-4 justify-content-md-center">
               {imageUrls && imageUrls.map((url) => {
                 return(
                   <Container className="mt-4 mb-2 justify-content-md-center">
