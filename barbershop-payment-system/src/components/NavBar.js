@@ -21,6 +21,9 @@ function NavigationBar () {
                             <Nav.Link href="/HairStyles">View Styles</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
+                            <Nav.Link href="/Products">View Products</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
                             <Nav.Link href="/HairPricing">View Pricing</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
