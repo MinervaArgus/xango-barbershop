@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Service from "../components/ServicesPublic";
 import {collection, onSnapshot, query} from "firebase/firestore"
-import { db } from "../Firebase.js";
+import { db } from "../firebase.js";
 
 const q = query(collection(db, 'hairstylePrices'));
 

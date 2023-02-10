@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { db } from "../Firebase.js";
+import { db } from "../firebase.js";
 import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp } from "firebase/firestore"
 import moment from "moment";
 import { FirebaseError } from "@firebase/util";

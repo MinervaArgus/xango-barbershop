@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import '../styles/NavBar.css';
-import { logout } from "../Firebase.js"
+import { logout } from "../firebase.js"
 
 function AboutUs() {
     return (

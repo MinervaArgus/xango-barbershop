@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import '../styles/NavBar.css';
-import { logout } from "../Firebase.js"
+import { logout } from "../firebase.js"
 
 function Navbar () {
     const location = useLocation();
@@ -26,6 +26,8 @@ function Navbar () {
             <li>
                 <a href="/AboutUs">About Us</a>
             </li>
+
+
             {(location.pathname !== "/AdminLogin" && location.pathname !== "/Admin") && 
                 <li>
                     <a href="/AdminLogin">Admin Dashboard</a>

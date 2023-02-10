@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { List , ListItem, ListItemAvatar, ListItemText, Typography, TextField, Button, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { db } from '../Firebase';
+import { db } from '../firebase';
 
 const Service = ({arr}) => {
   const numberFormat = (value) => new Intl.NumberFormat('en-IN', {style: 'currency', currency: 'EUR'}).format(value);

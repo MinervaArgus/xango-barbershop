@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import '../styles/Admin.css';
 import { useHistory } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { storage, db, auth } from "../Firebase.js"
+import { storage, db, auth } from "../firebase.js"
 import Service from "../components/Services";
 import ProgressBar from "../components/ProgressBar";
 import AdminStyles from "../components/AdminStyles";
