@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { storage, db, auth } from "../Firebase.js"
+import { storage, db, auth } from "../firebase.js"
 import Service from "../components/Services";
 import AdminStyles from "../components/AdminStyles";
 import { ref, uploadBytesResumable } from "firebase/storage";

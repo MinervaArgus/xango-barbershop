@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TextField, Button } from '@mui/material';
-import { db } from "../Firebase.js";
+import { db } from "../firebase.js";
 import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp } from "firebase/firestore"
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';

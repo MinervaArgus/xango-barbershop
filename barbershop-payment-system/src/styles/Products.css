@@ -1,0 +1,15 @@
+#product-imgs{
+    height: 300px;
+}
+#cart-total {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+  }
+  
+  #cart-total i {
+    margin-right: 10px;
+  }
