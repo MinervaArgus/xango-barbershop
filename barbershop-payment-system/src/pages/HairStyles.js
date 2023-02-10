@@ -22,14 +22,18 @@ function HairStyles() {
   return(
     <Container className="my-3">
       <h1>Styles</h1>
-      <Carousel variant="dark" className="my-3">
+      <Carousel
+        nextIcon={<span aria-hidden="true"/>}
+        prevIcon={<span aria-hidden="true"/>}
+        variant="dark" className="my-3">
           {imageUrls && imageUrls.map((url) => {
-            return <Carousel.Item><img style={{height: "300px"}} key={url} src={url} alt=""/></Carousel.Item>
+            return <Carousel.Item><img style={{height: "18rem"}} key={url} src={url} alt=""/></Carousel.Item>
           })}
       </Carousel>
-      <Carousel variant="dark" className="my-3">
+
+      <Carousel indicators={false} variant="dark" className="my-3">
           {imageUrls && imageUrls.map((url) => {
-            return <Carousel.Item><img style={{height: "300px"}} key={url} src={url} alt=""/></Carousel.Item>
+            return <Carousel.Item><img style={{height: "18rem"}} key={url} src={url} alt=""/></Carousel.Item>
           })}
       </Carousel>
     </Container>

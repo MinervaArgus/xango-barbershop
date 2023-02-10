@@ -28,6 +28,7 @@ function Products() {
         });
       });
     });
+    // eslint-disable-next-line
   }, []);
 
   const addToCart = (product) => {
@@ -48,23 +49,23 @@ function Products() {
           {imageUrls && imageUrls.map((url, index) => {
             return (
               <Container className="mt-4 justify-content-md-center">
-              <Col key={url}>
-                <Card style={{ width: '18rem'}}>
-                  <Card.Img variant="top" style={{maxHeight: "300px", width:"100%"}} src={url}/>
-                  <Card.Header style={{fontSize:"1.5rem"}}>
-                    {products[index].name}
-                  </Card.Header>
-                  <Card.Body style={{fontSize:"1.25rem"}}>
-                        €{products[index].price}
-                      <Row className="mt-3">
-                        <Button onClick={() => addToCart(products[index])}>
-                            <FaShoppingCart/>
-                            Add to cart
-                        </Button>
-                      </Row>
-                  </Card.Body>
-                </Card>
-              </Col>
+                <Col key={url}>
+                  <Card style={{width: "18rem"}}>
+                    <Card.Img style={{width: "100%", height: "18rem", objectFit: "contain"}} variant="top" src={url}/>
+                    <Card.Header style={{fontSize:"1.5rem"}}>
+                      {products[index].name}
+                    </Card.Header>
+                    <Card.Body style={{fontSize:"1.25rem"}}>
+                          €{products[index].price}
+                        <Row className="mt-3">
+                          <Button onClick={() => addToCart(products[index])}>
+                              <FaShoppingCart/>
+                              Add to cart
+                          </Button>
+                        </Row>
+                    </Card.Body>
+                  </Card>
+                </Col>
               </Container>
             );
           })}
@@ -76,7 +77,7 @@ function Products() {
       {
           showAddNotif
           ? 
-          (<ToastContainer className="p-3" containerPosition="fixed" position="top-end">
+          (<ToastContainer className="p-3" containerPosition="fixed" position="top-center">
               <Toast onClose={() => setShowAddNotif(false)} show={showAddNotif} delay={5000} autohide>
                   <Toast.Body>Added to Cart!</Toast.Body>
               </Toast>
@@ -90,15 +91,16 @@ function Products() {
           <Modal.Header closeButton>
             <Modal.Title>Shopping Cart</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body className="mx-2">
               {cart.map((product) => (
-                  <Row key={product.id}>
+                  <Row className="m-1" key={product.id}>
                     {product.name} - €{product.price}
                   </Row>
               ))}
           </Modal.Body>
-          <Modal.Footer>
-            Total: €{total.toFixed(2)}
+          <Modal.Footer style={{textAlign: "left"}}>
+            <Col className="mx-2">Total: €{total.toFixed(2)}</Col>
+            
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
