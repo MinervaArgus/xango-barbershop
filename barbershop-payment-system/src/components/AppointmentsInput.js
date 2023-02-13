@@ -9,7 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import { Button, Container, Form, Toast, ToastContainer, Row, Col, InputGroup, ProgressBar } from 'react-bootstrap';
 
-import { TextField, Button } from '@mui/material';
+import { TextField, Buttonn } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -451,13 +451,13 @@ function AppointmentsInput() {
                                 <InputGroup className="my-2">
                                     <Form.Control
                                         type="input"
-                                        name='Name'
+                                        name='name'
                                         placeholder={"Name"}
                                         onChange={changeHandler}
                                     />
                                     <Form.Control
                                         type="input"
-                                        name='Email'
+                                        name='email'
                                         placeholder={"Email"}
                                         onChange={changeHandler}
                                     />
@@ -479,7 +479,7 @@ function AppointmentsInput() {
                                         renderInput={(params) => <TextField {...params} />}
                                     />
                                     {/* ======= */}
-                                    <FormControl required sx={{ m: 1, minWidth: 120, maxHeight: 50 }}>
+                                    {/* <FormControl required sx={{ m: 1, minWidth: 120, maxHeight: 50 }}>
                                         <InputLabel id="demo-simple-select-required-label">Haircut</InputLabel>
                                         <Select
                                             labelId="demo-simple-select-required-label"
@@ -497,10 +497,10 @@ function AppointmentsInput() {
                                                 >{e.typeOfService}</MenuItem>;
                                             })}
                                         </Select>
-                                    </FormControl>
+                                    </FormControl> */}
                                     {/* >>>>>>> email */}
 
-                                    <Form.Select defaultValue={"Desired Time:"} onChange={changeHandler}>
+                                    <Form.Select name="time" defaultValue={"Desired Time:"} onChange={changeHandler}>
                                         <option disabled={true}>Desired Time:</option>
                                         <option disabled={true}>=========</option>
                                         {time.map((e, key) => {
@@ -510,7 +510,7 @@ function AppointmentsInput() {
                                 </InputGroup>
 
                                 <InputGroup className="my-2">
-                                    <Form.Select defaultValue={"Type of Service:"} onChange={changeHandler}>
+                                    <Form.Select name="haircut" defaultValue={"Type of Service:"} onChange={changeHandler}>
                                         <option disabled={true}>Type of Service:</option>
                                         <option disabled={true}>=========</option>
                                         {haircuts.map((e, key) => {
