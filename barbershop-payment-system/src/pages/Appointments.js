@@ -1,20 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { TextField, Button } from '@mui/material';
-import { db } from "../Firebase.js";
-import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp } from "firebase/firestore"
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import React from "react";
+
 import "../styles/Appointments.css";
-import AppointPicker from "../components/AppointPicker.js";
+
 import AppointmentsInput from "../components/AppointmentsInput.js";
 
-//variable for current date
-const current = new Date();
-//format current date
-const date = `${current.getMonth() + 1}-${current.getDate()}-${current.getFullYear()}`;
-//query to get all appointments from db
-const q = query(collection(db, 'appointments')/* , orderBy('timestamp', 'desc') */);
 
 const Appointments = () => {
 

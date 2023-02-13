@@ -9,6 +9,7 @@ import HairStyles from './pages/HairStyles';
 import HairPricing from './pages/StylePricing';
 import AboutUs from './pages/AboutUs';
 import Products from './pages/Products';
+import CheckOut from './pages/CheckOut';
 
 function App() {
   return (
@@ -40,6 +41,9 @@ function App() {
             </Route>
             <Route path="/AboutUs">
               <AboutUs />
+            </Route>
+            <Route path="/checkOut">
+              <CheckOut />
             </Route>
           </Switch>
         </Router>

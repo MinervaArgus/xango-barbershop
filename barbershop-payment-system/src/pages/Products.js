@@ -4,6 +4,7 @@ import { ref, getDownloadURL, getStorage, listAll } from "firebase/storage";
 import '../styles/Products.css';
 import { FaShoppingCart } from "react-icons/fa";
 import { Container, Card, Row, Col, Modal, Button, Toast, ToastContainer } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 
 const products = [
   { id: 1, name: "Product 1", price: 10.00 },
@@ -40,7 +41,7 @@ function Products() {
 
   const total = cart.reduce((acc, product) => acc + product.price, 0);
 
-  return(
+  return (
     <Container className="my-3">
       <h1>Products</h1>
 
@@ -50,19 +51,19 @@ function Products() {
             return (
               <Container className="mt-4 justify-content-md-center">
                 <Col key={url}>
-                  <Card style={{width: "18rem"}}>
-                    <Card.Img style={{width: "100%", height: "18rem", objectFit: "contain"}} variant="top" src={url}/>
-                    <Card.Header style={{fontSize:"1.5rem"}}>
+                  <Card style={{ width: "18rem" }}>
+                    <Card.Img style={{ width: "100%", height: "18rem", objectFit: "contain" }} variant="top" src={url} />
+                    <Card.Header style={{ fontSize: "1.5rem" }}>
                       {products[index].name}
                     </Card.Header>
-                    <Card.Body style={{fontSize:"1.25rem"}}>
-                          €{products[index].price}
-                        <Row className="mt-3">
-                          <Button onClick={() => addToCart(products[index])}>
-                              <FaShoppingCart/>
-                              Add to cart
-                          </Button>
-                        </Row>
+                    <Card.Body style={{ fontSize: "1.25rem" }}>
+                      €{products[index].price}
+                      <Row className="mt-3">
+                        <Button onClick={() => addToCart(products[index])}>
+                          <FaShoppingCart />
+                          Add to cart
+                        </Button>
+                      </Row>
                     </Card.Body>
                   </Card>
                 </Col>
@@ -71,43 +72,48 @@ function Products() {
           })}
         </Row>
       </Container>
-      
-      <Button size="lg" style={{position:"fixed", right:0, bottom:0}} className="m-3" variant="primary" onClick={() => setShowCart(true)}><FaShoppingCart /> Cart</Button>
-      
+
+      <Button size="lg" style={{ position: "fixed", right: 0, bottom: 0 }} className="m-3" variant="primary" onClick={() => setShowCart(true)}><FaShoppingCart /> Cart</Button>
+
       {
-          showAddNotif
-          ? 
+        showAddNotif
+          ?
           (<ToastContainer className="p-3" containerPosition="fixed" position="top-center">
-              <Toast onClose={() => setShowAddNotif(false)} show={showAddNotif} delay={5000} autohide>
-                  <Toast.Body>Added to Cart!</Toast.Body>
-              </Toast>
-          </ToastContainer>) 
-          : 
+            <Toast onClose={() => setShowAddNotif(false)} show={showAddNotif} delay={5000} autohide>
+              <Toast.Body>Added to Cart!</Toast.Body>
+            </Toast>
+          </ToastContainer>)
+          :
           null
       }
 
 
       <Modal show={showCart} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Shopping Cart</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="mx-2">
-              {cart.map((product) => (
-                  <Row className="m-1" key={product.id}>
-                    {product.name} - €{product.price}
-                  </Row>
-              ))}
-          </Modal.Body>
-          <Modal.Footer style={{textAlign: "left"}}>
-            <Col className="mx-2">Total: €{total.toFixed(2)}</Col>
-            
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button variant="primary">
-              Checkout
-            </Button>
-          </Modal.Footer>
+        <Modal.Header closeButton>
+          <Modal.Title>Shopping Cart</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="mx-2">
+          {cart.map((product) => (
+            <Row className="m-1" key={product.id}>
+              {product.name} - €{product.price}
+            </Row>
+          ))}
+        </Modal.Body>
+        <Modal.Footer style={{ textAlign: "left" }}>
+          <Col className="mx-2">Total: €{total.toFixed(2)}</Col>
+
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Link to={{
+            pathname: "/checkOut",
+            state: {
+              amount: total.toFixed(2)
+            }
+          }}> <Button variant="primary" >Checkout</Button></Link>
+
+
+        </Modal.Footer>
       </Modal>
     </Container>
   );

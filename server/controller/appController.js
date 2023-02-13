@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
 require("dotenv").config()
+const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST)
 
 const mail = async (req, res) => {
     const { customerName, to, subject, price, service, date, time, html, sandboxMode = false } = req.body
@@ -59,39 +60,34 @@ const mail = async (req, res) => {
     }).catch(error => {
         return res.status(500).json({ error })
     })
-    /* let testAccount = await nodemailer.createTestAccount();
 
-    let transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
-        auth: {
-            user: testAccount.user,
-            pass: testAccount.pass,
-        }
-    })
-    let message = {
-        from: '"Fred Foo 👻" <foo@example.com>', // sender address
-        to: "bar@example.com, baz@example.com", // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Succes!", // plain text body
-        html: "<b>Succes!</b>", // html body
-    }
+}
 
-    transporter.sendMail(message).then((info) => {
-        return res.status(201).json({
-            msg: "you should receive an email",
-            info: info.messageId,
-            preview: nodemailer.getTestMessageUrl(info)
+const payment = async (req, res) => {
+    let { amount, id } = req.body
+    try {
+        const payment = await stripe.paymentIntents.create({
+            amount,
+            currency: "USD",
+            description: "Spike Payment Example",
+            payment_method: id,
+            confirm: true
         })
-    }).catch(error => {
-        return res.status(500).json({ error })
-    }) */
-
-
-    //res.status(201).json("Mail sent")
+        console.log("Payment", payment);
+        res.json({
+            message: "Payment successful",
+            success: true
+        })
+    } catch (error) {
+        console.log("Error: ", error)
+        res.json({
+            message: "Payment failed",
+            success: false
+        })
+    }
 }
 
 module.exports = {
-    mail
+    mail,
+    payment
 }

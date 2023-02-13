@@ -299,6 +299,7 @@ function AppointmentsInput() {
             eventEnd = undefined;
             setLoading(false);
             setShowSuccess(true);
+
         } else {
             window.alert('Select desired time and date:');
         }
