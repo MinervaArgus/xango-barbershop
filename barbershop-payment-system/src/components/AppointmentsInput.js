@@ -6,10 +6,20 @@ import { collection, onSnapshot, query, addDoc } from "firebase/firestore"
 import moment from "moment";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 import { Button, Container, Form, Toast, ToastContainer, Row, Col, InputGroup, ProgressBar } from 'react-bootstrap';
 
-import { TextField } from '@mui/material';
+import { TextField, Button } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import LinearProgress from '@mui/material/LinearProgress';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import axios from 'axios'
+
 
 require('moment/locale/es.js')
 
@@ -31,7 +41,8 @@ function AppointmentsInput() {
         email: '',
         haircut: '',
         start: '',
-        end: ''
+        end: '',
+        price: ''
     }//initial empty state
 
     //state for appointment to be added to db
@@ -41,7 +52,8 @@ function AppointmentsInput() {
         email: '',
         haircut: '',
         date: '',
-        time: ''
+        time: '',
+        price: ''
     });//appointmment state 
     /* const dateInitial = {};
     const [date, setDate] = useState(''); //date state */
@@ -53,7 +65,8 @@ function AppointmentsInput() {
         email: '',
         haircut: '',
         start: '',
-        end: ''
+        end: '',
+        price: ''
     }]);//raw appointments from db
 
     //state with all the appointments filtered to display them in calendar
@@ -65,6 +78,7 @@ function AppointmentsInput() {
 
     const dateInitial = useState('');
     const [date, setDate] = useState(new Date()); //date state
+    console.log("hoyyy " + date);
 
     const [haircuts, setHaircuts] = useState([{
         id: '',
@@ -98,7 +112,8 @@ function AppointmentsInput() {
                 email: doc.data().email,
                 haircut: doc.data().haircut,
                 start: new Date(doc.data().start),
-                end: new Date(doc.data().end)
+                end: new Date(doc.data().end),
+                price: doc.data().price
             })))
 
             setCalendarAppointments(snapshot.docs.map(doc => ({
@@ -137,7 +152,7 @@ function AppointmentsInput() {
 
     //function to format end date
     function formatEndDate(d, t) {
-        console.log("end date: " + new Date(d).getDay());
+        // console.log("end date: " + new Date(d).getDay());
         let hour = t.slice(0, 2);
         let minutes = t.slice(3, 5);
         let weekDay = new Date(d).getDay();
@@ -169,7 +184,7 @@ function AppointmentsInput() {
                 }
             }
         }//end of if
-        console.log("finished product: " + d + " " + newHour.toString() + ":" + minutes);
+        // console.log("finished product: " + d + " " + newHour.toString() + ":" + minutes);
         return d + " " + newHour.toString() + ":" + minutes;
     }
 
@@ -195,27 +210,27 @@ function AppointmentsInput() {
 
     // eslint-disable-next-line
     const handleSelectSlot = (e) => {
-            // console.log(e.start);
-            // console.log("inside" + JSON.stringify(appointment));
+        // console.log(e.start);
+        // console.log("inside" + JSON.stringify(appointment));
 
-            if (appointment.name.length === 0) {
-                window.alert('Enter name first')
-            } else if (appointment.email.length === 0) {
-                window.alert('Enter email first')
-            } else if (appointment.haircut.length === 0) {
-                window.alert('Enter haircut first')
-            } else {
-                title = appointment.name;
-                var start = e.start;
-                var end = e.end;
-                // eslint-disable-next-line
-                setAppointment({ ...appointment, ["start"]: e.start, ["end"]: e.end })
-                setCalendarAppointments((prev) => [...prev, { title, start, end }])
-                // console.log(JSON.stringify(calendarAppointments));
-            }
-               
-            // console.log("appointment after inside: ", JSON.stringify(appointment));
+        if (appointment.name.length === 0) {
+            window.alert('Enter name first')
+        } else if (appointment.email.length === 0) {
+            window.alert('Enter email first')
+        } else if (appointment.haircut.length === 0) {
+            window.alert('Enter haircut first')
+        } else {
+            title = appointment.name;
+            var start = e.start;
+            var end = e.end;
+            // eslint-disable-next-line
+            setAppointment({ ...appointment, ["start"]: e.start, ["end"]: e.end })
+            setCalendarAppointments((prev) => [...prev, { title, start, end }])
+            // console.log(JSON.stringify(calendarAppointments));
         }
+
+        // console.log("appointment after inside: ", JSON.stringify(appointment));
+    }
 
 
     // eslint-disable-next-line
@@ -249,19 +264,37 @@ function AppointmentsInput() {
 
         let s = formatDateNoTime(date.toString())
         let f = appointment.time
+        let appointPrice = getHaircutPrice(appointment.haircut)
         console.log("s: " + s);
         console.log("date length" + s.length);
         console.log("timelength" + f.length);
+        console.log("current appoint: " + JSON.stringify(appointment));
         if (s.length === 11 && f.length === 5) {
+            try {
+                await addDoc(collection(db, 'appointments'), {
+                    name: appointment.name,
+                    email: appointment.email,
+                    haircut: appointment.haircut,
+                    date: s,
+                    time: f,
+                    price: appointPrice.servicePrice
+                })
+                await axios.post('http://localhost:4000/api/mail', {
+                    customerName: appointment.name,
+                    to: appointment.email,
+                    subject: "Appointment confirmation",
+                    price: appointPrice.servicePrice + "€",
+                    service: appointment.haircut,
+                    date: s,
+                    time: f,
+                    html: '<strong>Some random html code</strong>'
+                });
 
-            await addDoc(collection(db, 'appointments'), {
-                name: appointment.name,
-                email: appointment.email,
-                haircut: appointment.haircut,
-                date: s,
-                time: f
-            })
+            } catch (e) {
+                console.log(e.response.data);
+            }
             setAppointment(initialState);
+            appointPrice = '';
             eventStart = undefined;
             eventEnd = undefined;
             setLoading(false);
@@ -274,22 +307,40 @@ function AppointmentsInput() {
         // setDate('')
     }//addAppointment
 
+    function getHaircutPrice(name) {
+        let haircutData = haircuts.find(haircut => haircut.typeOfService === name)
+
+        if (haircutData === undefined) {
+            console.log("Haircut data doesn't exist for:" + name);
+            return undefined;
+        }
+        return haircutData;
+    }
 
     const changeHandler = e => {
         if (e.target !== undefined) {
-            setAppointment({ ...appointment, [e.target.name]: e.target.value })
+            console.log("haircuts array " + haircuts);
+            if (e.target.name === 'haircut') {
+                let hD = getHaircutPrice(e.target.value)
+                console.log("HD" + hD.servicePrice);
+                // setAppointment({ ...appointment, price: hD.servicePrice })
+                setAppointment({ ...appointment, [e.target.name]: e.target.value })
+            } else {
+                setAppointment({ ...appointment, [e.target.name]: e.target.value })
+            }
         }
-        console.log("handle change: " + JSON.stringify(appointment));
-    } //change handler
 
-    // eslint-disable-next-line
+
+    } //change handler
+    console.log("handle change: " + JSON.stringify(appointment));
+
     const [initTime] = useState(['']);
     const [time, setTime] = useState(filterDefaultTime(new Date().getDay()));
 
     //filter barbershop availability based on current date
     function filterDefaultTime(d) {
         if (d === 1) {//if for Mondays
-            return "closed";
+            return ["closed on mondays"];
             /* if (item.start.toString().slice(20, 25)) {
     
             } */
@@ -306,7 +357,7 @@ function AppointmentsInput() {
         } else if (d === 6) {
             return ['09:30', '10:30', '11:30', '12:30'];
         } else if (d === 0) {
-            return "closed";
+            return ["closed on Sundays"];
         }
     }
     //filter barbershop availability based on selected date
@@ -366,9 +417,9 @@ function AppointmentsInput() {
     const funcDaysClosed = (date) => {
         let d = formatDisabled(new Date(date).toString());
         // console.log("weird: " + date.getTime());
-        console.log("days closed state: " + JSON.stringify(daysClosed));
-        console.log("event date: " + d);
-        console.log("each date from days closed state: " + daysClosed.map((myDate) => new Date(myDate)))
+        // console.log("days closed state: " + JSON.stringify(daysClosed));
+        // console.log("event date: " + d);
+        // console.log("each date from days closed state: " + daysClosed.map((myDate) => new Date(myDate)))
         return daysClosed.map((myDate) => formatDisabled(new Date(myDate).toString())).includes(d)
     }
     return (
@@ -377,7 +428,7 @@ function AppointmentsInput() {
             <Container className="my-3">
 
                 {
-                    loading ? (<ProgressBar striped animated now={"100"}/>) : null
+                    loading ? (<ProgressBar striped animated now={"100"} />) : null
                 }
                 {
                     showSuccess ? (
@@ -390,7 +441,7 @@ function AppointmentsInput() {
                         </ToastContainer>
                     ) : null
                 }
-                
+
                 <h1>Make an appointment</h1>
 
                 <Container>
@@ -398,20 +449,21 @@ function AppointmentsInput() {
                         <Row className="justify-content-md-center">
                             <Col xs md="auto" lg="auto" className="m-2">
                                 <InputGroup className="my-2">
-                                    <Form.Control 
-                                        type="input" 
+                                    <Form.Control
+                                        type="input"
                                         name='Name'
-                                        placeholder={"Name"} 
+                                        placeholder={"Name"}
                                         onChange={changeHandler}
                                     />
-                                    <Form.Control 
-                                        type="input" 
+                                    <Form.Control
+                                        type="input"
                                         name='Email'
-                                        placeholder={"Email"} 
+                                        placeholder={"Email"}
                                         onChange={changeHandler}
                                     />
                                 </InputGroup>
 
+                                {/* <<<<<<< HEAD */}
                                 <InputGroup className="my-2">
                                     <DesktopDatePicker
                                         required
@@ -426,6 +478,27 @@ function AppointmentsInput() {
                                         shouldDisableDate={funcDaysClosed}  // Date Filter
                                         renderInput={(params) => <TextField {...params} />}
                                     />
+                                    {/* ======= */}
+                                    <FormControl required sx={{ m: 1, minWidth: 120, maxHeight: 50 }}>
+                                        <InputLabel id="demo-simple-select-required-label">Haircut</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-required-label"
+                                            id="demo-simple-select-required"
+                                            // value={haircuts}
+                                            name="haircut"
+                                            autoWidth
+                                            label="Haircut *"
+                                            onChange={changeHandler}
+                                        >
+                                            {haircuts.map((e, key) => {
+                                                return <MenuItem
+                                                    key={key}
+                                                    value={e.typeOfService || ''}
+                                                >{e.typeOfService}</MenuItem>;
+                                            })}
+                                        </Select>
+                                    </FormControl>
+                                    {/* >>>>>>> email */}
 
                                     <Form.Select defaultValue={"Desired Time:"} onChange={changeHandler}>
                                         <option disabled={true}>Desired Time:</option>
@@ -435,7 +508,7 @@ function AppointmentsInput() {
                                         })}
                                     </Form.Select>
                                 </InputGroup>
-                                
+
                                 <InputGroup className="my-2">
                                     <Form.Select defaultValue={"Type of Service:"} onChange={changeHandler}>
                                         <option disabled={true}>Type of Service:</option>
@@ -444,7 +517,7 @@ function AppointmentsInput() {
                                             return <option key={key} value={e.typeOfService || ''}>{e.typeOfService}</option>;
                                         })}
                                     </Form.Select>
-                                    <Button as="input" type="submit" onClick={addAppointment} value="Make Appointment"/>
+                                    <Button as="input" type="submit" onClick={addAppointment} value="Make Appointment" />
                                 </InputGroup>
                             </Col>
                         </Row>
