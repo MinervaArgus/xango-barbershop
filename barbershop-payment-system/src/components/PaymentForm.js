@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import axios from "axios";
+import { Container, Form, Row, Button } from "react-bootstrap";
 // import { useHistory } from "react-router-dom";
 
 const CARD_OPTIONS = {
@@ -27,7 +28,7 @@ export default function PaymentForm(props) {
     const [success, setSuccess] = useState(false)
     const stripe = useStripe()
     const elements = useElements()
-    const delay = ms => new Promise(res => setTimeout(res, ms));
+    // const delay = ms => new Promise(res => setTimeout(res, ms));
     // const history = useHistory();
 
     const handleSubmit = async (e) => {
@@ -59,18 +60,21 @@ export default function PaymentForm(props) {
     return (
         <>
             {!success ?
-                <form onSubmit={handleSubmit}>
-                    <fieldset className="FormGroup">
-                        <div className="FormRow">
-                            <CardElement options={CARD_OPTIONS} />
-                        </div>
-                    </fieldset>
-                    <button>Pay</button>
-                </form>
+                <Container className="my-3">
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group className="FormGroup">
+                            <Row className="FormRow">
+                                <CardElement options={CARD_OPTIONS} />
+                            </Row>
+                        </Form.Group>
+                        <Button>Pay</Button>
+                    </Form>
+                </Container>
                 :
-                <div>
-                    <h2>You just paid</h2>
-                </div>
+                <Container>
+                    <h2>You just paid: </h2>
+                </Container>
+                
             }
         </>
     )

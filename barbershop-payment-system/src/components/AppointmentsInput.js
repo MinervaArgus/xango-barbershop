@@ -464,42 +464,14 @@ function AppointmentsInput() {
                                     />
                                 </InputGroup>
 
-                                {/* <<<<<<< HEAD */}
                                 <InputGroup className="my-2">
-                                    <DesktopDatePicker
-                                        required
-                                        id="outlined-basic"
-                                        variant="outlined"
-                                        name="date"
-                                        minDate={today}
-                                        size="small"
-                                        value={date}
-                                        //(d) => new Date(d).getTime() === new Date('2022-11-11T00:00').getTime()
-                                        onChange={handleDateChange}
-                                        shouldDisableDate={funcDaysClosed}  // Date Filter
-                                        renderInput={(params) => <TextField {...params} />}
-                                    />
-                                    {/* ======= */}
-                                    {/* <FormControl required sx={{ m: 1, minWidth: 120, maxHeight: 50 }}>
-                                        <InputLabel id="demo-simple-select-required-label">Haircut</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-required-label"
-                                            id="demo-simple-select-required"
-                                            // value={haircuts}
-                                            name="haircut"
-                                            autoWidth
-                                            label="Haircut *"
-                                            onChange={changeHandler}
-                                        >
-                                            {haircuts.map((e, key) => {
-                                                return <MenuItem
-                                                    key={key}
-                                                    value={e.typeOfService || ''}
-                                                >{e.typeOfService}</MenuItem>;
-                                            })}
-                                        </Select>
-                                    </FormControl> */}
-                                    {/* >>>>>>> email */}
+                                    <Form.Select name="haircut" defaultValue={"Type of Service:"} onChange={changeHandler}>
+                                        <option disabled={true}>Type of Service:</option>
+                                        <option disabled={true}>=========</option>
+                                        {haircuts.map((e, key) => {
+                                            return <option key={key} value={e.typeOfService || ''}>{e.typeOfService}</option>;
+                                        })}
+                                    </Form.Select>
 
                                     <Form.Select name="time" defaultValue={"Desired Time:"} onChange={changeHandler}>
                                         <option disabled={true}>Desired Time:</option>
@@ -511,13 +483,21 @@ function AppointmentsInput() {
                                 </InputGroup>
 
                                 <InputGroup className="my-2">
-                                    <Form.Select name="haircut" defaultValue={"Type of Service:"} onChange={changeHandler}>
-                                        <option disabled={true}>Type of Service:</option>
-                                        <option disabled={true}>=========</option>
-                                        {haircuts.map((e, key) => {
-                                            return <option key={key} value={e.typeOfService || ''}>{e.typeOfService}</option>;
-                                        })}
-                                    </Form.Select>
+                                    <DesktopDatePicker
+                                        required
+                                        id="outlined-basic"
+                                        variant="outlined"
+                                        name="date"
+                                        minDate={today}
+                                        size="small"
+                                        value={date}
+                                        label="Date of Appointment"
+                                        //(d) => new Date(d).getTime() === new Date('2022-11-11T00:00').getTime()
+                                        onChange={handleDateChange}
+                                        shouldDisableDate={funcDaysClosed}  // Date Filter
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+
                                     <Button as="input" type="submit" onClick={addAppointment} value="Make Appointment" />
                                 </InputGroup>
                             </Col>
