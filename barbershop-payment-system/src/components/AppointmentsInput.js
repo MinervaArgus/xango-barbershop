@@ -482,7 +482,7 @@ function AppointmentsInput() {
                                     </Form.Select>
                                 </InputGroup>
 
-                                <InputGroup className="my-2">
+                                <Container>
                                     <DesktopDatePicker
                                         required
                                         id="outlined-basic"
@@ -497,9 +497,9 @@ function AppointmentsInput() {
                                         shouldDisableDate={funcDaysClosed}  // Date Filter
                                         renderInput={(params) => <TextField {...params} />}
                                     />
+                                </Container>
 
-                                    <Button as="input" type="submit" onClick={addAppointment} value="Make Appointment" />
-                                </InputGroup>
+                                <Button className="my-2" as="input" type="submit" onClick={addAppointment} value="Make Appointment" />
                             </Col>
                         </Row>
                     </Form>
