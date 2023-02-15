@@ -21,6 +21,7 @@ function Products() {
   const imagesListRef = ref(storage, "images/Products/");
 
 
+  // Sort by date
   useEffect(() => {
     listAll(imagesListRef).then((response) => {
       response.items.forEach((item) => {
