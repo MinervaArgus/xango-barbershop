@@ -97,6 +97,7 @@ function Products() {
           {cart.map((product) => (
             <Row className="m-1" key={product.id}>
               {product.name} - €{product.price}
+              <Button variant= "danger" onClick={() => deleteFromCart(product.id)}>X</Button>
             </Row>
           ))}
         </Modal.Body>
@@ -118,6 +119,18 @@ function Products() {
       </Modal>
     </Container>
   );
+
+function deleteFromCart(id) {
+  // [] if an object meets a condition, add the object to array
+  // [product1, product2, product3]
+  // [product1, product3]
+  setCart(
+      cart =>
+      cart.filter(currentProduct => {
+          return currentProduct.id !== id;
+      })  
+  )
+}
 }
 
 export default Products;
