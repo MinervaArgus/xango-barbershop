@@ -60,8 +60,10 @@ export default function PaymentForm(props) {
     return (
         <>
             {!success ?
-                <Container className="my-3">
+                // <<<<<<< Updated upstream
+                /* =======
                     <Form onSubmit={handleSubmit}>
+                        <h1>Please introduce your Card details:</h1>
                         <Form.Group className="FormGroup">
                             <Row className="FormRow">
                                 <CardElement options={CARD_OPTIONS} />
@@ -69,12 +71,25 @@ export default function PaymentForm(props) {
                         </Form.Group>
                         <Button>Pay</Button>
                     </Form>
+                
+                >>>>>>> Stashed changes */
+                <Container className="my-3">
+                    <form onSubmit={handleSubmit}>
+                        <h1>Please introduce your Card details:</h1>
+                        <fieldset className="FormGroup">
+                            <div className="FormRow">
+                                <CardElement options={CARD_OPTIONS} />
+                            </div>
+                        </fieldset>
+                        <button>Pay</button>
+                    </form>
                 </Container>
+
                 :
                 <Container>
                     <h2>You just paid: </h2>
                 </Container>
-                
+
             }
         </>
     )

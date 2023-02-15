@@ -6,9 +6,8 @@ import { collection, onSnapshot, query, addDoc } from "firebase/firestore"
 import moment from "moment";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
+import { Link, useNa } from "react-router-dom";
 import { Button, Container, Form, Toast, ToastContainer, Row, Col, InputGroup, ProgressBar } from 'react-bootstrap';
-
 import { TextField, Buttonn } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import FormControl from '@mui/material/FormControl';
@@ -19,6 +18,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import axios from 'axios'
+import { Redirect, useHistory } from "react-router-dom"
 
 
 require('moment/locale/es.js')
@@ -26,6 +26,7 @@ require('moment/locale/es.js')
 const localizer = momentLocalizer(moment);
 
 function AppointmentsInput() {
+    let history = useHistory();
     const [showSuccess, setShowSuccess] = useState(false);
 
     const current = new Date();
@@ -40,9 +41,11 @@ function AppointmentsInput() {
         name: '',
         email: '',
         haircut: '',
-        start: '',
-        end: '',
-        price: ''
+        date: '',
+        time: '',
+        price: '',
+        paymentType: '',
+        paid: ''
     }//initial empty state
 
     //state for appointment to be added to db
@@ -53,7 +56,9 @@ function AppointmentsInput() {
         haircut: '',
         date: '',
         time: '',
-        price: ''
+        price: '',
+        paymentType: '',
+        paid: ''
     });//appointmment state 
     /* const dateInitial = {};
     const [date, setDate] = useState(''); //date state */
@@ -64,9 +69,11 @@ function AppointmentsInput() {
         name: '',
         email: '',
         haircut: '',
-        start: '',
-        end: '',
-        price: ''
+        date: '',
+        time: '',
+        price: '',
+        paymentType: '',
+        paid: ''
     }]);//raw appointments from db
 
     //state with all the appointments filtered to display them in calendar
@@ -113,7 +120,9 @@ function AppointmentsInput() {
                 haircut: doc.data().haircut,
                 start: new Date(doc.data().start),
                 end: new Date(doc.data().end),
-                price: doc.data().price
+                price: doc.data().price,
+                paymentType: doc.data().paymentType,
+                paid: doc.data().paid
             })))
 
             setCalendarAppointments(snapshot.docs.map(doc => ({
@@ -264,8 +273,8 @@ function AppointmentsInput() {
 
         let s = formatDateNoTime(date.toString())
         let f = appointment.time
-        let appointPrice = getHaircutPrice(appointment.haircut)
-        console.log("s: " + s);
+        // let appointPrice = getHaircutPrice(appointment.haircut)
+        console.log("sss: " + s);
         console.log("date length" + s.length);
         console.log("timelength" + f.length);
         console.log("current appoint: " + JSON.stringify(appointment));
@@ -277,13 +286,15 @@ function AppointmentsInput() {
                     haircut: appointment.haircut,
                     date: s,
                     time: f,
-                    price: appointPrice.servicePrice
+                    price: appointment.price,
+                    paymentType: appointment.paymentType,
+                    paid: appointment.paid
                 })
                 await axios.post('http://localhost:4000/api/mail', {
                     customerName: appointment.name,
                     to: appointment.email,
                     subject: "Appointment confirmation",
-                    price: appointPrice.servicePrice + "€",
+                    price: appointment.price + "€",
                     service: appointment.haircut,
                     date: s,
                     time: f,
@@ -293,15 +304,32 @@ function AppointmentsInput() {
             } catch (e) {
                 console.log(e.response.data);
             }
+            if (appointment.paymentType === 'online') {
+                console.log("estamo activo");
+                /* return <Redirect to={{
+                    pathname: "/checkOut",
+                    state: {
+                        amount: appointment.price
+                    }
+                }} /> */
+                history.push({
+                    pathname: "/checkOut",
+                    state: {
+                        amount: appointment.price
+                    }
+                });
+            }
             setAppointment(initialState);
-            appointPrice = '';
+            // appointPrice = '';
             eventStart = undefined;
             eventEnd = undefined;
             setLoading(false);
             setShowSuccess(true);
 
         } else {
-            window.alert('Select desired time and date:');
+            window.alert('Select desired time:');
+            setLoading(false);
+            setShowSuccess(false);
         }
         // setDate(dateInitial);
 
@@ -325,7 +353,18 @@ function AppointmentsInput() {
                 let hD = getHaircutPrice(e.target.value)
                 console.log("HD" + hD.servicePrice);
                 // setAppointment({ ...appointment, price: hD.servicePrice })
-                setAppointment({ ...appointment, [e.target.name]: e.target.value })
+                setAppointment({ ...appointment, [e.target.name]: e.target.value, price: hD.servicePrice })
+            } else if (e.target.name === 'paymentType') {
+                if (e.target.value === 'store') {
+                    console.log("paymentType value: " + e.target.value);
+                    setAppointment({ ...appointment, [e.target.name]: e.target.value, paid: "false" })
+
+                } else if (e.target.value === 'online') {
+                    console.log("paymentType value: " + e.target.value);
+                    setAppointment({ ...appointment, [e.target.name]: e.target.value, paid: "true" })
+                    /* setAppointment({ ...appointment, paid: "true" }) */
+                    //wont be 100% paid until stripe payment goes thru, but we leave it like that for now.
+                }
             } else {
                 setAppointment({ ...appointment, [e.target.name]: e.target.value })
             }
@@ -426,25 +465,24 @@ function AppointmentsInput() {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             {/* <ThemeProvider theme={theme}> */}
+
+
+            {
+                loading ? (<ProgressBar striped animated now={"100"} />) : null
+            }
+            {
+                showSuccess ? (
+                    <ToastContainer className="p-3" containerPosition="fixed" position="top-end">
+                        <Toast show={showSuccess} onClose={() => setShowSuccess(false)} autohide delay={5000}>
+                            <Toast.Body onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                                Appointment added!
+                            </Toast.Body>
+                        </Toast>
+                    </ToastContainer>
+                ) : null
+            }
             <Container className="my-3">
-
-                {
-                    loading ? (<ProgressBar striped animated now={"100"} />) : null
-                }
-                {
-                    showSuccess ? (
-                        <ToastContainer className="p-3" containerPosition="fixed" position="top-end">
-                            <Toast show={showSuccess} onClose={() => setShowSuccess(false)} autohide delay={5000}>
-                                <Toast.Body onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                                    Appointment added!
-                                </Toast.Body>
-                            </Toast>
-                        </ToastContainer>
-                    ) : null
-                }
-
                 <h1>Make an appointment</h1>
-
                 <Container>
                     <Form>
                         <Row className="justify-content-md-center">
@@ -462,9 +500,10 @@ function AppointmentsInput() {
                                         placeholder={"Email"}
                                         onChange={changeHandler}
                                     />
-                                </InputGroup>
 
-                                <InputGroup className="my-2">
+
+                                </InputGroup>
+                                {/*<InputGroup className="my-2">
                                     <Form.Select name="haircut" defaultValue={"Type of Service:"} onChange={changeHandler}>
                                         <option disabled={true}>Type of Service:</option>
                                         <option disabled={true}>=========</option>
@@ -472,17 +511,10 @@ function AppointmentsInput() {
                                             return <option key={key} value={e.typeOfService || ''}>{e.typeOfService}</option>;
                                         })}
                                     </Form.Select>
+                                </InputGroup>  */}
+                                <InputGroup className="my-2">
 
-                                    <Form.Select name="time" defaultValue={"Desired Time:"} onChange={changeHandler}>
-                                        <option disabled={true}>Desired Time:</option>
-                                        <option disabled={true}>=========</option>
-                                        {time.map((e, key) => {
-                                            return <option key={key} value={e || ''}>{e}</option>;
-                                        })}
-                                    </Form.Select>
-                                </InputGroup>
-
-                                <Container>
+                                    {/* <Container> */}
                                     <DesktopDatePicker
                                         required
                                         id="outlined-basic"
@@ -497,9 +529,39 @@ function AppointmentsInput() {
                                         shouldDisableDate={funcDaysClosed}  // Date Filter
                                         renderInput={(params) => <TextField {...params} />}
                                     />
-                                </Container>
+                                    {/* </Container> */}
+                                    <Form.Select name="time" defaultValue={"Desired Time:"} id="desiredTime" onChange={changeHandler}>
+                                        <option disabled={true}>Desired Time:</option>
+                                        <option disabled={true}>=========</option>
+                                        {time.map((e, key) => {
+                                            return <option key={key} value={e || ''}>{e}</option>;
+                                        })}
+                                    </Form.Select>
+                                </InputGroup>
 
+                                {/* <<<<<<< Updated upstream */}
+
+                                {/*
                                 <Button className="my-2" as="input" type="submit" onClick={addAppointment} value="Make Appointment" />
+======= */}
+                                <InputGroup className="my-2">
+                                    <Form.Select name="haircut" defaultValue={"Type of Service:"} onChange={changeHandler}>
+                                        <option disabled={true}>Type of Service:</option>
+                                        <option disabled={true}>=========</option>
+                                        {haircuts.map((e, key) => {
+                                            return <option key={key} value={e.typeOfService || ''}>{e.typeOfService}</option>;
+                                        })}
+                                    </Form.Select>
+                                    <Form.Select name="paymentType" defaultValue={"Payment format:"} onChange={changeHandler}>
+                                        <option disabled={true}>Payment format:</option>
+                                        <option disabled={true}>=========</option>
+                                        <option value='store'>Pay in store</option>
+                                        <option value='online'>Pay Online</option>
+                                    </Form.Select>
+                                </InputGroup>
+                                <Button as="input" type="submit" onClick={addAppointment} value="Make Appointment" />
+
+                                {/* >>>>>>> Stashed changes */}
                             </Col>
                         </Row>
                     </Form>
@@ -508,13 +570,7 @@ function AppointmentsInput() {
 
             <Container className="my-4">
                 <Calendar
-                    /* components={
-                        {
-                            timeSlotWrapper: new Date()
-                        }
-                    } */
 
-                    // selectable
                     localizer={localizer}
                     events={calendarAppointments}
                     defaultDate={new Date()}

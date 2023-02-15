@@ -11,11 +11,19 @@ export default function CheckOut() {
     const { amount } = location.state
 
     return (
+        // <<<<<<< Updated upstream
         <Container className='my-4'>
             {showItem ? <StripeContainer amount={amount} />
-             :
-            <> <h3>${amount}</h3> 
-                <Button id="StripeButton" onClick={() => setShowItem(true)}>Purchase</Button></>}
+                :
+                <> <h3>${amount}</h3>
+                    <Button id="StripeButton" onClick={() => setShowItem(true)}>Purchase</Button></>}
         </Container>
+        /* =======
+                <div>
+        
+                    {showItem ? <StripeContainer amount={amount} /> : <> <h3>${amount}</h3> <button onClick={() =>
+                        setShowItem(true)}>Purchase</button></>}
+                </div>
+        >>>>>>> Stashed changes */
     );
 }
