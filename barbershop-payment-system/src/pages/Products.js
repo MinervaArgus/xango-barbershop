@@ -96,17 +96,22 @@ function Products() {
         <Modal.Body className="mx-2">
           {cart.map((product) => (
             <Row className="m-1" key={product.id}>
-              {product.name} - €{product.price}
-              <Button variant= "danger" onClick={() => deleteFromCart(product.id)}>X</Button>
+              <Col>
+                {product.name} - €{product.price}
+              </Col>
+              
+              <Col>
+                <Button variant= "danger" onClick={() => deleteFromCart(product.id)}>Remove From Cart</Button>
+              </Col>
             </Row>
           ))}
         </Modal.Body>
         <Modal.Footer style={{ textAlign: "left" }}>
-          <Col className="mx-2">Total: €{total.toFixed(2)}</Col>
+          <Col className="mx-2">
+            Total: €{total.toFixed(2)}
+          </Col>
 
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
+          <Button variant="secondary" onClick={handleClose}>Close</Button>
           <Link to={{
             pathname: "/checkOut",
             state: {
