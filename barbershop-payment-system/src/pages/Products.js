@@ -100,6 +100,11 @@ function Products() {
                 {product.name} - €{product.price}
               </Col>
               
+              {/* <Col>
+                <Button>-</Button>
+                <Button>+</Button>
+              </Col> */}
+              
               <Col>
                 <Button variant= "danger" onClick={() => deleteFromCart(product.id)}>Remove From Cart</Button>
               </Col>
