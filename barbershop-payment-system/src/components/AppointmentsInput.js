@@ -491,18 +491,8 @@ function AppointmentsInput() {
 
 
                                 </InputGroup>
-                                {/*<InputGroup className="my-2">
-                                    <Form.Select name="haircut" defaultValue={"Type of Service:"} onChange={changeHandler}>
-                                        <option disabled={true}>Type of Service:</option>
-                                        <option disabled={true}>=========</option>
-                                        {haircuts.map((e, key) => {
-                                            return <option key={key} value={e.typeOfService || ''}>{e.typeOfService}</option>;
-                                        })}
-                                    </Form.Select>
-                                </InputGroup>  */}
-                                <InputGroup className="my-2">
 
-                                    {/* <Container> */}
+                                <InputGroup className="my-2">
                                     <DesktopDatePicker
                                         required
                                         id="outlined-basic"
@@ -517,7 +507,7 @@ function AppointmentsInput() {
                                         shouldDisableDate={funcDaysClosed}  // Date Filter
                                         renderInput={(params) => <TextField {...params} />}
                                     />
-                                    {/* </Container> */}
+                                    
                                     <Form.Select name="time" defaultValue={"Desired Time:"} id="desiredTime" onChange={changeHandler}>
                                         <option disabled={true}>Desired Time:</option>
                                         <option disabled={true}>=========</option>
@@ -527,11 +517,6 @@ function AppointmentsInput() {
                                     </Form.Select>
                                 </InputGroup>
 
-                                {/* <<<<<<< Updated upstream */}
-
-                                {/*
-                                <Button className="my-2" as="input" type="submit" onClick={addAppointment} value="Make Appointment" />
-======= */}
                                 <InputGroup className="my-2">
                                     <Form.Select name="haircut" defaultValue={"Type of Service:"} onChange={changeHandler}>
                                         <option disabled={true}>Type of Service:</option>
@@ -548,8 +533,6 @@ function AppointmentsInput() {
                                     </Form.Select>
                                 </InputGroup>
                                 <Button as="input" type="submit" onClick={addAppointment} value="Make Appointment" />
-
-                                {/* >>>>>>> Stashed changes */}
                             </Col>
                         </Row>
                     </Form>
