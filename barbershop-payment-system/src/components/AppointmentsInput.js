@@ -1,29 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Calendar, momentLocalizer } from 'react-big-calendar'
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { db } from "../Firebase.js";
 import { collection, onSnapshot, query, addDoc } from "firebase/firestore"
-import moment from "moment";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Link, useNa } from "react-router-dom";
 import { Button, Container, Form, Toast, ToastContainer, Row, Col, InputGroup, ProgressBar } from 'react-bootstrap';
-import { TextField, Buttonn } from '@mui/material';
+import { TextField } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import LinearProgress from '@mui/material/LinearProgress';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import axios from 'axios'
-import { Redirect, useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 
 
 require('moment/locale/es.js')
-
-const localizer = momentLocalizer(moment);
 
 function AppointmentsInput() {
     let history = useHistory();
@@ -566,27 +554,6 @@ function AppointmentsInput() {
                         </Row>
                     </Form>
                 </Container>
-            </Container>
-
-            <Container className="my-4">
-                <Calendar
-
-                    localizer={localizer}
-                    events={calendarAppointments}
-                    defaultDate={new Date()}
-                    defaultView="week"
-                    style={{ height: "75vh" }}
-                    messages={{
-                        next: ">",
-                        previous: "<",
-                        today: "Hoy",
-                        month: "Mes",
-                        week: "Semana",
-                        day: "Día"
-                    }}
-                // onSelectEvent={handleSelectEvent}
-                // onSelectSlot={handleSelectSlot}
-                />
             </Container>
             {/* </ThemeProvider> */}
         </LocalizationProvider>

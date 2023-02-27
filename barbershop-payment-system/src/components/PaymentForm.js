@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import axios from "axios";
-import { Container, Form, Row, Button } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 // import { useHistory } from "react-router-dom";
 
 const CARD_OPTIONS = {
