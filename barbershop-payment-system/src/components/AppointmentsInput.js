@@ -267,31 +267,6 @@ function AppointmentsInput() {
         console.log("timelength" + f.length);
         console.log("current appoint: " + JSON.stringify(appointment));
         if (s.length === 11 && f.length === 5) {
-            try {
-                await addDoc(collection(db, 'appointments'), {
-                    name: appointment.name,
-                    email: appointment.email,
-                    haircut: appointment.haircut,
-                    date: s,
-                    time: f,
-                    price: appointment.price,
-                    paymentType: appointment.paymentType,
-                    paid: appointment.paid
-                })
-                await axios.post('http://localhost:4000/api/mail', {
-                    customerName: appointment.name,
-                    to: appointment.email,
-                    subject: "Appointment confirmation",
-                    price: appointment.price + "€",
-                    service: appointment.haircut,
-                    date: s,
-                    time: f,
-                    html: '<strong>Some random html code</strong>'
-                });
-
-            } catch (e) {
-                console.log(e.response.data);
-            }
             if (appointment.paymentType === 'online') {
                 console.log("estamo activo");
                 /* return <Redirect to={{
@@ -303,9 +278,38 @@ function AppointmentsInput() {
                 history.push({
                     pathname: "/checkOut",
                     state: {
-                        amount: appointment.price
+                        // amount: appointment.price,
+                        appointment,
+                        date: s,
+                        time: f
                     }
                 });
+            } else if (appointment.paymentType === 'store') {
+                try {
+                    await addDoc(collection(db, 'appointments'), {
+                        name: appointment.name,
+                        email: appointment.email,
+                        haircut: appointment.haircut,
+                        date: s,
+                        time: f,
+                        price: appointment.price,
+                        paymentType: appointment.paymentType,
+                        paid: appointment.paid
+                    })
+                    await axios.post('http://localhost:4000/api/mail', {
+                        customerName: appointment.name,
+                        to: appointment.email,
+                        subject: "Appointment confirmation",
+                        price: appointment.price + "€",
+                        service: appointment.haircut,
+                        date: s,
+                        time: f,
+                        html: '<strong>Some random html code</strong>'
+                    });
+
+                } catch (e) {
+                    console.log(e.response.data);
+                }
             }
             setAppointment(initialState);
             // appointPrice = '';
@@ -507,7 +511,7 @@ function AppointmentsInput() {
                                         shouldDisableDate={funcDaysClosed}  // Date Filter
                                         renderInput={(params) => <TextField {...params} />}
                                     />
-                                    
+
                                     <Form.Select name="time" defaultValue={"Desired Time:"} id="desiredTime" onChange={changeHandler}>
                                         <option disabled={true}>Desired Time:</option>
                                         <option disabled={true}>=========</option>
