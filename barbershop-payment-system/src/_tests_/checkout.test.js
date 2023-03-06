@@ -14,9 +14,6 @@ describe('Checkout Tests', function() {
         const service = new chrome.ServiceBuilder(path).build();
         chrome.setDefaultService(service);
         driver = await new Builder().forBrowser('chrome').setChromeOptions(options).build();
-    });
-
-    after(async function () {
         await driver.quit();
     });
 
