@@ -1,40 +1,45 @@
-const assert = require('assert');
-const { Builder, By, Key, until } = require('selenium-webdriver');
-const { render, fireEvent, waitFor, getByText, getByRole, getByLabelText } = require('@testing-library/react');
-const { expect } = require('chai');
+// Test cases modified by Jackson Nevins from a copy of the original tests that Elijah Doss made.
+const { Builder, By } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
-const path = require('chromedriver').path;
-const options = new chrome.Options();
-options.addArguments('--headless');
+const path = require('chromedriver').path.replace(/\.bin/, ''); //After many hours of troubleshooting i realized that the default path was adding a .bin folder where there was none so i fixed it by doing this. - JN
+const options = new chrome.Options().headless();
 
-describe('Checkout Tests', function() {
-    let driver;
 
-    before(async function() {
-        const service = new chrome.ServiceBuilder(path).build();
-        chrome.setDefaultService(service);
-        driver = await new Builder().forBrowser('chrome').setChromeOptions(options).build();
-        await driver.quit();
-    });
+let driver;
 
-    it('should show the amount on load', async function () {
-        await driver.get('http://localhost:3000/checkout');
-        const amount = await driver.findElement(By.tagName('h3')).getText();
-        assert.equal(amount, '$10');
-    });
+beforeAll(async () => {
+  console.log('Creating WebDriver instance...');
+  driver = await new Builder()
+    .forBrowser('chrome')
+    .setChromeOptions(options)
+    .build();
+  console.log('WebDriver instance created successfully.');
+});
 
-    it('should show the purchase button', async function () {
-        await driver.get('http://localhost:3000/checkout');
-        const amount = await driver.findElement(By.id('StripeButton'));
-        assert.notEqual(button, null);
-    });
+afterAll(async () => {
+  if (driver !== undefined) {
+    console.log('Quitting WebDriver instance...');
+    await driver.quit();
+    console.log('WebDriver instance quit successfully.');
+  }
+});
 
-    it('should show the payment form on button click', async function () {
-        await driver.get('http://localhost:3000/checkout');
-        const amount = await driver.findElement(By.id('StripeButton'));
-        await button.click();
-        const form = await driver.findElement(By.tagName('form'));
-        assert.notEqual(form, null);
-    });
+it('should show the amount on load', async () => {
+  await driver.get('http://localhost:3000/checkOut');
+  const amount = await driver.findElement(By.tagName('h3')).getText();
+  expect(amount).toEqual('$10');
+});
 
-})
+it('should show the purchase button', async () => {
+  await driver.get('http://localhost:3000/checkOut');
+  const button = await driver.findElement(By.id('StripeButton'));
+  expect(button).not.toBeNull();
+});
+
+it('should show the payment form on button click', async () => {
+  await driver.get('http://localhost:3000/checkOut');
+  const button = await driver.findElement(By.id('StripeButton'));
+  await button.click();
+  const form = await driver.findElement(By.tagName('form'));
+  expect(form).not.toBeNull();
+});
