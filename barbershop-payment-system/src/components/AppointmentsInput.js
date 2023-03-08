@@ -7,8 +7,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Button, Container, Form, Toast, ToastContainer, Row, Col, InputGroup, ProgressBar } from 'react-bootstrap';
 import { TextField } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import axios from 'axios'
-import { useHistory } from "react-router-dom"
+import axios from 'axios';
+import { useHistory } from "react-router-dom";
+import uuid from 'react-uuid';
 
 
 require('moment/locale/es.js')
@@ -61,7 +62,8 @@ function AppointmentsInput() {
         time: '',
         price: '',
         paymentType: '',
-        paid: ''
+        paid: '',
+        appointmentID: ''
     }]);//raw appointments from db
 
     //state with all the appointments filtered to display them in calendar
@@ -250,15 +252,17 @@ function AppointmentsInput() {
         var d = date.slice(4, 15);
         return d;
     }
+    function generateID() {
+        let id = uuid();
+        console.log(`iddd`, id);
+        setAppointment({ ...appointment, appointmentID: id });
 
+    }
+    console.log(`appointment id: `, appointment.id);
     const addAppointment = async (e) => {
         setLoading(true);
         e.preventDefault();
-        //if date is not undefined, add date to appointment state
-        /* if (date !== '') {
-            setAppointment({ ...appointment, [date]: date.toString() })
-        } */ //not working right now, but should be the way to do it
-
+        let id = uuid();
         let s = formatDateNoTime(date.toString())
         let f = appointment.time
         // let appointPrice = getHaircutPrice(appointment.haircut)
@@ -269,19 +273,14 @@ function AppointmentsInput() {
         if (s.length === 11 && f.length === 5) {
             if (appointment.paymentType === 'online') {
                 console.log("estamo activo");
-                /* return <Redirect to={{
-                    pathname: "/checkOut",
-                    state: {
-                        amount: appointment.price
-                    }
-                }} /> */
                 history.push({
                     pathname: "/checkOut",
                     state: {
                         // amount: appointment.price,
                         appointment,
                         date: s,
-                        time: f
+                        time: f,
+                        appointmentID: id
                     }
                 });
             } else if (appointment.paymentType === 'store') {
@@ -294,7 +293,8 @@ function AppointmentsInput() {
                         time: f,
                         price: appointment.price,
                         paymentType: appointment.paymentType,
-                        paid: appointment.paid
+                        paid: appointment.paid,
+                        appointmentID: id
                     })
                     await axios.post('http://localhost:4000/api/mail', {
                         customerName: appointment.name,
@@ -304,7 +304,7 @@ function AppointmentsInput() {
                         service: appointment.haircut,
                         date: s,
                         time: f,
-                        html: '<strong>Some random html code</strong>'
+                        appointmentID: id
                     });
 
                 } catch (e) {
@@ -541,6 +541,10 @@ function AppointmentsInput() {
                         </Row>
                     </Form>
                 </Container>
+            </Container>
+            <Container className="my-3">
+                <h4>Already have an Appointment?</h4>
+                <a id="link" href="/appointmentStatus">Find my appointment</a>
             </Container>
             {/* </ThemeProvider> */}
         </LocalizationProvider>

@@ -65,3 +65,5 @@ button#button-basic {
     height: 50px;
     margin-top: 5%;
 }
+#link { color: #b3b3b3; } 
+#link:hover { color: #4f4e4e; } 

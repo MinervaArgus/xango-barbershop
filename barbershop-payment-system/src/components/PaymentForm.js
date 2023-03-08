@@ -42,7 +42,7 @@ export default function PaymentForm(props) {
         if (!error) {
             try {
                 const { id } = paymentMethod
-                console.log("log: " + props.appointment.price);
+                console.log("log stripe id: " + id);
                 const response = await axios.post("http://localhost:4000/api/payment", {
                     amount: props.appointment.price * 100,
                     id
