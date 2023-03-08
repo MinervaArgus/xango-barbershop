@@ -108,11 +108,12 @@ function AppointmentsInput() {
                 name: doc.data().name,
                 email: doc.data().email,
                 haircut: doc.data().haircut,
-                start: new Date(doc.data().start),
-                end: new Date(doc.data().end),
+                date: doc.data().date,
+                time: doc.data().time,
                 price: doc.data().price,
                 paymentType: doc.data().paymentType,
-                paid: doc.data().paid
+                paid: doc.data().paid,
+                appointmentID: doc.data().appointmentID || ''
             })))
 
             setCalendarAppointments(snapshot.docs.map(doc => ({
@@ -125,7 +126,7 @@ function AppointmentsInput() {
             // snapshot.docs.map(doc => { filterAppointments(doc) }) */
         })
 
-        //get all haircutsn from db
+        //get all haircuts from db
         onSnapshot(q2, (snapshot) => {
             setHaircuts(snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -141,11 +142,11 @@ function AppointmentsInput() {
             ])))
         })
 
-        filterTime();
+        // filterTime();
         // eslint-disable-next-line
     }, []);//useEffect
 
-    console.log("depues de setAllAppointments: " + JSON.stringify(allAppointments));
+    console.log("despues de setAllAppointments: " + JSON.stringify(allAppointments));
     console.log("calendar appointments: " + JSON.stringify(calendarAppointments));
     console.log("haircuts: " + JSON.stringify(haircuts));
 
@@ -259,6 +260,7 @@ function AppointmentsInput() {
 
     }
     console.log(`appointment id: `, appointment.id);
+
     const addAppointment = async (e) => {
         setLoading(true);
         e.preventDefault();
@@ -392,8 +394,43 @@ function AppointmentsInput() {
             return ["closed on Sundays"];
         }
     }
+
+    function checkIf2(day) {
+        let todayAppointments = [];
+        console.log("hoy: ", day);
+        allAppointments.map((appointment) => {
+            console.log("appointmennt date: ", appointment.date);
+            if (appointment.date === day) {
+                todayAppointments.push(appointment);
+            }
+        })
+        console.log("today app: ", todayAppointments);
+        const unique = [];
+        let count = 0;
+        for (const item of todayAppointments) {
+            console.log("item time:", item.time);
+            const isDuplicate = todayAppointments.find((obj) => {
+                console.log("obj time:", obj.time, "item time: ", item.time)
+                if (obj.time === item.time) {
+                    count++;
+                    console.log("count", count);
+                } if (count === 2) {
+                    if (!unique.includes(item.time)) {
+                        unique.push(item.time);
+                        count = 0;
+                    }
+                }
+            }
+            );
+        }
+        console.log("unique: ", unique);
+        return unique;
+    }
     //filter barbershop availability based on selected date
     function filterTime(e) {
+        console.log("la e: ", e);
+        let schedule = [];
+        let notAvailableTimes = checkIf2(e);
         // console.log("date change: " + e);
         let d = new Date(e).getDay();
         // setTime(initTime);
@@ -406,21 +443,39 @@ function AppointmentsInput() {
     
             } */
         } else if (d === 2) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'])
+            schedule = ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'];
+            schedule = removeRepeatedTimes(schedule, notAvailableTimes)
+            setTime(schedule);
         } else if (d === 3) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'])
+            schedule = ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'];
+            schedule = removeRepeatedTimes(schedule, notAvailableTimes)
+            setTime(schedule);
         } else if (d === 4) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
-                '16:30', '17:30'])
+            schedule = ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
+                '16:30', '17:30'];
+            schedule = removeRepeatedTimes(schedule, notAvailableTimes)
+            setTime(schedule);
         } else if (d === 5) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
-                '16:30', '17:30'])
+            schedule = ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
+                '16:30', '17:30'];
+            schedule = removeRepeatedTimes(schedule, notAvailableTimes)
+            setTime(schedule);
         } else if (d === 6) {
-            setTime(['09:30', '10:30', '11:30', '12:30'])
+            schedule = ['09:30', '10:30', '11:30', '12:30'];
+            schedule = removeRepeatedTimes(schedule, notAvailableTimes)
+            setTime(schedule);
         } else if (d === 0) {
             setTime(["closed"])
         }
         console.log("time state: " + JSON.stringify(time));
+    }
+
+    function removeRepeatedTimes(initialSchedule, notAvailableTimes) {
+        let schedule = initialSchedule;
+        notAvailableTimes.map((time) => {
+            schedule = schedule.filter(e => e !== time);
+        });
+        return schedule;
     }
 
     //todays date
@@ -429,10 +484,10 @@ function AppointmentsInput() {
     //handles date change
     const handleDateChange = (e) => {
         console.log("selected date: " + new Date(e));
-        setDate(dateInitial);
+        // setDate(dateInitial);
         setDate(new Date(e));
         console.log("date state" + JSON.stringify(date));
-        filterTime(e);
+        filterTime(formatDateNoTime(new Date(e).toString()));
     }
     //state for loading (true while appointment is getting written to DB)
     const [loading, setLoading] = useState(false);
@@ -456,9 +511,6 @@ function AppointmentsInput() {
     }
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {/* <ThemeProvider theme={theme}> */}
-
-
             {
                 loading ? (<ProgressBar striped animated now={"100"} />) : null
             }
@@ -516,7 +568,9 @@ function AppointmentsInput() {
                                         <option disabled={true}>Desired Time:</option>
                                         <option disabled={true}>=========</option>
                                         {time.map((e, key) => {
+                                            // if (e.length = 0) {
                                             return <option key={key} value={e || ''}>{e}</option>;
+                                            // }
                                         })}
                                     </Form.Select>
                                 </InputGroup>
