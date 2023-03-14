@@ -9,9 +9,9 @@ import { Container } from 'react-bootstrap';
 const Appointments = () => {
 
     return (
-        <Container className="my-3">
-            <AppointmentsInput />
-        </Container>
+
+        <AppointmentsInput />
+
     );
 }//appointment function
 

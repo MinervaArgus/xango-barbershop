@@ -94,67 +94,70 @@ export default function AppointmentStatus() {
     console.log('appointments: ', JSON.stringify(appointments), "appointments lenght: ", appointments.length);
 
     return (
-        <Container className="my-3">
+        <div>
             {
                 loading ? (<ProgressBar striped animated now={"100"} />) : null
             }
-            <Form>
-                <Row className="justify-content-md-center">
-                    <h1>Enter your appointment details:</h1>
-                </Row>
-                <Row className="justify-content-md-center">
-                    <Col xs md="5" lg="5" className="m-2">
-                        <InputGroup className="my-2">
-                            <Form.Control
-                                className="text-center"
-                                type="input"
-                                name='email'
-                                placeholder={"Email"}
-                                value={input.email}
-                                onChange={changeHandler}
-                            />
-                            <Form.Control
-                                className="text-center"
-                                type="input"
-                                name='id'
-                                placeholder={"ID"}
-                                value={input.id}
-                                onChange={changeHandler}
-                            />
-                        </InputGroup>
-                    </Col>
-                </Row>
-                <Row className="justify-content-md-center">
-                    <Col xs md="auto" lg="auto" className="m-2">
-                        <Button as="input" type="submit" onClick={checkAppointment} value="Check Appointment" />
-                    </Col>
-                </Row>
-            </Form>
 
-            {
-                canceled ?
-                    <h3>Appointment succesfully canceled</h3>
-                    :
-                    appointments.length >= 1 ? // appointments.map((appointment, i) => { 
+            <Container className="my-3">
+                <Form>
+                    <Row className="justify-content-md-center">
+                        <h1>Enter your appointment details:</h1>
+                    </Row>
+                    <Row className="justify-content-md-center">
+                        <Col xs md="5" lg="5" className="m-2">
+                            <InputGroup className="my-2">
+                                <Form.Control
+                                    className="text-center"
+                                    type="input"
+                                    name='email'
+                                    placeholder={"Email"}
+                                    value={input.email}
+                                    onChange={changeHandler}
+                                />
+                                <Form.Control
+                                    className="text-center"
+                                    type="input"
+                                    name='id'
+                                    placeholder={"ID"}
+                                    value={input.id}
+                                    onChange={changeHandler}
+                                />
+                            </InputGroup>
+                        </Col>
+                    </Row>
+                    <Row className="justify-content-md-center">
+                        <Col xs md="auto" lg="auto" className="m-2">
+                            <Button as="input" type="submit" onClick={checkAppointment} value="Check Appointment" />
+                        </Col>
+                    </Row>
+                </Form>
 
-                        <Table striped bordered hover >
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Service</th>
-                                    <th>Time</th>
-                                    <th>Price</th>
-                                    <th>Cancel</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {appointments.map(renderAppointment)}
-                            </tbody>
-                        </Table>
+                {
+                    canceled ?
+                        <h3>Appointment succesfully canceled</h3>
+                        :
+                        appointments.length >= 1 ? // appointments.map((appointment, i) => { 
 
-                        //  }) 
-                        : ''
-            }
-        </Container>
+                            <Table striped bordered hover >
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Service</th>
+                                        <th>Time</th>
+                                        <th>Price</th>
+                                        <th>Cancel</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {appointments.map(renderAppointment)}
+                                </tbody>
+                            </Table>
+
+                            //  }) 
+                            : ''
+                }
+            </Container>
+        </div>
     );
 }

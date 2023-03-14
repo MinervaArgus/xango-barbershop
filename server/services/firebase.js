@@ -4,29 +4,24 @@ const { getStorage } = require('firebase-admin/storage');
 const { getAuth, signInWithEmailAndPassword, signOut } = require("firebase-admin/auth");
 
 var admin = require("firebase-admin");
-
 var serviceAccount = require("../bsp-project-e1b90-9f45af3d1217.json");
+const { initializeApp } = require('firebase-admin');
+const { cert } = require('firebase-admin/app');
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: `bsp-project-e1b90.appspot.com`
 });
 
+/* initializeApp({
+    credential: cert(serviceAccount),
+    storageBucket: `bsp-project-e1b90.appspot.com`
+});
+ */
 const db = admin.firestore();
+console.log("aqui");
+const storage = getStorage();
+console.log("aqui2");
 
-/* const firebaseConfig = {
-    apiKey: "AIzaSyCGRSnrD_xkU1V7wIuaoA_WsSOhAvwzICk",
-    authDomain: "bsp-project-e1b90.firebaseapp.com",
-    projectId: "bsp-project-e1b90",
-    storageBucket: "bsp-project-e1b90.appspot.com",
-    messagingSenderId: "600531881070",
-    appId: "1:600531881070:web:b4da5d05cd9308f03e2a7f",
-    measurementId: "G-X5SN3D1RP2"
-}; */
 
-// Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-/* const storage = getStorage(admin);
-const auth = getAuth(admin); */
-// const db = getFirestore(admin);
-
-module.exports = { /* auth, storage,  */db }
+module.exports = { /* auth, */storage, db }

@@ -10,7 +10,7 @@ import HairPricing from './pages/StylePricing';
 import AboutUs from './pages/AboutUs';
 import Products from './pages/Products';
 import CheckOut from './pages/CheckOut';
-import AppointmentStatus from './components/AppointmentStatus';
+import AppointmentStatus from './pages/AppointmentStatus';
 
 function App() {
   return (

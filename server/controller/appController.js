@@ -1,4 +1,5 @@
-const { db } = require('../services/firebase');
+const { db, storage } = require('../services/firebase');
+const { ref, getDownloadURL, getStorage, listAll } = require('@firebase/storage')
 const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
 require("dotenv").config()
@@ -120,11 +121,6 @@ const checkAppointment = async (req, res) => {
     } catch (error) {
         res.send(error);
     }
-    /*  snapshot.forEach(doc => {
-         console.log(doc.id, '=>', doc.data());
-         appointmentList.push(doc.data());
-     })
-     res.send(appointmentList) */
 }
 
 const cancelAppointment = async (req, res) => {
@@ -144,9 +140,29 @@ const cancelAppointment = async (req, res) => {
     }
 }
 
+const getProducts = async (req, res) => {
+    console.log("hola");
+    const imagesListRef = ref(storage, "images/Products/");
+    console.log("imagesListRef", imagesListRef);
+    let imagesURL = [];
+    try {
+        await listAll(imagesListRef).then((response) => {
+            response.items.forEach((item) => {
+                getDownloadURL(item).then((url) => {
+                    imagesURL.push(url);
+                });
+            });
+        });
+        res.send(imagesURL);
+    } catch (error) {
+        res.send(error);
+    }
+}
+
 module.exports = {
     mail,
     payment,
     checkAppointment,
-    cancelAppointment
+    cancelAppointment,
+    getProducts
 }

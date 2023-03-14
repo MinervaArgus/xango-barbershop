@@ -5,6 +5,7 @@ import '../styles/Products.css';
 import { FaShoppingCart } from "react-icons/fa";
 import { Container, Card, Row, Col, Modal, Button, Toast, ToastContainer } from 'react-bootstrap';
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const products = [
   { id: 1, name: "Product 1", price: 10.00 },
@@ -23,16 +24,21 @@ function Products() {
 
   // Sort by date
   useEffect(() => {
-    listAll(imagesListRef).then((response) => {
+    /* listAll(imagesListRef).then((response) => {
       response.items.forEach((item) => {
         getDownloadURL(item).then((url) => {
           setImageUrls((prev) => [...prev, url]);
         });
       });
-    });
+    }); */
+    axios.get('http://localhost:4000/api/getProducts')
+      .then(res => {
+        console.log("response: ", res);
+        // setImageUrls(res)
+      })
     // eslint-disable-next-line
   }, []);
-
+  console.log("imageURL: ", imageUrls);
   const addToCart = (product) => {
     setCart([...cart, product]);
     setShowAddNotif(true);
@@ -50,7 +56,7 @@ function Products() {
         <Row xs="auto" md={2} lg={3} xl={4} className="g-4 justify-content-md-center">
           {imageUrls && imageUrls.map((url, index) => {
             return (
-              <Container className="mt-4 justify-content-md-center">
+              <Container key={index} className="mt-4 justify-content-md-center">
                 <Col key={url}>
                   <Card style={{ width: "18rem" }}>
                     <Card.Img style={{ width: "100%", height: "18rem", objectFit: "contain" }} variant="top" src={url} />
@@ -99,14 +105,14 @@ function Products() {
               <Col>
                 {product.name} - €{product.price}
               </Col>
-              
+
               {/* <Col>
                 <Button>-</Button>
                 <Button>+</Button>
               </Col> */}
-              
+
               <Col>
-                <Button variant= "danger" onClick={() => deleteFromCart(product.id)}>Remove From Cart</Button>
+                <Button variant="danger" onClick={() => deleteFromCart(product.id)}>Remove From Cart</Button>
               </Col>
             </Row>
           ))}
@@ -130,17 +136,17 @@ function Products() {
     </Container>
   );
 
-function deleteFromCart(id) {
-  // [] if an object meets a condition, add the object to array
-  // [product1, product2, product3]
-  // [product1, product3]
-  setCart(
+  function deleteFromCart(id) {
+    // [] if an object meets a condition, add the object to array
+    // [product1, product2, product3]
+    // [product1, product3]
+    setCart(
       cart =>
-      cart.filter(currentProduct => {
+        cart.filter(currentProduct => {
           return currentProduct.id !== id;
-      })  
-  )
-}
+        })
+    )
+  }
 }
 
 export default Products;
