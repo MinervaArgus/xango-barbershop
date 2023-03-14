@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import axios from "axios";
 import { Container } from "react-bootstrap";
+import { db } from "../Firebase.js";
+import { collection, addDoc } from "firebase/firestore"
 // import { useHistory } from "react-router-dom";
 
 const CARD_OPTIONS = {
@@ -40,12 +42,14 @@ export default function PaymentForm(props) {
         if (!error) {
             try {
                 const { id } = paymentMethod
+                console.log("log stripe id: " + id);
                 const response = await axios.post("http://localhost:4000/api/payment", {
-                    amount: props.amount * 100,
+                    amount: props.appointment.price * 100,
                     id
                 })
                 if (response.data.success) {
                     console.log("Succesful payment")
+                    completeAppointmet()
                     setSuccess(true)
                     // await delay(5000)
                     // history.push("/home")
@@ -54,7 +58,34 @@ export default function PaymentForm(props) {
                 console.log("Error: ", error);
             }
         } else {
-            console.log(error.message);
+            console.log("Error: " + error.message);
+        }
+    }
+    const completeAppointmet = async (e) => {
+        try {
+            await addDoc(collection(db, 'appointments'), {
+                name: props.appointment.name,
+                email: props.appointment.email,
+                haircut: props.appointment.haircut,
+                date: props.date,
+                time: props.time,
+                price: props.appointment.price,
+                paymentType: props.appointment.paymentType,
+                paid: props.appointment.paid
+            })
+            await axios.post('http://localhost:4000/api/mail', {
+                customerName: props.appointment.name,
+                to: props.appointment.email,
+                subject: "Appointment confirmation",
+                price: props.appointment.price + "€",
+                service: props.appointment.haircut,
+                date: props.date,
+                time: props.time,
+                html: '<strong>Some random html code</strong>'
+            });
+
+        } catch (e) {
+            console.log(e.response.data);
         }
     }
     return (

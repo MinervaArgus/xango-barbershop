@@ -7,8 +7,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Button, Container, Form, Toast, ToastContainer, Row, Col, InputGroup, ProgressBar } from 'react-bootstrap';
 import { TextField } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import axios from 'axios'
-import { useHistory } from "react-router-dom"
+import axios from 'axios';
+import { useHistory } from "react-router-dom";
+import uuid from 'react-uuid';
 
 
 require('moment/locale/es.js')
@@ -61,7 +62,8 @@ function AppointmentsInput() {
         time: '',
         price: '',
         paymentType: '',
-        paid: ''
+        paid: '',
+        appointmentID: ''
     }]);//raw appointments from db
 
     //state with all the appointments filtered to display them in calendar
@@ -106,11 +108,12 @@ function AppointmentsInput() {
                 name: doc.data().name,
                 email: doc.data().email,
                 haircut: doc.data().haircut,
-                start: new Date(doc.data().start),
-                end: new Date(doc.data().end),
+                date: doc.data().date,
+                time: doc.data().time,
                 price: doc.data().price,
                 paymentType: doc.data().paymentType,
-                paid: doc.data().paid
+                paid: doc.data().paid,
+                appointmentID: doc.data().appointmentID || ''
             })))
 
             setCalendarAppointments(snapshot.docs.map(doc => ({
@@ -123,7 +126,7 @@ function AppointmentsInput() {
             // snapshot.docs.map(doc => { filterAppointments(doc) }) */
         })
 
-        //get all haircutsn from db
+        //get all haircuts from db
         onSnapshot(q2, (snapshot) => {
             setHaircuts(snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -139,11 +142,11 @@ function AppointmentsInput() {
             ])))
         })
 
-        filterTime();
+        // filterTime();
         // eslint-disable-next-line
     }, []);//useEffect
 
-    console.log("depues de setAllAppointments: " + JSON.stringify(allAppointments));
+    console.log("despues de setAllAppointments: " + JSON.stringify(allAppointments));
     console.log("calendar appointments: " + JSON.stringify(calendarAppointments));
     console.log("haircuts: " + JSON.stringify(haircuts));
 
@@ -250,15 +253,18 @@ function AppointmentsInput() {
         var d = date.slice(4, 15);
         return d;
     }
+    function generateID() {
+        let id = uuid();
+        console.log(`iddd`, id);
+        setAppointment({ ...appointment, appointmentID: id });
+
+    }
+    console.log(`appointment id: `, appointment.id);
 
     const addAppointment = async (e) => {
         setLoading(true);
         e.preventDefault();
-        //if date is not undefined, add date to appointment state
-        /* if (date !== '') {
-            setAppointment({ ...appointment, [date]: date.toString() })
-        } */ //not working right now, but should be the way to do it
-
+        let id = uuid();
         let s = formatDateNoTime(date.toString())
         let f = appointment.time
         // let appointPrice = getHaircutPrice(appointment.haircut)
@@ -267,45 +273,45 @@ function AppointmentsInput() {
         console.log("timelength" + f.length);
         console.log("current appoint: " + JSON.stringify(appointment));
         if (s.length === 11 && f.length === 5) {
-            try {
-                await addDoc(collection(db, 'appointments'), {
-                    name: appointment.name,
-                    email: appointment.email,
-                    haircut: appointment.haircut,
-                    date: s,
-                    time: f,
-                    price: appointment.price,
-                    paymentType: appointment.paymentType,
-                    paid: appointment.paid
-                })
-                await axios.post('http://localhost:4000/api/mail', {
-                    customerName: appointment.name,
-                    to: appointment.email,
-                    subject: "Appointment confirmation",
-                    price: appointment.price + "€",
-                    service: appointment.haircut,
-                    date: s,
-                    time: f,
-                    html: '<strong>Some random html code</strong>'
-                });
-
-            } catch (e) {
-                console.log(e.response.data);
-            }
             if (appointment.paymentType === 'online') {
                 console.log("estamo activo");
-                /* return <Redirect to={{
-                    pathname: "/checkOut",
-                    state: {
-                        amount: appointment.price
-                    }
-                }} /> */
                 history.push({
                     pathname: "/checkOut",
                     state: {
-                        amount: appointment.price
+                        // amount: appointment.price,
+                        appointment,
+                        date: s,
+                        time: f,
+                        appointmentID: id
                     }
                 });
+            } else if (appointment.paymentType === 'store') {
+                try {
+                    await addDoc(collection(db, 'appointments'), {
+                        name: appointment.name,
+                        email: appointment.email,
+                        haircut: appointment.haircut,
+                        date: s,
+                        time: f,
+                        price: appointment.price,
+                        paymentType: appointment.paymentType,
+                        paid: appointment.paid,
+                        appointmentID: id
+                    })
+                    await axios.post('http://localhost:4000/api/mail', {
+                        customerName: appointment.name,
+                        to: appointment.email,
+                        subject: "Appointment confirmation",
+                        price: appointment.price + "€",
+                        service: appointment.haircut,
+                        date: s,
+                        time: f,
+                        appointmentID: id
+                    });
+
+                } catch (e) {
+                    console.log(e.response.data);
+                }
             }
             setAppointment(initialState);
             // appointPrice = '';
@@ -388,8 +394,43 @@ function AppointmentsInput() {
             return ["closed on Sundays"];
         }
     }
+
+    function checkIf2(day) {
+        let todayAppointments = [];
+        console.log("hoy: ", day);
+        allAppointments.map((appointment) => {
+            console.log("appointmennt date: ", appointment.date);
+            if (appointment.date === day) {
+                todayAppointments.push(appointment);
+            }
+        })
+        console.log("today app: ", todayAppointments);
+        const unique = [];
+        let count = 0;
+        for (const item of todayAppointments) {
+            console.log("item time:", item.time);
+            const isDuplicate = todayAppointments.find((obj) => {
+                console.log("obj time:", obj.time, "item time: ", item.time)
+                if (obj.time === item.time) {
+                    count++;
+                    console.log("count", count);
+                } if (count === 2) {
+                    if (!unique.includes(item.time)) {
+                        unique.push(item.time);
+                        count = 0;
+                    }
+                }
+            }
+            );
+        }
+        console.log("unique: ", unique);
+        return unique;
+    }
     //filter barbershop availability based on selected date
     function filterTime(e) {
+        console.log("la e: ", e);
+        let schedule = [];
+        let notAvailableTimes = checkIf2(e);
         // console.log("date change: " + e);
         let d = new Date(e).getDay();
         // setTime(initTime);
@@ -402,21 +443,39 @@ function AppointmentsInput() {
     
             } */
         } else if (d === 2) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'])
+            schedule = ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'];
+            schedule = removeRepeatedTimes(schedule, notAvailableTimes)
+            setTime(schedule);
         } else if (d === 3) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'])
+            schedule = ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'];
+            schedule = removeRepeatedTimes(schedule, notAvailableTimes)
+            setTime(schedule);
         } else if (d === 4) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
-                '16:30', '17:30'])
+            schedule = ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
+                '16:30', '17:30'];
+            schedule = removeRepeatedTimes(schedule, notAvailableTimes)
+            setTime(schedule);
         } else if (d === 5) {
-            setTime(['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
-                '16:30', '17:30'])
+            schedule = ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:30',
+                '16:30', '17:30'];
+            schedule = removeRepeatedTimes(schedule, notAvailableTimes)
+            setTime(schedule);
         } else if (d === 6) {
-            setTime(['09:30', '10:30', '11:30', '12:30'])
+            schedule = ['09:30', '10:30', '11:30', '12:30'];
+            schedule = removeRepeatedTimes(schedule, notAvailableTimes)
+            setTime(schedule);
         } else if (d === 0) {
             setTime(["closed"])
         }
         console.log("time state: " + JSON.stringify(time));
+    }
+
+    function removeRepeatedTimes(initialSchedule, notAvailableTimes) {
+        let schedule = initialSchedule;
+        notAvailableTimes.map((time) => {
+            schedule = schedule.filter(e => e !== time);
+        });
+        return schedule;
     }
 
     //todays date
@@ -425,10 +484,10 @@ function AppointmentsInput() {
     //handles date change
     const handleDateChange = (e) => {
         console.log("selected date: " + new Date(e));
-        setDate(dateInitial);
+        // setDate(dateInitial);
         setDate(new Date(e));
         console.log("date state" + JSON.stringify(date));
-        filterTime(e);
+        filterTime(formatDateNoTime(new Date(e).toString()));
     }
     //state for loading (true while appointment is getting written to DB)
     const [loading, setLoading] = useState(false);
@@ -452,9 +511,6 @@ function AppointmentsInput() {
     }
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {/* <ThemeProvider theme={theme}> */}
-
-
             {
                 loading ? (<ProgressBar striped animated now={"100"} />) : null
             }
@@ -507,12 +563,14 @@ function AppointmentsInput() {
                                         shouldDisableDate={funcDaysClosed}  // Date Filter
                                         renderInput={(params) => <TextField {...params} />}
                                     />
-                                    
+
                                     <Form.Select name="time" defaultValue={"Desired Time:"} id="desiredTime" onChange={changeHandler}>
                                         <option disabled={true}>Desired Time:</option>
                                         <option disabled={true}>=========</option>
                                         {time.map((e, key) => {
+                                            // if (e.length = 0) {
                                             return <option key={key} value={e || ''}>{e}</option>;
+                                            // }
                                         })}
                                     </Form.Select>
                                 </InputGroup>
@@ -537,6 +595,10 @@ function AppointmentsInput() {
                         </Row>
                     </Form>
                 </Container>
+            </Container>
+            <Container className="my-3">
+                <h4>Already have an Appointment?</h4>
+                <a id="link" href="/appointmentStatus">Find my appointment</a>
             </Container>
             {/* </ThemeProvider> */}
         </LocalizationProvider>

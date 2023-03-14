@@ -8,14 +8,17 @@ import { Container, Button } from 'react-bootstrap'
 export default function CheckOut() {
     const [showItem, setShowItem] = useState(false)
     const location = useLocation()
-    const { amount } = location.state
+    const { appointment, date, time } = location.state
 
     return (
         // <<<<<<< Updated upstream
         <Container className='my-4'>
-            {showItem ? <StripeContainer amount={amount} />
+            {showItem ? <StripeContainer
+                appointment={appointment}
+                date={date}
+                time={time} />
                 :
-                <> <h3>${amount}</h3>
+                <> <h3>${appointment.price}</h3>
                     <Button id="StripeButton" onClick={() => setShowItem(true)}>Purchase</Button></>}
         </Container>
         /* =======

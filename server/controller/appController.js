@@ -1,11 +1,13 @@
+const { db, storage } = require('../services/firebase');
+const { ref, getDownloadURL, getStorage, listAll } = require('@firebase/storage')
 const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
 require("dotenv").config()
 const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST)
 
 const mail = async (req, res) => {
-    const { customerName, to, subject, price, service, date, time, html, sandboxMode = false } = req.body
-    console.log(to, price, service);
+    const { customerName, to, subject, price, service, date, time, appointmentID } = req.body
+    console.log(customerName, to, subject, price, service, date, time, appointmentID);
     let config = {
         service: 'gmail',
         auth: {
@@ -20,7 +22,7 @@ const mail = async (req, res) => {
         theme: "default",
         product: {
             name: "Peluquería Xango",
-            link: "https://mailgen.js/"
+            link: "http://localhost:3000/appointmentStatus"
         }
     })
 
@@ -28,7 +30,7 @@ const mail = async (req, res) => {
         body: {
             // name: "Appointment Confirmed",
             greeting: customerName + ", your appointment has been confirmed",
-            intro: "Appointment details: ",
+            intro: `Appointment ID: ${appointmentID}\nAppointment details: `,
             table: {
                 data: [
                     {
@@ -39,7 +41,7 @@ const mail = async (req, res) => {
                     }
                 ]
             },
-            outro: "See you soon,",
+            outro: `See you soon!`,
             signature: false
         }
     }
@@ -55,7 +57,7 @@ const mail = async (req, res) => {
 
     transporter.sendMail(message).then(() => {
         return res.status(201).json({
-            msg: "you should receive an email"
+            msg: "You should receive an email"
         })
     }).catch(error => {
         return res.status(500).json({ error })
@@ -68,12 +70,12 @@ const payment = async (req, res) => {
     try {
         const payment = await stripe.paymentIntents.create({
             amount,
-            currency: "USD",
-            description: "Spike Payment Example",
+            currency: "eur",
+            description: "Pago Peluquería Xango",
             payment_method: id,
             confirm: true
         })
-        console.log("Payment", payment);
+        console.log("Payment ID: ", id, "Payment", payment);
         res.json({
             message: "Payment successful",
             success: true
@@ -87,7 +89,80 @@ const payment = async (req, res) => {
     }
 }
 
+const checkAppointment = async (req, res) => {
+    let { email, id } = req.params
+    console.log(email, id);
+    try {
+        const appointmentsRef = db.collection('appointments')
+        const snapshot = await appointmentsRef.where('email', '==', `${email}`).where('appointmentID', '==', `${id}`).get();
+        if (snapshot.empty) {
+            console.log('No matching results');
+            res.send('No matching results');
+            return;
+        }
+        let snapshotArr = []
+        snapshot.forEach(doc => {
+            // console.log(doc.data().paymentType);
+            let appointment = {
+                id: doc.id,
+                name: doc.data().name,
+                email: doc.data().email,
+                haircut: doc.data().haircut,
+                date: doc.data().date,
+                time: doc.data().time,
+                price: doc.data().price,
+                paymentType: doc.data().paymentType,
+                paid: doc.data().paid
+            }
+            snapshotArr.push(appointment);
+        });
+
+        res.send(snapshotArr)
+    } catch (error) {
+        res.send(error);
+    }
+}
+
+const cancelAppointment = async (req, res) => {
+    let { email, id } = req.params;
+
+    try {
+        const appointmentRef = db.collection('appointments').where('email', '==', `${email}`).where('appointmentID', '==', `${id}`);
+        appointmentRef.get().then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+                doc.ref.delete();
+            })
+        })
+        res.send("success");
+    } catch (error) {
+        console.log(error);
+        res.send("Unable to cancel appointment");
+    }
+}
+
+const getProducts = async (req, res) => {
+    console.log("hola");
+    const imagesListRef = ref(storage, "images/Products/");
+    console.log("imagesListRef", imagesListRef);
+    let imagesURL = [];
+    try {
+        await listAll(imagesListRef).then((response) => {
+            response.items.forEach((item) => {
+                getDownloadURL(item).then((url) => {
+                    imagesURL.push(url);
+                });
+            });
+        });
+        res.send(imagesURL);
+    } catch (error) {
+        res.send(error);
+    }
+}
+
 module.exports = {
     mail,
-    payment
+    payment,
+    checkAppointment,
+    cancelAppointment,
+    getProducts
 }
