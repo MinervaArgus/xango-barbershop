@@ -11,17 +11,12 @@ import axios from 'axios';
 import { useHistory } from "react-router-dom";
 import uuid from 'react-uuid';
 
-
 require('moment/locale/es.js')
 
 function AppointmentsInput() {
     let history = useHistory();
     const [showSuccess, setShowSuccess] = useState(false);
-
-    const current = new Date();
-    let currentDate = current.toJSON();
-    // eslint-disable-next-line
-    const todaysDate = currentDate.slice(0, 10);
+    const [validated, setValidated] = useState(false);
 
     // eslint-disable-next-line
     var title, email, haircut;
@@ -75,7 +70,7 @@ function AppointmentsInput() {
 
     const dateInitial = useState('');
     const [date, setDate] = useState(new Date()); //date state
-    console.log("hoyyy " + date);
+    // console.log("hoyyy " + date);
 
     const [haircuts, setHaircuts] = useState([{
         id: '',
@@ -93,7 +88,17 @@ function AppointmentsInput() {
     const q3 = query(collection(db, 'daysClosed'));
 
     //state for days closed
-    const [daysClosed, setDaysClosed] = useState(['']);
+    const [daysClosed, setDaysClosed] = useState(new Date().toJSON().slice(0,10));
+
+    const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        setValidated(true);
+    }
 
     //get all the appointments from db
     useEffect(() => {
@@ -101,7 +106,7 @@ function AppointmentsInput() {
         onSnapshot(q, (snapshot) => {
             // eslint-disable-next-line
             snapshot.docs.map(doc => {
-                console.log("docu: " + new Date(doc.data().start));
+                //console.log("docu: " + new Date(doc.data().start));
             })
             setAllAppointments(snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -138,7 +143,7 @@ function AppointmentsInput() {
         //get all disabled dates from db
         onSnapshot(q3, (snapshot) => {
             setDaysClosed(snapshot.docs.map(doc => ([
-                new Date(doc.data().date)
+                doc.data().date
             ])))
         })
 
@@ -146,9 +151,9 @@ function AppointmentsInput() {
         // eslint-disable-next-line
     }, []);//useEffect
 
-    console.log("despues de setAllAppointments: " + JSON.stringify(allAppointments));
-    console.log("calendar appointments: " + JSON.stringify(calendarAppointments));
-    console.log("haircuts: " + JSON.stringify(haircuts));
+    // console.log("despues de setAllAppointments: " + JSON.stringify(allAppointments));
+    // console.log("calendar appointments: " + JSON.stringify(calendarAppointments));
+    // console.log("haircuts: " + JSON.stringify(haircuts));
 
     //function to format end date
     function formatEndDate(d, t) {
@@ -203,7 +208,7 @@ function AppointmentsInput() {
 
     // console.log("time format from DB: " + JSON.stringify(allAppointments));
     // console.log("time format from JS: " + JSON.stringify(calendarAppointments));
-    //console.log("Appointments " + JSON.stringify(allAppointments));
+    //// console.log("Appointments " + JSON.stringify(allAppointments));
 
     // eslint-disable-next-line
     var eventStart, eventEnd;
@@ -243,9 +248,9 @@ function AppointmentsInput() {
     // eslint-disable-next-line
     function formatDate(date) {
         var d = date.slice(0, 25)
-        console.log("formated date: " + d);
-        console.log("propper date: " + new Date(2022, 9, 19, 15, 30, 0));
-        console.log("length: " + d.length);
+        // console.log("formated date: " + d);
+        // console.log("propper date: " + new Date(2022, 9, 19, 15, 30, 0));
+        // console.log("length: " + d.length);
         return d;
     }
 
@@ -255,11 +260,11 @@ function AppointmentsInput() {
     }
     function generateID() {
         let id = uuid();
-        console.log(`iddd`, id);
+        // console.log(`iddd`, id);
         setAppointment({ ...appointment, appointmentID: id });
 
     }
-    console.log(`appointment id: `, appointment.id);
+    // console.log(`appointment id: `, appointment.id);
 
     const addAppointment = async (e) => {
         setLoading(true);
@@ -268,13 +273,13 @@ function AppointmentsInput() {
         let s = formatDateNoTime(date.toString())
         let f = appointment.time
         // let appointPrice = getHaircutPrice(appointment.haircut)
-        console.log("sss: " + s);
-        console.log("date length" + s.length);
-        console.log("timelength" + f.length);
-        console.log("current appoint: " + JSON.stringify(appointment));
+        // console.log("sss: " + s);
+        // console.log("date length" + s.length);
+        // console.log("timelength" + f.length);
+        // console.log("current appoint: " + JSON.stringify(appointment));
         if (s.length === 11 && f.length === 5) {
             if (appointment.paymentType === 'online') {
-                console.log("estamo activo");
+                // console.log("estamo activo");
                 history.push({
                     pathname: "/checkOut",
                     state: {
@@ -310,7 +315,7 @@ function AppointmentsInput() {
                     });
 
                 } catch (e) {
-                    console.log(e.response.data);
+                    // console.log(e.response.data);
                 }
             }
             setAppointment(initialState);
@@ -334,7 +339,7 @@ function AppointmentsInput() {
         let haircutData = haircuts.find(haircut => haircut.typeOfService === name)
 
         if (haircutData === undefined) {
-            console.log("Haircut data doesn't exist for:" + name);
+            // console.log("Haircut data doesn't exist for:" + name);
             return undefined;
         }
         return haircutData;
@@ -342,19 +347,19 @@ function AppointmentsInput() {
 
     const changeHandler = e => {
         if (e.target !== undefined) {
-            console.log("haircuts array " + haircuts);
+            // console.log("haircuts array " + haircuts);
             if (e.target.name === 'haircut') {
                 let hD = getHaircutPrice(e.target.value)
-                console.log("HD" + hD.servicePrice);
+                // console.log("HD" + hD.servicePrice);
                 // setAppointment({ ...appointment, price: hD.servicePrice })
                 setAppointment({ ...appointment, [e.target.name]: e.target.value, price: hD.servicePrice })
             } else if (e.target.name === 'paymentType') {
                 if (e.target.value === 'store') {
-                    console.log("paymentType value: " + e.target.value);
+                    // console.log("paymentType value: " + e.target.value);
                     setAppointment({ ...appointment, [e.target.name]: e.target.value, paid: "false" })
 
                 } else if (e.target.value === 'online') {
-                    console.log("paymentType value: " + e.target.value);
+                    // console.log("paymentType value: " + e.target.value);
                     setAppointment({ ...appointment, [e.target.name]: e.target.value, paid: "true" })
                     /* setAppointment({ ...appointment, paid: "true" }) */
                     //wont be 100% paid until stripe payment goes thru, but we leave it like that for now.
@@ -366,7 +371,7 @@ function AppointmentsInput() {
 
 
     } //change handler
-    console.log("handle change: " + JSON.stringify(appointment));
+    // console.log("handle change: " + JSON.stringify(appointment));
 
     const [initTime] = useState(['']);
     const [time, setTime] = useState(filterDefaultTime(new Date().getDay()));
@@ -397,23 +402,23 @@ function AppointmentsInput() {
 
     function checkIf2(day) {
         let todayAppointments = [];
-        console.log("hoy: ", day);
+        // console.log("hoy: ", day);
         allAppointments.map((appointment) => {
-            console.log("appointmennt date: ", appointment.date);
+            // console.log("appointmennt date: ", appointment.date);
             if (appointment.date === day) {
                 todayAppointments.push(appointment);
             }
         })
-        console.log("today app: ", todayAppointments);
+        // console.log("today app: ", todayAppointments);
         const unique = [];
         let count = 0;
         for (const item of todayAppointments) {
-            console.log("item time:", item.time);
+            // console.log("item time:", item.time);
             const isDuplicate = todayAppointments.find((obj) => {
-                console.log("obj time:", obj.time, "item time: ", item.time)
+                // console.log("obj time:", obj.time, "item time: ", item.time)
                 if (obj.time === item.time) {
                     count++;
-                    console.log("count", count);
+                    // console.log("count", count);
                 } if (count === 2) {
                     if (!unique.includes(item.time)) {
                         unique.push(item.time);
@@ -423,18 +428,18 @@ function AppointmentsInput() {
             }
             );
         }
-        console.log("unique: ", unique);
+        // console.log("unique: ", unique);
         return unique;
     }
     //filter barbershop availability based on selected date
     function filterTime(e) {
-        console.log("la e: ", e);
+        // console.log("la e: ", e);
         let schedule = [];
         let notAvailableTimes = checkIf2(e);
         // console.log("date change: " + e);
         let d = new Date(e).getDay();
         // setTime(initTime);
-        console.log("whatever: " + new Date(e).getDay());
+        // console.log("whatever: " + new Date(e).getDay());
         // calendarAppointments.map((item) => {
         // console.log("selected day: " + item.start.toString().slice(0, 3));
         if (d === 1) {//if for Mondays
@@ -467,7 +472,7 @@ function AppointmentsInput() {
         } else if (d === 0) {
             setTime(["closed"])
         }
-        console.log("time state: " + JSON.stringify(time));
+        // console.log("time state: " + JSON.stringify(time));
     }
 
     function removeRepeatedTimes(initialSchedule, notAvailableTimes) {
@@ -483,10 +488,10 @@ function AppointmentsInput() {
 
     //handles date change
     const handleDateChange = (e) => {
-        console.log("selected date: " + new Date(e));
+        // console.log("selected date: " + new Date(e));
         // setDate(dateInitial);
         setDate(new Date(e));
-        console.log("date state" + JSON.stringify(date));
+        // console.log("date state" + JSON.stringify(date));
         filterTime(formatDateNoTime(new Date(e).toString()));
     }
     //state for loading (true while appointment is getting written to DB)
@@ -495,25 +500,17 @@ function AppointmentsInput() {
 
     const handleClose = () => setShowSuccess(false);
 
-    //formatDisabledDays
-    function formatDisabled(date) {
-        var d = date.slice(4, 16);
-        return d;
+    const funcDaysClosed = (dateParam) => {
+        let pickerDate = new Date(dateParam).toISOString().slice(0,10);
+        return daysClosed.toString().includes(pickerDate)
     }
 
-    const funcDaysClosed = (date) => {
-        let d = formatDisabled(new Date(date).toString());
-        // console.log("weird: " + date.getTime());
-        // console.log("days closed state: " + JSON.stringify(daysClosed));
-        // console.log("event date: " + d);
-        // console.log("each date from days closed state: " + daysClosed.map((myDate) => new Date(myDate)))
-        return daysClosed.map((myDate) => formatDisabled(new Date(myDate).toString())).includes(d)
-    }
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             {
                 loading ? (<ProgressBar striped animated now={"100"} />) : null
             }
+
             {
                 showSuccess ? (
                     <ToastContainer className="p-3" containerPosition="fixed" position="top-end">
@@ -525,72 +522,109 @@ function AppointmentsInput() {
                     </ToastContainer>
                 ) : null
             }
+
+            {
+                validated ? (addAppointment) : null
+            }
+
             <Container className="my-3">
                 <h1>Make an appointment</h1>
                 <Container>
-                    <Form>
+                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
                         <Row className="justify-content-md-center">
                             <Col xs md="auto" lg="auto" className="m-2">
-                                <InputGroup className="my-2">
-                                    <Form.Control
-                                        type="input"
-                                        name='name'
-                                        placeholder={"Name"}
-                                        onChange={changeHandler}
-                                    />
-                                    <Form.Control
-                                        type="input"
-                                        name='email'
-                                        placeholder={"Email"}
-                                        onChange={changeHandler}
-                                    />
+                                <InputGroup as={Row} hasValidation className="my-2">
+                                    <Form.Group className="my-1">
+                                        <Form.Control
+                                            required
+                                            type="text"
+                                            name='name'
+                                            minLength={"1"}
+                                            placeholder={"Name"}
+                                            onChange={changeHandler}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            Please enter your full name!
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
 
-
+                                    <Form.Group className="my-1">
+                                        <Form.Control
+                                            required
+                                            type="email"
+                                            name='email'
+                                            placeholder={"Email"}
+                                            onChange={changeHandler}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            Please enter a valid e-mail!
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
                                 </InputGroup>
 
-                                <InputGroup className="my-2">
-                                    <DesktopDatePicker
-                                        required
-                                        id="outlined-basic"
-                                        variant="outlined"
-                                        name="date"
-                                        minDate={today}
-                                        size="small"
-                                        value={date}
-                                        label="Date of Appointment"
-                                        //(d) => new Date(d).getTime() === new Date('2022-11-11T00:00').getTime()
-                                        onChange={handleDateChange}
-                                        shouldDisableDate={funcDaysClosed}  // Date Filter
-                                        renderInput={(params) => <TextField {...params} />}
-                                    />
+                                <InputGroup as={Row} hasValidation className="my-2">
+                                    <Form.Group>
+                                        <DesktopDatePicker
+                                            required
+                                            id="outlined-basic"
+                                            variant="outlined"
+                                            name="date"
+                                            minDate={today}
+                                            size="small"
+                                            value={date}
+                                            label="Date of Appointment"
+                                            disablePast
+                                            //(d) => new Date(d).getTime() === new Date('2022-11-11T00:00').getTime()
+                                            onChange={handleDateChange}
+                                            shouldDisableDate={funcDaysClosed}  // Date Filter funcDaysClosed
+                                            renderInput={(params) => <TextField {...params} />}
+                                        />
+                                    </Form.Group>
 
-                                    <Form.Select name="time" defaultValue={"Desired Time:"} id="desiredTime" onChange={changeHandler}>
-                                        <option disabled={true}>Desired Time:</option>
-                                        <option disabled={true}>=========</option>
-                                        {time.map((e, key) => {
-                                            // if (e.length = 0) {
-                                            return <option key={key} value={e || ''}>{e}</option>;
-                                            // }
-                                        })}
-                                    </Form.Select>
+                                    <Form.Group className="my-1">
+                                        <Form.Select required name="time" defaultValue={"Desired Time:"} id="desiredTime" onChange={changeHandler}>
+                                            <option value="">Desired Time:</option>
+                                            <option disabled={true} value="">=========</option>
+                                            {time.map((e, key) => {
+                                                // if (e.length = 0) {
+                                                return <option key={key} value={e || ''}>{e}</option>;
+                                                // }
+                                            })}
+                                        </Form.Select>
+                                        <Form.Control.Feedback type="invalid">
+                                            Please select a valid time!
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
                                 </InputGroup>
 
-                                <InputGroup className="my-2">
-                                    <Form.Select name="haircut" defaultValue={"Type of Service:"} onChange={changeHandler}>
-                                        <option disabled={true}>Type of Service:</option>
-                                        <option disabled={true}>=========</option>
-                                        {haircuts.map((e, key) => {
-                                            return <option key={key} value={e.typeOfService || ''}>{e.typeOfService}</option>;
-                                        })}
-                                    </Form.Select>
-                                    <Form.Select name="paymentType" defaultValue={"Payment format:"} onChange={changeHandler}>
-                                        <option disabled={true}>Payment format:</option>
-                                        <option disabled={true}>=========</option>
-                                        <option value='store'>Pay in store</option>
-                                        <option value='online'>Pay Online</option>
-                                    </Form.Select>
+                                <InputGroup as={Row} hasValidation className="my-2">
+                                    <Form.Group className="my-1">
+                                        <Form.Select required name="haircut" defaultValue={"Type of Service:"} onChange={changeHandler}>
+                                            <option value="">Type of Service:</option>
+                                            <option disabled={true} value="">=========</option>
+                                            {haircuts.map((e, key) => {
+                                                return <option key={key} value={e.typeOfService || ''}>{e.typeOfService}</option>;
+                                            })}
+                                        </Form.Select>
+                                        <Form.Control.Feedback type="invalid">
+                                            Please select a valid service!
+                                        </Form.Control.Feedback> 
+                                    </Form.Group>
+                                    
+                                    <Form.Group className="my-1">
+                                        <Form.Select required name="paymentType" defaultValue={"Payment format:"} onChange={changeHandler}>
+                                            <option value="">Payment format:</option>
+                                            <option disabled={true} value="">=========</option>
+                                            <option value='store'>Pay in store</option>
+                                            <option value='online'>Pay Online</option>
+                                        </Form.Select>
+                                        <Form.Control.Feedback type="invalid">
+                                            Please select a valid payment format!
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+
                                 </InputGroup>
-                                <Button as="input" type="submit" onClick={addAppointment} value="Make Appointment" />
+                                <Button className="mt-3" as="input" type="submit" value="Make Appointment"/>
                             </Col>
                         </Row>
                     </Form>

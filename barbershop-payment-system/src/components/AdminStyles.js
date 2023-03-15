@@ -28,9 +28,9 @@ function AdminStyles() {
               {imageUrls && imageUrls.map((url) => {
                 return(
                   <Container className="mt-4 mb-2 justify-content-md-center">
-                    <Col key={url}>
+                    <Col>
                         <Card style={{ width: '18rem' }}>
-                          <Card.Img style={{width: "100%", height: "18rem", objectFit: "contain"}} variant="top" src={url} />
+                          <Card.Img style={{width: "100%", height: "18rem", objectFit: "contain"}} variant="top" src={url} key={url}/>
                           <Card.Body>
                             <Button variant="primary" onClick={() => deleteObj(url)}>Delete Image</Button>
                           </Card.Body>

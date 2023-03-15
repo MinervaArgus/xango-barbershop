@@ -15,6 +15,7 @@ import { Container, Form, Button, Toast, ToastContainer, Row, Col, InputGroup, T
 require('moment/locale/es.js')
 const localizer = momentLocalizer(moment);
 const q = query(collection(db, 'hairstylePrices'), orderBy('typeOfService'));
+const q2 = query(collection(db, 'appointments'));
 
 function Admin() {
     const [inputs, setInputs] = useState([]);
@@ -35,7 +36,8 @@ function Admin() {
 
     const current = new Date();
     let currentDate = current.toJSON();
-    const todaysDate = currentDate.slice(0, 10);
+    const todaysDate = currentDate.slice(0,10);
+    // console.log(date);
 
     let [filename, setFileName] = useState(null);
 
@@ -91,16 +93,19 @@ function Admin() {
     
     const addDayClosed = async (e) => {
         e.preventDefault();
-        await addDoc(collection(db, 'daysClosed'), {
-            date: date
-        })
-        setShowNotif(true);
+        // console.log(date.toJSON().slice(0,10));
+        if (new Date(date).toJSON().slice(0,10) !== todaysDate){
+            console.log("adding date: " + date);
+            await addDoc(collection(db, 'daysClosed'), {
+                date: date
+            })
+            setShowNotif(true);
+        }
     }
     
     function formatEndDate(d, t) {
-        // console.log("end date: " + new Date(d).getDay());
-        let hour = t.slice(0, 2);
-        let minutes = t.slice(3, 5);
+        let hour = t.slice(0.2);
+        let minutes = t.slice(3,5);
         let weekDay = new Date(d).getDay();
         let newHour = 0;
         if (weekDay === 2 || weekDay === 3) {
@@ -136,8 +141,7 @@ function Admin() {
 
     useEffect(() => {
         //get all appointments from db
-        onSnapshot(q, (snapshot) => {
-
+        onSnapshot(q2, (snapshot) => {
             setCalendarAppointments(snapshot.docs.map(doc => ({
                 // ...calendarAppointments,
                 id: doc.id,
@@ -157,7 +161,7 @@ function Admin() {
                         <Toast.Header>
                             <strong className="me-auto">Attention!</strong>
                         </Toast.Header>
-                        <Toast.Body>Barbershop will be closed on {date}</Toast.Body>
+                        <Toast.Body>Barbershop will be closed on {new Date(date).toLocaleDateString()}</Toast.Body>
                     </Toast>
                 </ToastContainer>) 
                 : 
@@ -214,9 +218,9 @@ function Admin() {
                                         <Form.Control 
                                             type="date" 
                                             name='Date' 
-                                            required pattern="\d{4}-\d{2}-\d{2}" 
+                                            required 
                                             value={date}
-                                            placeholder={todaysDate}
+                                            placeholder={date}
                                             min={todaysDate} 
                                             onChange={(e) => setDate(e.target.value)}
                                         />
