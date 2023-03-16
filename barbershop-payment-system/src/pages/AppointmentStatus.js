@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Container, Form, Row, Col, InputGroup, Button, Table, ProgressBar } from 'react-bootstrap';
 import axios from 'axios';
 
-
-
 export default function AppointmentStatus() {
     const inputInitialState = {
         email: '',
