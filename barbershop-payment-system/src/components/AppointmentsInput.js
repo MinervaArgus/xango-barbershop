@@ -4,6 +4,7 @@ import { db } from "../Firebase.js";
 import { collection, onSnapshot, query, addDoc } from "firebase/firestore"
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { Button, Container, Form, Toast, ToastContainer, Row, Col, InputGroup, ProgressBar } from 'react-bootstrap';
 import { TextField } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -88,16 +89,20 @@ function AppointmentsInput() {
     const q3 = query(collection(db, 'daysClosed'));
 
     //state for days closed
-    const [daysClosed, setDaysClosed] = useState(new Date().toJSON().slice(0,10));
+    const [daysClosed, setDaysClosed] = useState(new Date().toJSON().slice(0, 10));
 
     const handleSubmit = (event) => {
+
         const form = event.currentTarget;
+        console.log("form validity: ", form.checkValidity());
         if (form.checkValidity() === false) {
             event.preventDefault();
+            // setValidated(false);
             event.stopPropagation();
+        } else if (form.checkValidity() === true) {
+            setValidated(true);
+            addAppointment();
         }
-
-        setValidated(true);
     }
 
     //get all the appointments from db
@@ -266,17 +271,19 @@ function AppointmentsInput() {
     }
     // console.log(`appointment id: `, appointment.id);
 
-    const addAppointment = async (e) => {
+    /* const addAppointment = async (e) => { */
+    async function addAppointment() {
+        // e.preventDefault();
         setLoading(true);
-        e.preventDefault();
         let id = uuid();
         let s = formatDateNoTime(date.toString())
         let f = appointment.time
         // let appointPrice = getHaircutPrice(appointment.haircut)
-        // console.log("sss: " + s);
+        console.log("sss: " + s);
         // console.log("date length" + s.length);
-        // console.log("timelength" + f.length);
-        // console.log("current appoint: " + JSON.stringify(appointment));
+        console.log("timelength" + f.length);
+        console.log("current appoint: " + JSON.stringify(appointment));
+
         if (s.length === 11 && f.length === 5) {
             if (appointment.paymentType === 'online') {
                 // console.log("estamo activo");
@@ -330,10 +337,11 @@ function AppointmentsInput() {
             setLoading(false);
             setShowSuccess(false);
         }
-        // setDate(dateInitial);
+    }
+    // setDate(dateInitial);
 
-        // setDate('')
-    }//addAppointment
+    // setDate('')
+    //addAppointment
 
     function getHaircutPrice(name) {
         let haircutData = haircuts.find(haircut => haircut.typeOfService === name)
@@ -381,7 +389,7 @@ function AppointmentsInput() {
         if (d === 1) {//if for Mondays
             return ["closed on mondays"];
             /* if (item.start.toString().slice(20, 25)) {
-    
+     
             } */
         } else if (d === 2) {
             return ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'];
@@ -445,7 +453,7 @@ function AppointmentsInput() {
         if (d === 1) {//if for Mondays
             setTime(["closed"]);
             /* if (item.start.toString().slice(20, 25)) {
-    
+     
             } */
         } else if (d === 2) {
             schedule = ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30'];
@@ -501,7 +509,7 @@ function AppointmentsInput() {
     const handleClose = () => setShowSuccess(false);
 
     const funcDaysClosed = (dateParam) => {
-        let pickerDate = new Date(dateParam).toISOString().slice(0,10);
+        let pickerDate = new Date(dateParam).toISOString().slice(0, 10);
         return daysClosed.toString().includes(pickerDate)
     }
 
@@ -523,9 +531,9 @@ function AppointmentsInput() {
                 ) : null
             }
 
-            {
+            {/* {
                 validated ? (addAppointment) : null
-            }
+            } */}
 
             <Container className="my-3">
                 <h1>Make an appointment</h1>
@@ -608,9 +616,9 @@ function AppointmentsInput() {
                                         </Form.Select>
                                         <Form.Control.Feedback type="invalid">
                                             Please select a valid service!
-                                        </Form.Control.Feedback> 
+                                        </Form.Control.Feedback>
                                     </Form.Group>
-                                    
+
                                     <Form.Group className="my-1">
                                         <Form.Select required name="paymentType" defaultValue={"Payment format:"} onChange={changeHandler}>
                                             <option value="">Payment format:</option>
@@ -624,7 +632,7 @@ function AppointmentsInput() {
                                     </Form.Group>
 
                                 </InputGroup>
-                                <Button className="mt-3" as="input" type="submit" value="Make Appointment"/>
+                                <Button className="mt-3" as="input" type="submit" value="Make Appointment" /* onClick={addAppointment} */ />
                             </Col>
                         </Row>
                     </Form>
