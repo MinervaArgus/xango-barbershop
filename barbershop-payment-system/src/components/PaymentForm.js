@@ -4,7 +4,6 @@ import axios from "axios";
 import { Container } from "react-bootstrap";
 import { db } from "../Firebase.js";
 import { collection, addDoc } from "firebase/firestore"
-// import { useHistory } from "react-router-dom";
 
 const CARD_OPTIONS = {
     iconStyle: "solid",
@@ -28,10 +27,9 @@ const CARD_OPTIONS = {
 
 export default function PaymentForm(props) {
     const [success, setSuccess] = useState(false)
+    const [error, setError] = useState(null)
     const stripe = useStripe()
     const elements = useElements()
-    // const delay = ms => new Promise(res => setTimeout(res, ms));
-    // const history = useHistory();
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -49,19 +47,22 @@ export default function PaymentForm(props) {
                 })
                 if (response.data.success) {
                     console.log("Succesful payment")
-                    completeAppointmet()
+                    completeAppointment()
                     setSuccess(true)
-                    // await delay(5000)
-                    // history.push("/home")
+                } else {
+                    setError(response.data.message || "Payment failed")
                 }
             } catch (error) {
                 console.log("Error: ", error);
+                setError(error.message || "Payment failed")
             }
         } else {
             console.log("Error: " + error.message);
+            setError(error.message || "Payment failed")
         }
     }
-    const completeAppointmet = async (e) => {
+
+    const completeAppointment = async () => {
         try {
             await addDoc(collection(db, 'appointments'), {
                 name: props.appointment.name,
@@ -83,45 +84,48 @@ export default function PaymentForm(props) {
                 time: props.time,
                 html: '<strong>Some random html code</strong>'
             });
-
+            console.log("Email sent")
         } catch (e) {
             console.log(e.response.data);
+            setError(e.response.data.message || "Failed to complete appointment")
         }
     }
+
+    // added appointment details after successful payment 
+    // alerts the user about their email confirmation 
     return (
         <>
-            {!success ?
-                // <<<<<<< Updated upstream
-                /* =======
-                    <Form onSubmit={handleSubmit}>
-                        <h1>Please introduce your Card details:</h1>
-                        <Form.Group className="FormGroup">
-                            <Row className="FormRow">
-                                <CardElement options={CARD_OPTIONS} />
-                            </Row>
-                        </Form.Group>
-                        <Button>Pay</Button>
-                    </Form>
-                
-                >>>>>>> Stashed changes */
-                <Container className="my-3">
-                    <form onSubmit={handleSubmit}>
-                        <h1>Please introduce your Card details:</h1>
-                        <fieldset className="FormGroup">
-                            <div className="FormRow">
-                                <CardElement options={CARD_OPTIONS} />
-                            </div>
-                        </fieldset>
-                        <button>Pay</button>
-                    </form>
-                </Container>
+          {!success ? (
+            <Container className="my-3">
+              <form onSubmit={handleSubmit}>
+                <h1>Please introduce your Card details:</h1>
+                <fieldset className="FormGroup">
+                  <div className="FormRow">
+                    <CardElement options={CARD_OPTIONS} />
+                  </div>
+                </fieldset>
+                <button>Pay</button>
+              </form>
+            </Container>
+          ) : (
+            <Container>
+              <h2>You just paid: </h2>
+              <p>{props.appointment.price}€</p>
 
-                :
-                <Container>
-                    <h2>You just paid: </h2>
-                </Container>
 
-            }
+              <p>Appointment details:</p>
+              <ul>
+                <li>Name: {props.appointment.name}</li>
+                <li>Email: {props.appointment.email}</li>
+                <li>Haircut: {props.appointment.haircut}</li>
+                <li>Date: {props.date}</li>
+                <li>Time: {props.time}</li>
+                <li>Price: {props.appointment.price}€</li>
+              </ul>
+              <p>An email confirmation has been sent to {props.appointment.email}.</p>
+            </Container>
+          )}
         </>
-    )
-}
+      );
+
+}      
