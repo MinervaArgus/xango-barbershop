@@ -100,9 +100,10 @@ function AppointmentsInput() {
             // setValidated(false);
             event.stopPropagation();
         } else if (form.checkValidity() === true) {
-            setValidated(true);
+
             addAppointment();
         }
+        setValidated(true);
     }
 
     //get all the appointments from db
