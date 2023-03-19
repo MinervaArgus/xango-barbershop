@@ -14,11 +14,11 @@ import uuid from 'react-uuid';
 
 require('moment/locale/es.js')
 
-function AppointmentsInput() {
+function AppointmentsInput(props) {
     let history = useHistory();
     const [showSuccess, setShowSuccess] = useState(false);
     const [validated, setValidated] = useState(false);
-
+    const [appointmentAdded, setAppointmentAdded] = useState(false);
     // eslint-disable-next-line
     var title, email, haircut;
     const initialState = {
@@ -92,16 +92,16 @@ function AppointmentsInput() {
     const [daysClosed, setDaysClosed] = useState(new Date().toJSON().slice(0, 10));
 
     const handleSubmit = (event) => {
-
+        event.preventDefault();
         const form = event.currentTarget;
         console.log("form validity: ", form.checkValidity());
         if (form.checkValidity() === false) {
-            event.preventDefault();
+            // event.preventDefault();
             // setValidated(false);
             event.stopPropagation();
         } else if (form.checkValidity() === true) {
-
             addAppointment();
+
         }
         setValidated(true);
     }
@@ -277,6 +277,7 @@ function AppointmentsInput() {
         // e.preventDefault();
         setLoading(true);
         let id = uuid();
+        console.log("id: ", id);
         let s = formatDateNoTime(date.toString())
         let f = appointment.time
         // let appointPrice = getHaircutPrice(appointment.haircut)
@@ -310,7 +311,7 @@ function AppointmentsInput() {
                         paymentType: appointment.paymentType,
                         paid: appointment.paid,
                         appointmentID: id
-                    })
+                    });
                     await axios.post('http://localhost:4000/api/mail', {
                         customerName: appointment.name,
                         to: appointment.email,
@@ -323,8 +324,10 @@ function AppointmentsInput() {
                     });
 
                 } catch (e) {
-                    // console.log(e.response.data);
+                    console.log(e.response.data);
                 }
+
+                props.appointmentStatus(true, appointment, s);
             }
             setAppointment(initialState);
             // appointPrice = '';
@@ -423,10 +426,12 @@ function AppointmentsInput() {
         let count = 0;
         for (const item of todayAppointments) {
             // console.log("item time:", item.time);
-            const isDuplicate = todayAppointments.find((obj) => {
-                // console.log("obj time:", obj.time, "item time: ", item.time)
+            todayAppointments.find((obj) => {
+                console.log("obj time:", obj.time, "item time: ", item.time)
+                console.log("count", count);
                 if (obj.time === item.time) {
                     count++;
+                    console.log("count", count);
                     // console.log("count", count);
                 } if (count === 2) {
                     if (!unique.includes(item.time)) {
@@ -436,8 +441,9 @@ function AppointmentsInput() {
                 }
             }
             );
+            count = 0;
         }
-        // console.log("unique: ", unique);
+        console.log("unique: ", unique);
         return unique;
     }
     //filter barbershop availability based on selected date

@@ -36,7 +36,7 @@ function Admin() {
 
     const current = new Date();
     let currentDate = current.toJSON();
-    const todaysDate = currentDate.slice(0,10);
+    const todaysDate = currentDate.slice(0, 10);
     // console.log(date);
 
     let [filename, setFileName] = useState(null);
@@ -49,11 +49,11 @@ function Admin() {
         const uploadTask = uploadBytesResumable(storageRef, fileTarget);
 
         uploadTask.on("state_changed",
-        (snapshot) => {},
-        (error) => {
-            alert(error);
-        },
-        () => { setShowFileNotif(true) });
+            (snapshot) => { },
+            (error) => {
+                alert(error);
+            },
+            () => { setShowFileNotif(true) });
     }
 
     useEffect(() => {
@@ -80,7 +80,7 @@ function Admin() {
         setShowAddNotif(true);
         setServInput("");
         setServPriceInput("00.00");
-        
+
     };
 
     const changeHandler = (e) => {
@@ -89,12 +89,12 @@ function Admin() {
             setFileName(filename);
             setFile(e.target.files[0])
         } else return;
-    } 
-    
+    }
+
     const addDayClosed = async (e) => {
         e.preventDefault();
         // console.log(date.toJSON().slice(0,10));
-        if (new Date(date).toJSON().slice(0,10) !== todaysDate){
+        if (new Date(date).toJSON().slice(0, 10) !== todaysDate) {
             console.log("adding date: " + date);
             await addDoc(collection(db, 'daysClosed'), {
                 date: date
@@ -102,10 +102,10 @@ function Admin() {
             setShowNotif(true);
         }
     }
-    
+
     function formatEndDate(d, t) {
         let hour = t.slice(0.2);
-        let minutes = t.slice(3,5);
+        let minutes = t.slice(3, 5);
         let weekDay = new Date(d).getDay();
         let newHour = 0;
         if (weekDay === 2 || weekDay === 3) {
@@ -148,181 +148,184 @@ function Admin() {
                 title: doc.data().name,
                 start: new Date(doc.data().date + " " + doc.data().time),
                 end: new Date(formatEndDate(doc.data().date, doc.data().time))
-            })))})})
+            })))
+        })
+    }, []);
+    console.log("calendar appointments: ", calendarAppointments);
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Container className="my-3">
-            {
-                showNotif
-                ? 
-                (<ToastContainer className="p-3" containerPosition="fixed" position="top-end">
-                    <Toast onClose={() => setShowNotif(false)} show={showNotif} delay={5000} autohide>
-                        <Toast.Header>
-                            <strong className="me-auto">Attention!</strong>
-                        </Toast.Header>
-                        <Toast.Body>Barbershop will be closed on {new Date(date).toLocaleDateString()}</Toast.Body>
-                    </Toast>
-                </ToastContainer>) 
-                : 
-                null
-            }
+            <Container className="my-3">
+                {
+                    showNotif
+                        ?
+                        (<ToastContainer className="p-3" containerPosition="fixed" position="top-end">
+                            <Toast onClose={() => setShowNotif(false)} show={showNotif} delay={5000} autohide>
+                                <Toast.Header>
+                                    <strong className="me-auto">Attention!</strong>
+                                </Toast.Header>
+                                <Toast.Body>Barbershop will be closed on {new Date(date).toLocaleDateString()}</Toast.Body>
+                            </Toast>
+                        </ToastContainer>)
+                        :
+                        null
+                }
 
-            {
-                showFileNotif
-                ? 
-                (<ToastContainer className="p-3" containerPosition="fixed" position="top-end">
-                    <Toast onClose={() => setShowFileNotif(false)} show={showFileNotif} delay={5000} autohide>
-                        <Toast.Header>
-                            <strong className="me-auto">Attention!</strong>
-                        </Toast.Header>
-                        <Toast.Body>Image Uploaded!</Toast.Body>
-                    </Toast>
-                </ToastContainer>) 
-                : 
-                null
-            }
+                {
+                    showFileNotif
+                        ?
+                        (<ToastContainer className="p-3" containerPosition="fixed" position="top-end">
+                            <Toast onClose={() => setShowFileNotif(false)} show={showFileNotif} delay={5000} autohide>
+                                <Toast.Header>
+                                    <strong className="me-auto">Attention!</strong>
+                                </Toast.Header>
+                                <Toast.Body>Image Uploaded!</Toast.Body>
+                            </Toast>
+                        </ToastContainer>)
+                        :
+                        null
+                }
 
-            {
-                showAddNotif
-                ? 
-                (<ToastContainer className="p-3" containerPosition="fixed" position="top-end">
-                    <Toast onClose={() => setShowAddNotif(false)} show={showAddNotif} delay={5000} autohide>
-                        <Toast.Header>
-                            <strong className="me-auto">Atención!</strong>
-                        </Toast.Header>
-                        <Toast.Body>Servicio agregado!</Toast.Body>
-                    </Toast>
-                </ToastContainer>) 
-                : 
-                null
-            }
+                {
+                    showAddNotif
+                        ?
+                        (<ToastContainer className="p-3" containerPosition="fixed" position="top-end">
+                            <Toast onClose={() => setShowAddNotif(false)} show={showAddNotif} delay={5000} autohide>
+                                <Toast.Header>
+                                    <strong className="me-auto">Atención!</strong>
+                                </Toast.Header>
+                                <Toast.Body>Servicio agregado!</Toast.Body>
+                            </Toast>
+                        </ToastContainer>)
+                        :
+                        null
+                }
 
-            <h1>Admin Dashboard</h1>
+                <h1>Admin Dashboard</h1>
 
-            <Tabs 
-                defaultActiveKey={"dateClosed"}
-                id="uncontrolled-admin-tab"
-                className="my-3"
-                justify
-            >
-                <Tab eventKey={"dateClosed"} title="Add Close Date">
-                    <Container>
-                        <Form>
+                <Tabs
+                    defaultActiveKey={"dateClosed"}
+                    id="uncontrolled-admin-tab"
+                    className="my-3"
+                    justify
+                >
+                    <Tab eventKey={"dateClosed"} title="Add Close Date">
+                        <Container>
+                            <Form>
+                                <Row className="justify-content-md-center">
+                                    <Col xs md="auto" lg="auto">
+                                        <Form.Label column="lg">
+                                            Set a date to be closed
+                                        </Form.Label>
+                                        <InputGroup className="mb-3">
+                                            <Form.Control
+                                                type="date"
+                                                name='Date'
+                                                required
+                                                value={date}
+                                                placeholder={date}
+                                                min={todaysDate}
+                                                onChange={(e) => setDate(e.target.value)}
+                                            />
+                                            <Button as="input" type="submit" onClick={addDayClosed} value="Submit" />
+                                        </InputGroup>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Container>
+                    </Tab>
+
+                    <Tab eventKey={"uploadHair"} title="Upload Styles">
+                        <Container>
                             <Row className="justify-content-md-center">
                                 <Col xs md="auto" lg="auto">
                                     <Form.Label column="lg">
-                                        Set a date to be closed
+                                        Upload Hair Styles
                                     </Form.Label>
                                     <InputGroup className="mb-3">
-                                        <Form.Control 
-                                            type="date" 
-                                            name='Date' 
-                                            required 
-                                            value={date}
-                                            placeholder={date}
-                                            min={todaysDate} 
-                                            onChange={(e) => setDate(e.target.value)}
-                                        />
-                                        <Button as="input" type="submit" onClick={addDayClosed} value="Submit"/>
+                                        <Form.Control type="file" accept="image/*" onChange={changeHandler} />
+                                        <Button variant="primary" type='submit' onClick={handleSubmit}>Upload</Button>
                                     </InputGroup>
                                 </Col>
-                            </Row>
-                        </Form>
-                    </Container>
-                </Tab>
-                
-                <Tab eventKey={"uploadHair"} title="Upload Styles">
-                    <Container>
-                        <Row className="justify-content-md-center">
-                            <Col xs md="auto" lg="auto">
-                                <Form.Label column="lg">
-                                    Upload Hair Styles
-                                </Form.Label>
-                                <InputGroup className="mb-3">
-                                    <Form.Control type="file" accept="image/*" onChange={changeHandler}/>
-                                    <Button variant="primary" type='submit' onClick={handleSubmit}>Upload</Button>
-                                </InputGroup>
-                            </Col>
-                        </Row>
-                    </Container>
-                </Tab>
-
-                <Tab eventKey={"deleteStyle"} title="Remove Styles">
-                    <Container className="mt-2 mb-2">
-                        <h5>Remove Images</h5>
-                        <h6>(Browser will refresh!)</h6>
-                        <AdminStyles/>
-                    </Container>
-                </Tab>
-
-                <Tab eventKey={"addService"} title="Add Service">
-                    <Container className="mt-4 mb-2">
-                        <Form>
-                            <Row className="justify-content-md-center">
-                                <Col xs md="auto" lg="auto" xl="auto">
-                                    <Form.Label column="lg">
-                                        Add Service
-                                    </Form.Label>
-                                    <InputGroup className="mb-3">
-                                        <Form.Control 
-                                            type="input" 
-                                            name='Service Name' 
-                                            value={serviceInput}
-                                            placeholder={"Nombre de Servicio"} 
-                                            onChange={(e) => setServInput(e.target.value)}
-                                        />
-                                    </InputGroup>
-                                    <InputGroup>
-                                        <InputGroup.Text>€</InputGroup.Text>
-                                        <Form.Control 
-                                            type="input" 
-                                            name='Service Price' 
-                                            value={servPriceInput}
-                                            placeholder={"00.00"} 
-                                            onChange={(e) => setServPriceInput(e.target.value)}
-                                        />
-                                        <Button as="input" type="submit" onClick={handleServSubmit} value="Agregar Servicio"/>
-                                    </InputGroup>
-                                </Col>
-                            </Row>
-                        </Form>
-                    </Container>
-                </Tab>
-
-                <Tab eventKey={"editService"} title="Edit Services">
-                    <Container>
-                        <h5 className="mt-4">List of Services and Prices</h5>
-                        <Container className="mt-4 mb-2">
-                            <Row xs="auto" md="auto" lg="auto" xl="auto" className="g-4 justify-content-md-center">
-                                {inputs.map(item => <Service key = {item.id} arr = {item}/>)}
                             </Row>
                         </Container>
-                    </Container>
-                </Tab>
+                    </Tab>
 
-                <Tab eventKey={"adminCalendar"} title="View Calendar">
-                    <Container className="my-4">
-                        <Calendar
-                            localizer={localizer}
-                            events={calendarAppointments}
-                            defaultDate={new Date()}
-                            defaultView="week"
-                            style={{ height: "70vh" }}
-                            messages={{
-                                next: ">",
-                                previous: "<",
-                                today: "Hoy",
-                                month: "Mes",
-                                week: "Semana",
-                                day: "Día"
-                            }}
-                        />
-                    </Container>
-                </Tab>
+                    <Tab eventKey={"deleteStyle"} title="Remove Styles">
+                        <Container className="mt-2 mb-2">
+                            <h5>Remove Images</h5>
+                            <h6>(Browser will refresh!)</h6>
+                            <AdminStyles />
+                        </Container>
+                    </Tab>
 
-            </Tabs>
-        </Container>
+                    <Tab eventKey={"addService"} title="Add Service">
+                        <Container className="mt-4 mb-2">
+                            <Form>
+                                <Row className="justify-content-md-center">
+                                    <Col xs md="auto" lg="auto" xl="auto">
+                                        <Form.Label column="lg">
+                                            Add Service
+                                        </Form.Label>
+                                        <InputGroup className="mb-3">
+                                            <Form.Control
+                                                type="input"
+                                                name='Service Name'
+                                                value={serviceInput}
+                                                placeholder={"Nombre de Servicio"}
+                                                onChange={(e) => setServInput(e.target.value)}
+                                            />
+                                        </InputGroup>
+                                        <InputGroup>
+                                            <InputGroup.Text>€</InputGroup.Text>
+                                            <Form.Control
+                                                type="input"
+                                                name='Service Price'
+                                                value={servPriceInput}
+                                                placeholder={"00.00"}
+                                                onChange={(e) => setServPriceInput(e.target.value)}
+                                            />
+                                            <Button as="input" type="submit" onClick={handleServSubmit} value="Agregar Servicio" />
+                                        </InputGroup>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Container>
+                    </Tab>
+
+                    <Tab eventKey={"editService"} title="Edit Services">
+                        <Container>
+                            <h5 className="mt-4">List of Services and Prices</h5>
+                            <Container className="mt-4 mb-2">
+                                <Row xs="auto" md="auto" lg="auto" xl="auto" className="g-4 justify-content-md-center">
+                                    {inputs.map(item => <Service key={item.id} arr={item} />)}
+                                </Row>
+                            </Container>
+                        </Container>
+                    </Tab>
+
+                    <Tab eventKey={"adminCalendar"} title="View Calendar">
+                        <Container className="my-4">
+                            <Calendar
+                                localizer={localizer}
+                                events={calendarAppointments}
+                                defaultDate={new Date()}
+                                defaultView="week"
+                                style={{ height: "70vh" }}
+                                messages={{
+                                    next: ">",
+                                    previous: "<",
+                                    today: "Hoy",
+                                    month: "Mes",
+                                    week: "Semana",
+                                    day: "Día"
+                                }}
+                            />
+                        </Container>
+                    </Tab>
+
+                </Tabs>
+            </Container>
         </LocalizationProvider>
     );
 }

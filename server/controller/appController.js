@@ -3,7 +3,7 @@ const { ref, getDownloadURL, getStorage, listAll } = require('@firebase/storage'
 const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
 require("dotenv").config()
-const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST)
+const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST_2)
 
 const mail = async (req, res) => {
     const { customerName, to, subject, price, service, date, time, appointmentID } = req.body
@@ -11,8 +11,8 @@ const mail = async (req, res) => {
     let config = {
         service: 'gmail',
         auth: {
-            user: process.env.GMAIL_EMAIL,
-            pass: process.env.GMAIL_PASS
+            user: process.env.GMAIL_EMAIL_2,
+            pass: process.env.GMAIL_PASS_2
         }
     }
 
