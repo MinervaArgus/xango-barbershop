@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { ref, getDownloadURL, getStorage, listAll } from "firebase/storage";
+// import { ref, getDownloadURL, getStorage, listAll } from "firebase/storage";
 import '../styles/Products.css';
 import { FaShoppingCart } from "react-icons/fa";
 import { Container, Card, Row, Col, Modal, Button, Toast, ToastContainer } from 'react-bootstrap';
@@ -18,8 +18,9 @@ function Products() {
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
   const [showAddNotif, setShowAddNotif] = useState(false);
-  const storage = getStorage();
-  const imagesListRef = ref(storage, "images/Products/");
+  // const storage = getStorage();
+  // const imagesListRef = ref(storage, "images/Products/");
+  const [error, setError] = useState(false);
 
 
   // Sort by date
@@ -34,10 +35,18 @@ function Products() {
     axios.get('http://localhost:4000/api/getProducts')
       .then(res => {
         console.log("response: ", res);
-        // setImageUrls(res)
-      })
+
+        if (res.status === 200) {
+          setImageUrls(res.data);
+          setError(false);
+        } else if (res.status === 500) {
+          setError(true);
+        }
+
+      });
     // eslint-disable-next-line
   }, []);
+
   console.log("imageURL: ", imageUrls);
   const addToCart = (product) => {
     setCart([...cart, product]);
@@ -49,91 +58,90 @@ function Products() {
   const total = cart.reduce((acc, product) => acc + product.price, 0);
 
   return (
+
     <Container className="my-3">
-      <h1>Products</h1>
+      {error ? <h1>Unable at the moment</h1> :
+        <><h1>Products</h1><Container className="my-3" id="Product-Images">
+          <Row xs="auto" md={2} lg={3} xl={4} className="g-4 justify-content-md-center">
+            {imageUrls && imageUrls.map((url, index) => {
+              return (
+                <Container key={index} className="mt-4 justify-content-md-center">
+                  <Col key={url}>
+                    <Card style={{ width: "18rem" }}>
+                      <Card.Img style={{ width: "100%", height: "18rem", objectFit: "contain" }} variant="top" src={url} />
+                      <Card.Header style={{ fontSize: "1.5rem" }}>
+                        {products[index].name}
+                      </Card.Header>
+                      <Card.Body style={{ fontSize: "1.25rem" }}>
+                        €{products[index].price}
+                        <Row className="mt-3">
+                          <Button onClick={() => addToCart(products[index])}>
+                            <FaShoppingCart />
+                            Add to cart
+                          </Button>
+                        </Row>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                </Container>
+              );
+            })}
+          </Row>
+        </Container><Button size="lg" style={{ position: "fixed", right: 0, bottom: 0 }} className="m-3" variant="primary" onClick={() => setShowCart(true)}><FaShoppingCart /> Cart</Button>
 
-      <Container className="my-3" id="Product-Images">
-        <Row xs="auto" md={2} lg={3} xl={4} className="g-4 justify-content-md-center">
-          {imageUrls && imageUrls.map((url, index) => {
-            return (
-              <Container key={index} className="mt-4 justify-content-md-center">
-                <Col key={url}>
-                  <Card style={{ width: "18rem" }}>
-                    <Card.Img style={{ width: "100%", height: "18rem", objectFit: "contain" }} variant="top" src={url} />
-                    <Card.Header style={{ fontSize: "1.5rem" }}>
-                      {products[index].name}
-                    </Card.Header>
-                    <Card.Body style={{ fontSize: "1.25rem" }}>
-                      €{products[index].price}
-                      <Row className="mt-3">
-                        <Button onClick={() => addToCart(products[index])}>
-                          <FaShoppingCart />
-                          Add to cart
-                        </Button>
-                      </Row>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Container>
-            );
-          })}
-        </Row>
-      </Container>
-
-      <Button size="lg" style={{ position: "fixed", right: 0, bottom: 0 }} className="m-3" variant="primary" onClick={() => setShowCart(true)}><FaShoppingCart /> Cart</Button>
-
-      {
-        showAddNotif
-          ?
-          (<ToastContainer className="p-3" containerPosition="fixed" position="top-center">
-            <Toast onClose={() => setShowAddNotif(false)} show={showAddNotif} delay={5000} autohide>
-              <Toast.Body>Added to Cart!</Toast.Body>
-            </Toast>
-          </ToastContainer>)
-          :
-          null
-      }
+          {
+            showAddNotif
+              ?
+              (<ToastContainer className="p-3" containerPosition="fixed" position="top-center">
+                <Toast onClose={() => setShowAddNotif(false)} show={showAddNotif} delay={5000} autohide>
+                  <Toast.Body>Added to Cart!</Toast.Body>
+                </Toast>
+              </ToastContainer>)
+              :
+              null
+          }
 
 
-      <Modal show={showCart} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Shopping Cart</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="mx-2">
-          {cart.map((product) => (
-            <Row className="m-1" key={product.id}>
-              <Col>
-                {product.name} - €{product.price}
-              </Col>
+          <Modal show={showCart} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Shopping Cart</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="mx-2">
+              {cart.map((product) => (
+                <Row className="m-1" key={product.id}>
+                  <Col>
+                    {product.name} - €{product.price}
+                  </Col>
 
-              {/* <Col>
+                  {/* <Col>
                 <Button>-</Button>
                 <Button>+</Button>
               </Col> */}
 
-              <Col>
-                <Button variant="danger" onClick={() => deleteFromCart(product.id)}>Remove From Cart</Button>
+                  <Col>
+                    <Button variant="danger" onClick={() => deleteFromCart(product.id)}>Remove From Cart</Button>
+                  </Col>
+                </Row>
+              ))}
+            </Modal.Body>
+            <Modal.Footer style={{ textAlign: "left" }}>
+              <Col className="mx-2">
+                Total: €{total.toFixed(2)}
               </Col>
-            </Row>
-          ))}
-        </Modal.Body>
-        <Modal.Footer style={{ textAlign: "left" }}>
-          <Col className="mx-2">
-            Total: €{total.toFixed(2)}
-          </Col>
 
-          <Button variant="secondary" onClick={handleClose}>Close</Button>
-          <Link to={{
-            pathname: "/checkOut",
-            state: {
-              amount: total.toFixed(2)
-            }
-          }}> <Button variant="primary" >Checkout</Button></Link>
+              <Button variant="secondary" onClick={handleClose}>Close</Button>
+              <Link to={{
+                pathname: "/checkOut",
+                state: {
+                  amount: total.toFixed(2)
+                }
+              }}> <Button variant="primary" >Checkout</Button></Link>
 
 
-        </Modal.Footer>
-      </Modal>
-    </Container>
+            </Modal.Footer>
+          </Modal>
+        </>}
+    </Container >
   );
 
   function deleteFromCart(id) {

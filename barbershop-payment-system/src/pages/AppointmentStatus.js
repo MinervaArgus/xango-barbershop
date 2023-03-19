@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Container, Form, Row, Col, InputGroup, Button, Table, ProgressBar } from 'react-bootstrap';
 import axios from 'axios';
 
-
-
 export default function AppointmentStatus() {
     const inputInitialState = {
         email: '',
@@ -33,7 +31,7 @@ export default function AppointmentStatus() {
         try {
             await axios.delete(`http://localhost:4000/api/cancelAppointment/${input.email}/${input.id}`)
                 .then(res => {
-                    if (res.data == "success") {
+                    if (res.data === "success") {
                         console.log("inside");
                         setCanceled(true);
                         setAppointments([]);

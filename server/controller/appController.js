@@ -1,4 +1,4 @@
-const { db, storage } = require('../services/firebase');
+const { db, bucket, collectionRef } = require('../services/firebase');
 const { ref, getDownloadURL, getStorage, listAll } = require('@firebase/storage')
 const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
@@ -141,28 +141,120 @@ const cancelAppointment = async (req, res) => {
 }
 
 const getProducts = async (req, res) => {
-    console.log("hola");
-    const imagesListRef = ref(storage, "images/Products/");
-    console.log("imagesListRef", imagesListRef);
+    console.log("Inside /getProducts");
     let imagesURL = [];
-    try {
-        await listAll(imagesListRef).then((response) => {
-            response.items.forEach((item) => {
-                getDownloadURL(item).then((url) => {
-                    imagesURL.push(url);
+    const folderName = 'images/Products';
+
+    bucket.getFiles({ prefix: folderName }, (err, files) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching files');
+            return;
+        }
+
+        files.forEach(file => {
+            if (file.name.endsWith('.jpg') || file.name.endsWith('.jpeg') || file.name.endsWith('.png') || file.name.endsWith('.gif')) {
+                file.getSignedUrl({
+                    action: 'read',
+                    expires: '03-17-2024'
+                }).then(signedUrls => {
+                    imagesURL.push(signedUrls[0]);
+                    console.log("length: ", files.length);
+                    console.log("length imgURL", imagesURL.length);
+                    if (imagesURL.length === files.length - 1) {
+                        console.log("imagesURL before sending: ", imagesURL);
+                        res.status(200).send(imagesURL);
+                    }
+                    // console.log("jodida signed URL:", signedUrls);
+                    // console.log("imagesURL inside: ", imagesURL);
+                    console.log(`Download URL for ${file.name}: ${signedUrls[0]}`);
+
+                }).catch(err => {
+                    console.error(err);
                 });
-            });
+            } else if (imagesURL.length === files.length - 1) {
+                res.send(imagesURL);
+            }
         });
-        res.send(imagesURL);
-    } catch (error) {
-        res.send(error);
-    }
+    });
 }
 
+const getHairstyles = async (req, res) => {
+    console.log("Inside /getHairstyles");
+    let imagesURL = [];
+    const folderName = 'images/Hairstyles';
+
+    bucket.getFiles({ prefix: folderName }, (err, files) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching files');
+            return;
+        }
+
+        files.forEach(file => {
+            if (file.name.endsWith('.jpg') || file.name.endsWith('.jpeg') || file.name.endsWith('.webp')) {
+                file.getSignedUrl({
+                    action: 'read',
+                    expires: '03-17-2024'
+                }).then(signedUrls => {
+                    imagesURL.push(signedUrls[0]);
+                    console.log("length: ", files.length);
+                    console.log("length imgURL", imagesURL.length);
+                    if (imagesURL.length === files.length - 1) {
+                        console.log("imagesURL before sending: ", imagesURL);
+                        res.status(200).send(imagesURL);
+                    }
+                    // console.log("jodida signed URL:", signedUrls);
+                    // console.log("imagesURL inside: ", imagesURL);
+                    console.log(`Download URL for ${file.name}: ${signedUrls[0]}`);
+
+                }).catch(err => {
+                    console.error(err);
+                });
+            } else if (imagesURL.length === files.length - 1) {
+                res.send(imagesURL);
+            }
+        });
+    });
+}
+
+const getServices = async (req, res) => {
+    console.log("Inside /getServices");
+    let services = [];
+    // Get all documents in the collection
+    collectionRef.get()
+        .then(snapshot => {
+            snapshot.forEach(doc => {
+                console.log(doc.id, '=>', doc.data());
+                services.push(doc.data());
+                console.log("snapshot length", snapshot.size);
+                console.log("services length", services.length);
+                if (services.length === snapshot.size) {
+                    res.status(200).send(services);
+                }
+            });
+        })
+        .catch(err => {
+            console.error('Error getting documents', err);
+            res.status(500).send(err);
+        });
+}
+
+/* const logIn = async (req, res) => {
+    let { email, password } = req.body;
+    try {
+        await admin.auth().signs
+    } catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+} */
 module.exports = {
     mail,
     payment,
     checkAppointment,
     cancelAppointment,
-    getProducts
+    getProducts,
+    getHairstyles,
+    getServices
 }
