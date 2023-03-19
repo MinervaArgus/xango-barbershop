@@ -5,14 +5,15 @@ import { getStorage } from "firebase/storage";
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
+console.log("app id: ", `${process.env.REACT_APP_APP_ID}`);
 const firebaseConfig = {
-  apiKey: "AIzaSyCGRSnrD_xkU1V7wIuaoA_WsSOhAvwzICk",
-  authDomain: "bsp-project-e1b90.firebaseapp.com",
-  projectId: "bsp-project-e1b90",
-  storageBucket: "bsp-project-e1b90.appspot.com",
-  messagingSenderId: "600531881070",
-  appId: "1:600531881070:web:b4da5d05cd9308f03e2a7f",
-  measurementId: "G-X5SN3D1RP2"
+  apiKey: `${process.env.REACT_APP_API_KEY}`,
+  authDomain: `${process.env.REACT_APP_AUTH_DOMAIN}`,
+  projectId: `${process.env.REACT_APP_PROJECT_ID}`,
+  storageBucket: `${process.env.REACT_APP_STORAGE_BUCKET}`,
+  messagingSenderId: `${process.env.REACT_APP_MESSAGING_SENDER_ID}`,
+  appId: `${process.env.REACT_APP_ID}`,
+  measurementId: `${process.env.REACT_APP_MEASUREMENT_ID}`
 };
 
 const logInWithEmailAndPassword = async (email, password) => {

@@ -240,6 +240,15 @@ const getServices = async (req, res) => {
         });
 }
 
+/* const logIn = async (req, res) => {
+    let { email, password } = req.body;
+    try {
+        await admin.auth().signs
+    } catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+} */
 module.exports = {
     mail,
     payment,

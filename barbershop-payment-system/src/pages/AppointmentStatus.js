@@ -31,7 +31,7 @@ export default function AppointmentStatus() {
         try {
             await axios.delete(`http://localhost:4000/api/cancelAppointment/${input.email}/${input.id}`)
                 .then(res => {
-                    if (res.data == "success") {
+                    if (res.data === "success") {
                         console.log("inside");
                         setCanceled(true);
                         setAppointments([]);
