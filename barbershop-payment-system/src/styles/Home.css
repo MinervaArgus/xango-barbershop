@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   background-image: url("Xango.png");
   background-size: cover; /* Scale the image to cover the entire background */
