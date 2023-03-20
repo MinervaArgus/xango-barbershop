@@ -18,6 +18,7 @@ function Products() {
   const [showCart, setShowCart] = useState(false);
   const [showAddNotif, setShowAddNotif] = useState(false);
   const storage = getStorage();
+  const productsListRef = ref(storage, "lists/products");
   const imagesListRef = ref(storage, "images/Products/");
 
 
