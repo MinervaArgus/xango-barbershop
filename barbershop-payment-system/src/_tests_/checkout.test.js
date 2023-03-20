@@ -2,7 +2,8 @@
 const { Builder, By } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const path = require('chromedriver').path.replace(/\.bin/, ''); //After many hours of troubleshooting i realized that the default path was adding a .bin folder where there was none so i fixed it by doing this. - JN
-const options = new chrome.Options().headless();
+const chromeBinaryPath = "C:/Program Files/Google/Chrome/Application/chrome.exe";
+const options = new chrome.Options().headless().setChromeBinaryPath(chromeBinaryPath);
 
 
 let driver;
