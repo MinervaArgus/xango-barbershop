@@ -10,7 +10,8 @@ import { ref, uploadBytesResumable } from "firebase/storage";
 import { collection, onSnapshot, query, addDoc, orderBy } from "firebase/firestore"
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Container, Form, Button, Toast, ToastContainer, Row, Col, InputGroup, Tab, Tabs } from "react-bootstrap";
+import { Container, Form, Button, Toast, ToastContainer, Row, Col, InputGroup, Tab, Tabs, Modal } from "react-bootstrap";
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 require('moment/locale/es.js')
 const localizer = momentLocalizer(moment);
@@ -153,9 +154,23 @@ function Admin() {
     }, []);
     console.log("calendar appointments: ", calendarAppointments);
 
+
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleEventClick = (event) => {
+        setShowModal(true);
+        setSelectedEvent(event);
+    };
+    const minTime = new Date();
+    minTime.setHours(9, 0, 0); // Set minimum time to 8:00 AM today
+    const maxTime = new Date();
+    maxTime.setHours(19, 0, 0); // Set maximum time to 6:00 PM today
+    // const handleClose = () => setOpenModal(false);
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Container className="my-3">
+
                 {
                     showNotif
                         ?
@@ -204,11 +219,50 @@ function Admin() {
                 <h1>Admin Dashboard</h1>
 
                 <Tabs
-                    defaultActiveKey={"dateClosed"}
+                    defaultActiveKey={"adminCalendar"}
                     id="uncontrolled-admin-tab"
                     className="my-3"
                     justify
                 >
+                    <Tab eventKey={"adminCalendar"} title="View Calendar">
+                        <Container className="my-4">
+
+                            <Calendar
+                                localizer={localizer}
+                                events={calendarAppointments}
+                                defaultDate={new Date()}
+                                defaultView="week"
+                                style={{ height: "80vh" }}
+                                min={minTime}
+                                max={maxTime}
+                                onSelectEvent={handleEventClick}
+                                messages={{
+                                    next: ">",
+                                    previous: "<",
+                                    today: "Hoy",
+                                    month: "Mes",
+                                    week: "Semana",
+                                    day: "Día"
+                                }}
+                            />
+                            {selectedEvent && (
+                                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>{selectedEvent.title}</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <p>De: {selectedEvent.start.toString().slice(16, 21)}</p>
+                                        <p>A: {selectedEvent.end.toString().slice(16, 21)}</p>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={() => setShowModal(false)}>
+                                            Close
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                            )}
+                        </Container>
+                    </Tab>
                     <Tab eventKey={"dateClosed"} title="Add Close Date">
                         <Container>
                             <Form>
@@ -304,25 +358,7 @@ function Admin() {
                         </Container>
                     </Tab>
 
-                    <Tab eventKey={"adminCalendar"} title="View Calendar">
-                        <Container className="my-4">
-                            <Calendar
-                                localizer={localizer}
-                                events={calendarAppointments}
-                                defaultDate={new Date()}
-                                defaultView="week"
-                                style={{ height: "70vh" }}
-                                messages={{
-                                    next: ">",
-                                    previous: "<",
-                                    today: "Hoy",
-                                    month: "Mes",
-                                    week: "Semana",
-                                    day: "Día"
-                                }}
-                            />
-                        </Container>
-                    </Tab>
+
 
                 </Tabs>
             </Container>
