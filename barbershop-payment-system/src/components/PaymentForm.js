@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import axios from "axios";
 import { Container } from "react-bootstrap";
-import { db } from "../Firebase.js";
+import { db } from "../firebase.js";
 import { collection, addDoc } from "firebase/firestore"
 
 const CARD_OPTIONS = {

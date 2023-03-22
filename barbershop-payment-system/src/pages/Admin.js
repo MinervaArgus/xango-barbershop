@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { storage, db, auth } from "../Firebase.js"
+import { storage, db, auth } from "../firebase.js"
 import moment from "moment";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import Service from "../components/Services";
@@ -289,7 +289,7 @@ function Admin() {
                         </Container>
                     </Tab>
 
-                    <Tab eventKey={"uploadHair"} title="Upload Styles">
+                    {/* <Tab eventKey={"uploadHair"} title="Upload Styles">
                         <Container>
                             <Row className="justify-content-md-center">
                                 <Col xs md="auto" lg="auto">
@@ -311,7 +311,7 @@ function Admin() {
                             <h6>(Browser will refresh!)</h6>
                             <AdminStyles />
                         </Container>
-                    </Tab>
+                    </Tab> */}
 
                     <Tab eventKey={"addService"} title="Add Service">
                         <Container className="mt-4 mb-2">

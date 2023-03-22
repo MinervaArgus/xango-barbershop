@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { db } from '../Firebase';
+import { db } from '../firebase';
 import { Card, Container, Form, InputGroup, Button, ButtonGroup, Toast, ToastContainer, Modal } from "react-bootstrap"; 
 
 const Service = ({arr}) => {

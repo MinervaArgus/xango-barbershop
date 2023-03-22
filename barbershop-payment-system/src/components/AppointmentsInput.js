@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { db } from "../Firebase.js";
+import { db } from "../firebase.js";
 import { collection, onSnapshot, query, addDoc } from "firebase/firestore"
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';

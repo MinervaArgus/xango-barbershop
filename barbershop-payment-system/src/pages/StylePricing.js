@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Service from "../components/ServicesPublic";
-import { collection, onSnapshot, query } from "firebase/firestore"
-import { db } from "../Firebase.js";
+// import { collection, onSnapshot, query } from "firebase/firestore"
+// import { db } from "../firebase.js";
 import { Button, Container, Row } from "react-bootstrap";
 import axios from "axios";
 // const q = query(collection(db, 'hairstylePrices'));

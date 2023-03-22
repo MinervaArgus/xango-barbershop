@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import { auth, logInWithEmailAndPassword } from '../Firebase';
+import { auth, logInWithEmailAndPassword } from '../firebase';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Form, Row, Col, Button, Container } from 'react-bootstrap'
 
