@@ -547,7 +547,7 @@ function AppointmentsInput(props) {
                 <Container>
                     <Form noValidate validated={validated} onSubmit={handleSubmit}>
                         <Row className="justify-content-md-center">
-                            <Col xs md="auto" lg="auto" className="m-2">
+                            <Col xs md="auto" lg="auto" className="m-2 tw-max-w-sm">
                                 <InputGroup as={Row} hasValidation className="my-2">
                                     <Form.Group className="my-1">
                                         <Form.Control
@@ -563,7 +563,7 @@ function AppointmentsInput(props) {
                                         </Form.Control.Feedback>
                                     </Form.Group>
 
-                                    <Form.Group className="my-1">
+                                    <Form.Group className="my-1 tw-max-w-sm">
                                         <Form.Control
                                             required
                                             type="email"
