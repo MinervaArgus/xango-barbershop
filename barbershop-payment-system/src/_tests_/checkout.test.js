@@ -26,21 +26,21 @@ afterAll(async () => {
 });
 
 it('should show the amount on load', async () => {
-  await driver.get('http://localhost:3000/checkOut');
+  await driver.get('https://localhost:3000/checkOut');
   await driver.wait(until.elementLocated(By.tagName('h3')), 10000);
   const amount = await driver.findElement(By.tagName('h3')).getText();
   expect(amount).toEqual('$10');
 });
 
 it('should show the purchase button', async () => {
-  await driver.get('http://localhost:3000/checkOut');
+  await driver.get('https://localhost:3000/checkOut');
   await driver.wait(until.elementLocated(By.id('StripeButton')), 10000);
   const button = await driver.findElement(By.id('StripeButton'));
   expect(button).not.toBeNull();
 });
 
 it('should show the payment form on button click', async () => {
-  await driver.get('http://localhost:3000/checkOut');
+  await driver.get('https://localhost:3000/checkOut');
   await driver.wait(until.elementLocated(By.id('StripeButton')), 10000);
   const button = await driver.findElement(By.id('StripeButton'));
   await button.click();

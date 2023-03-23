@@ -16,7 +16,7 @@ describe('About Us Page', function () {
   });
 
   it('should load Google Maps', async function () {
-    await driver.get('http://localhost:3000/AboutUs');
+    await driver.get('https://localhost:3000/AboutUs');
 
     // Wait for the iframe to load
     const iframe = await driver.wait(until.elementLocated(By.css('iframe')));
@@ -31,7 +31,7 @@ describe('About Us Page', function () {
   });
 
   it('should have correct title', async function () {
-    await driver.get('http://localhost:3000/AboutUs');
+    await driver.get('https://localhost:3000/AboutUs');
 
     const title = await driver.getTitle();
     assert.equal(title, 'Xango Location');
