@@ -1,13 +1,16 @@
 import React from "react";
-import { Container } from "react-bootstrap";
-import '../styles/Home.css';
 
-export function Home() {
-    return(
-        <div id="bg">
-            {/* <Container className="my-2"><h1 className="tw-text-3xl tw-font-bold tw-underline">Home</h1></Container> */}
+const Home = () => {
+    const backgroundImage = 'url(../styles/Xango.png)';
+
+    return (
+        <div
+            className="tw-bg-cover tw-bg-no-repeat tw-bg-center tw-min-h-screen"
+            style={{backgroundImage}}        
+        >
+            <h1>Home</h1>
         </div>
-    )
-} 
+    );
+};
 
-export default Home
+export default Home;

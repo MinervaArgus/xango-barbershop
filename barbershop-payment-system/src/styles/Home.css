@@ -1,4 +1,8 @@
-#bg {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.home-background {
   background-image: url("Xango.png");
   height: 100vh;
   background-size: cover; /* Scale the image to cover the entire background */
