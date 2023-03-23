@@ -95,6 +95,7 @@ const checkAppointment = async (req, res) => {
     try {
         const appointmentsRef = db.collection('appointments')
         const snapshot = await appointmentsRef.where('email', '==', `${email}`).where('appointmentID', '==', `${id}`).get();
+
         if (snapshot.empty) {
             console.log('No matching results');
             res.send('No matching results');

@@ -10,39 +10,40 @@ function NavigationBar() {
     return (
         <Container >
             <Navbar sticky="top" collapseOnSelect expand="lg" className="navbar navbar-custom mx-2" variant="light">
-            <Navbar.Brand href="/Home">Xango</Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id="responsive-navbar-nav">
-                <Container >
-                    <Nav className="justify-content-end">
-                        <Nav.Item >
-                            <Nav.Link href="/appointments" >Book</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="/Products">Products</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="/HairPricing">Pricing</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="/AboutUs">About Us</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Container>
-                                {location.pathname === "/Admin" &&
-                                    <Button size="md" variant="outline-dark" onClick={logout}>
-                                        Logout
-                                    </Button>
-                                }
-                            </Container>
-                        </Nav.Item>
-                    </Nav>
-                </Container>
-                
-            </Navbar.Collapse>
+                <Navbar.Brand href="/Home">Xango</Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Container >
+                        <Nav className="justify-content-end">
+                            <Nav.Item >
+                                <Nav.Link href="/appointments" >Book</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link href="/Products">Products</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link href="/HairPricing">Pricing</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link href="/AboutUs">About Us</Nav.Link>
+                            </Nav.Item>
+
+                            <Nav.Item>
+                                <Container>
+                                    {location.pathname === "/Admin" &&
+                                        <Button size="md" variant="outline-dark" onClick={logout}>
+                                            Logout
+                                        </Button>
+                                    }
+                                </Container>
+                            </Nav.Item>
+                        </Nav>
+                    </Container>
+
+                </Navbar.Collapse>
             </Navbar>
         </Container>
-        
+
     )
 }
 

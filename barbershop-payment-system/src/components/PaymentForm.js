@@ -72,7 +72,8 @@ export default function PaymentForm(props) {
         time: props.time,
         price: props.appointment.price,
         paymentType: props.appointment.paymentType,
-        paid: props.appointment.paid
+        paid: props.appointment.paid,
+        appointmentID: props.id
       })
       await axios.post('http://localhost:4000/api/mail', {
         customerName: props.appointment.name,
