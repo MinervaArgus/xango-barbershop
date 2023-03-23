@@ -1,13 +1,9 @@
 import React from "react";
+import "../styles/Home.css"
 
 const Home = () => {
-    const backgroundImage = 'url(../styles/Xango.png)';
-
     return (
-        <div
-            className="tw-bg-cover tw-bg-no-repeat tw-bg-center tw-min-h-screen"
-            style={{backgroundImage}}        
-        >
+        <div className="home-background">
             <h1>Home</h1>
         </div>
     );
