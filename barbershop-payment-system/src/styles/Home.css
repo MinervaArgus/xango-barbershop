@@ -5,7 +5,7 @@
 .home-background {
   background-image: url("Xango.png");
   height: 100vh;
-  background-size: cover; /* Scale the image to cover the entire background */
-  background-position: center center; /* Position the image in the center of the background */
+  background-size: fill; /* Scale the image to cover the entire background */
+  background-position: center; /* Position the image in the center of the background */
   background-repeat: no-repeat; /* Prevent the image from repeating */
 }

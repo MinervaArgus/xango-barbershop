@@ -15,8 +15,8 @@ import AppointmentStatus from './pages/AppointmentStatus';
 function App() {
   return (
     <div className="App" style={{ fontFamily: "Roboto Slab" }}>
-      <header className="App-header">
-        <Navbar />
+      <header className="App-header nav-bg">
+        <Navbar/>
         <Router>
           <Switch>
             <Route path="/Home">
