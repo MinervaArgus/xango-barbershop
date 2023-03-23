@@ -647,7 +647,7 @@ function AppointmentsInput(props) {
             </Container>
             <Container className="my-3">
                 <h4>Already have an Appointment?</h4>
-                <a id="link" href="/appointmentStatus">Find my appointment</a>
+                <Button href="/appointmentStatus" className="my-2">Find my appointment</Button>
             </Container>
             {/* </ThemeProvider> */}
         </LocalizationProvider>

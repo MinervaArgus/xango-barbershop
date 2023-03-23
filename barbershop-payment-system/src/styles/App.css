@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
+@font-face {
+  font-family: 'Roboto Slab', serif;
+  src: url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
+}
 
 @tailwind base;
 @tailwind components;
