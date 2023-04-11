@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon index.js",
     "dev": "nodemon index.js",
-    "test": "jest --verbose ./routes"
+    "test": "jest --verbose ./routes",
+    "build": "npm i"
   },
   "jest": {
     "testEnvironment": "node"
