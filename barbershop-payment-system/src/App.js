@@ -11,6 +11,7 @@ import AboutUs from './pages/AboutUs';
 import Products from './pages/Products';
 import CheckOut from './pages/CheckOut';
 import AppointmentStatus from './pages/AppointmentStatus';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
         <Navbar/>
         <Router>
           <Switch>
+            <Route exact path="/">
+              <Redirect to="home"/>
+            </Route>
             <Route path="/Home">
               <Home />
             </Route>

@@ -3,9 +3,7 @@ import "../styles/Home.css"
 
 const Home = () => {
     return (
-        <div className="home-background">
-
-        </div>
+        <div className="home-background"></div>
     );
 };
 
