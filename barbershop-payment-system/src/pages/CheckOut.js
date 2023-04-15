@@ -8,19 +8,38 @@ import { Container, Button } from 'react-bootstrap'
 export default function CheckOut() {
     const [showItem, setShowItem] = useState(false)
     const location = useLocation()
-    const { appointment, date, time, appointmentID } = location.state
+    const { appointment, date, time, appointmentID, amount, cart } = location.state
+    let h3;
+    let stripeContatiner;
+    if (appointment) {
+        h3 = <><h3>Total amount: ${appointment.price}</h3>
+            <Button id="StripeButton" onClick={() => setShowItem(true)}>Purchase</Button>
+        </>
+        stripeContatiner = <StripeContainer
+            appointment={appointment}
+            date={date}
+            time={time}
+            id={appointmentID} />
+    } else if (amount) {
+        h3 = <><h3>Total amount: ${amount}</h3>
+            <Button id="StripeButton" onClick={() => setShowItem(true)}>Purchase</Button>
+        </>
+        stripeContatiner = <StripeContainer
+            products={cart}
+            id={appointmentID} />
+    } else {
+        h3 = <h3>Error</h3>
+    }
 
     return (
         // <<<<<<< Updated upstream
         <Container className='my-4'>
-            {showItem ? <StripeContainer
-                appointment={appointment}
-                date={date}
-                time={time}
-                id={appointmentID} />
+            {showItem
+                ?
+                { stripeContatiner }
                 :
-                <> <h3>${appointment.price}</h3>
-                    <Button id="StripeButton" onClick={() => setShowItem(true)}>Purchase</Button></>}
+                <> {h3}</>
+            }
         </Container>
         /* =======
                 <div>

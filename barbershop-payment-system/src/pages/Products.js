@@ -133,6 +133,7 @@ function Products() {
               <Link to={{
                 pathname: "/checkOut",
                 state: {
+                  cart: cart,
                   amount: total.toFixed(2)
                 }
               }}> <Button variant="primary" >Checkout</Button></Link>
