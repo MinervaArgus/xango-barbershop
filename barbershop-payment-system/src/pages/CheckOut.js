@@ -16,19 +16,19 @@ export default function CheckOut() {
             <Button id="StripeButton" onClick={() => setShowItem(true)}>Purchase</Button>
         </>
         console.log("inside appointment");
-        stripeContatiner = <StripeContainer
+        stripeContatiner = <><StripeContainer
             appointment={appointment}
             date={date}
             time={time}
-            id={appointmentID} />
+            id={appointmentID} /></>
 
     } else if (amount) {
         h3 = <><h3>Total amount: ${amount}</h3>
             <Button id="StripeButton" onClick={() => setShowItem(true)}>Purchase</Button>
         </>
         console.log("inside amount");
-        stripeContatiner = <StripeContainer
-            products={cart} />
+        stripeContatiner = <><StripeContainer
+            products={cart} /></>
     } else {
         console.log("inside error");
         h3 = <h3>Error</h3>

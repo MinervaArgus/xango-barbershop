@@ -12,15 +12,15 @@ export default function StripeContainer(props) {
     let paymentForm;
     if (props.appointment) {
         console.log("inside appointments");
-        paymentForm = <PaymentForm
+        paymentForm = <><PaymentForm
             appointment={props.appointment}
             date={props.date}
             time={props.time}
-            id={props.id} />
+            id={props.id} /></>
     } else if (props.products) {
         console.log("inside products");
-        paymentForm = <PaymentForm
-            products={props.products} />
+        paymentForm = <><PaymentForm
+            products={props.products} /></>
     } else {
         console.log("inside error");
         paymentForm = <h3>An error ocurred, please try later</h3>
