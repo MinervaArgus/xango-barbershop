@@ -15,19 +15,22 @@ export default function CheckOut() {
         h3 = <><h3>Total amount: ${appointment.price}</h3>
             <Button id="StripeButton" onClick={() => setShowItem(true)}>Purchase</Button>
         </>
+        console.log("inside appointment");
         stripeContatiner = <StripeContainer
             appointment={appointment}
             date={date}
             time={time}
             id={appointmentID} />
+
     } else if (amount) {
         h3 = <><h3>Total amount: ${amount}</h3>
             <Button id="StripeButton" onClick={() => setShowItem(true)}>Purchase</Button>
         </>
+        console.log("inside amount");
         stripeContatiner = <StripeContainer
-            products={cart}
-            id={appointmentID} />
+            products={cart} />
     } else {
+        console.log("inside error");
         h3 = <h3>Error</h3>
     }
 
@@ -36,7 +39,7 @@ export default function CheckOut() {
         <Container className='my-4'>
             {showItem
                 ?
-                { stripeContatiner }
+                <>{stripeContatiner}</>
                 :
                 <> {h3}</>
             }

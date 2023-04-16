@@ -8,14 +8,26 @@ const PUBLIC_KEY = "pk_test_51MnMqeF9fZJLHqXPYatFGEifDvMggepCvd0eQBqKeONsMIp3DRb
 const stripeTestPromise = loadStripe(PUBLIC_KEY)
 
 export default function StripeContainer(props) {
-    console.log("loglog: " + props.appointment.time);
+
+    let paymentForm;
+    if (props.appointment) {
+        console.log("inside appointments");
+        paymentForm = <PaymentForm
+            appointment={props.appointment}
+            date={props.date}
+            time={props.time}
+            id={props.id} />
+    } else if (props.products) {
+        console.log("inside products");
+        paymentForm = <PaymentForm
+            products={props.products} />
+    } else {
+        console.log("inside error");
+        paymentForm = <h3>An error ocurred, please try later</h3>
+    }
     return (
         <Elements stripe={stripeTestPromise}>
-            <PaymentForm
-                appointment={props.appointment}
-                date={props.date}
-                time={props.time}
-                id={props.id} />
+            <>{paymentForm}</>
         </Elements>
     )
 }
