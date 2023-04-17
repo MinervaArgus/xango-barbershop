@@ -312,7 +312,7 @@ function AppointmentsInput(props) {
                         paid: appointment.paid,
                         appointmentID: id
                     });
-                    await axios.post('http://localhost:4000/api/mail', {
+                    await axios.post('http://35.180.115.132:4000/api/mail', {
                         customerName: appointment.name,
                         to: appointment.email,
                         subject: "Appointment confirmation",

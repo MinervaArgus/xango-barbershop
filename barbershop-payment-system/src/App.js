@@ -16,7 +16,7 @@ function App() {
   return (
     <div className="App" style={{ fontFamily: "Roboto Slab" }}>
       <header className="App-header nav-bg">
-        <Navbar/>
+        <Navbar />
         <Router>
           <Switch>
             <Route path="/Home">
@@ -48,6 +48,9 @@ function App() {
             </Route>
             <Route path="/appointmentStatus">
               <AppointmentStatus />
+            </Route>
+            <Route path="/*">
+              <Home />
             </Route>
           </Switch>
         </Router>

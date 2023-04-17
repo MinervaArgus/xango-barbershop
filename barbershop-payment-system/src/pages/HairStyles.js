@@ -17,7 +17,7 @@ function HairStyles() {
         });
       });
     }); */
-    axios.get('http://localhost:4000/api/getHairstyles')
+    axios.get('http://35.180.115.132:4000/api/getHairstyles')
       .then(res => {
         console.log("response: ", res);
 

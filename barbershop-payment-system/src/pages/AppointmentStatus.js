@@ -29,7 +29,7 @@ export default function AppointmentStatus() {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.delete(`http://localhost:4000/api/cancelAppointment/${input.email}/${input.id}`)
+            await axios.delete(`http://35.180.115.132:4000/api/cancelAppointment/${input.email}/${input.id}`)
                 .then(res => {
                     if (res.data === "success") {
                         console.log("inside");
@@ -67,7 +67,7 @@ export default function AppointmentStatus() {
         if (input.email.length !== 0 && input.id.length !== 0) {
             setLoading(true);
             try {
-                await axios.get(`http://localhost:4000/api/checkAppointment/${input.email}/${input.id}`)
+                await axios.get(`http://35.180.115.132:4000/api/checkAppointment/${input.email}/${input.id}`)
                     .then(res => setAppointments(res.data.map(doc => ({
                         id: doc.id,
                         name: doc.name,

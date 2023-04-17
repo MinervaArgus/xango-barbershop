@@ -32,7 +32,7 @@ function Products() {
         });
       });
     }); */
-    axios.get('http://localhost:4000/api/getProducts')
+    axios.get('http://35.180.115.132:4000/api/getProducts')
       .then(res => {
         console.log("response: ", res);
 

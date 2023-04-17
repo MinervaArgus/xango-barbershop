@@ -16,7 +16,7 @@ const HairPricing = () => {
                 item: doc.data()
             })))
         }) */
-        axios.get('http://localhost:4000/api/getServices')
+        axios.get('http://35.180.115.132:4000/api/getServices')
             .then(res => {
                 console.log("response: ", res);
 

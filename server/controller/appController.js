@@ -22,7 +22,7 @@ const mail = async (req, res) => {
         theme: "default",
         product: {
             name: "Peluquería Xango",
-            link: "http://localhost:3000/appointmentStatus"
+            link: "http://35.180.115.132/appointmentStatus"
         }
     })
 

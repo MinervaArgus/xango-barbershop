@@ -41,7 +41,7 @@ export default function PaymentForm(props) {
       try {
         const { id } = paymentMethod
         console.log("log stripe id: " + id);
-        const response = await axios.post("http://localhost:4000/api/payment", {
+        const response = await axios.post("http://35.180.115.132:4000/api/payment", {
           amount: props.appointment.price * 100,
           id
         })
@@ -75,7 +75,7 @@ export default function PaymentForm(props) {
         paid: props.appointment.paid,
         appointmentID: props.id
       })
-      await axios.post('http://localhost:4000/api/mail', {
+      await axios.post('http://35.180.115.132:4000/api/mail', {
         customerName: props.appointment.name,
         to: props.appointment.email,
         subject: "Appointment confirmation",
